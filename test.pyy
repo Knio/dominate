@@ -1,0 +1,71 @@
+#! python -u cgi.py
+
+import web
+import os
+import htmlpage
+from html import *
+
+
+
+print 'Content-Type: text/html'
+print 'Set-Cookie: BDMT=12345'
+print
+print '<pre>'
+print '\n'.join('%-30s %s' % i for i in os.environ.items())
+print 
+print web.server
+print 
+print web.localroot
+print web.localfile
+print 
+print web.urlroot
+print web.urlfile
+print
+print web.fullurlroot
+print web.fullurlfile
+print
+print web.get
+print web.post
+print repr(web.data)
+
+
+print '''
+</pre>
+
+<form method=get>
+<input type=text name=input1>
+<input type=submit>
+</form>
+
+<form method=post>
+<input type=text name=input1>
+<input type=submit>
+</form>
+
+<form method=post enctype=multipart/form-data>
+<input type=text name=input1>
+<input type=submit>
+</form>
+
+
+'''
+
+
+raise SystemExit
+
+
+page = htmlpage.xhtmlpage()
+
+page.add(div('I /was/ valid XHTML 1.1'))
+page.add(div(a(img(src="http://www.w3.org/Icons/valid-xhtml11", 
+                   alt="Valid XHTML 1.1", height="31", width="88"),
+               href='http://validator.w3.org/check?uri=http%3A%2F%2Fstats.h4xn3t.zapto.org%3A8080%2Fbdmt%2Ftest.pyy')))
+
+import os
+
+page.add(div(pre()))
+
+
+page.render()
+
+

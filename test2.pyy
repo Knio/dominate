@@ -1,0 +1,18 @@
+#! python cgi.py
+
+import htmlpage
+from html import *
+
+
+page = htmlpage.xhtmlpage()
+
+page.add(div('I am valid XHTML 1.1'))
+page.add(div(a(img(src="http://www.w3.org/Icons/valid-xhtml11", 
+                   alt="Valid XHTML 1.1", height="31", width="88"),
+               href='http://validator.w3.org/check?uri=referer')))
+
+
+page.add(div(pre()))
+
+page.render()
+

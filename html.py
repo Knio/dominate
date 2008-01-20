@@ -14,7 +14,7 @@ class html(object):
             obj = self.child(obj)
         self.children.append(obj)
         return obj
-
+    
     def render(self, n=1):
         s = '<'
         s += type(self).__name__
@@ -23,18 +23,12 @@ class html(object):
         if self.single and not self.children:
             s += ' />'
         else:
-            nl = self.children and (not (len(self.children) == 1 and not isinstance(self.children[0], html))) # if there are no children, or only 1 child that is not an html element, do not add tabs and newlines
-            
+            # if there are no children, or only 1 child that is not an html element, do not add tabs and newlines
+            nl = self.children and (not (len(self.children) == 1 and not isinstance(self.children[0], html)))
             
             s += '>'
-            for i in self.children:
-                if isinstance(i, html):
-                    s += '\n'
-                    s += TAB*n
-                    s += i.render(n+1)
-                else:
-                    s += str(i)
-                    
+            s += self.render_children(n)
+            
             if nl:
                 s += '\n'
                 s += TAB*(n-1)
@@ -42,7 +36,18 @@ class html(object):
             s += type(self).__name__
             s += '>'
         return s
-
+        
+    def render_children(self, n=1):
+        s = ''
+        for i in self.children:
+                if isinstance(i, html):
+                    s += '\n'
+                    s += TAB*n
+                    s += i.render(n+1)
+                else:
+                    s += str(i)
+        return s
+    
     def __str__(self):
         return self.render()
 
@@ -72,7 +77,6 @@ class h5    (html):     pass
 class font  (html):     pass
 class div   (html):     pass
 class span  (html):     pass
-class pre   (html):     pass
 class p     (html):     pass
 class a     (html):     pass
 class b     (html):     pass
@@ -80,5 +84,41 @@ class td    (html):     pass
 class th    (html):     pass
 class tr    (html):     pass
 class table (html):     pass
+class pre   (html):
+    def render(self, n=1):
+        return html.render(self, 0)
 
+class include(html):
+    def __init__(self, f):
+        fl = file(f, 'rb')
+        self.data = fl.read()
+        fl.close()
+        
+    def render(self, n=1):
+        return self.data
+        
+class pipe(html):
+    def __init__(self, cmd, data=''):
+        import os
+        fin, fout = os.popen4(cmd)
+        fin.write(data)
+        fin.close()
+        self.data = fout.read()
+        
+    def render(self, n=1):
+        return self.data
 
+class escape(html):
+    def render(self, n=1):
+        return self.escape(html.render_children(self, n))
+        
+    def escape(self, s, quote=None): # stoled from std lib cgi 
+        '''Replace special characters "&", "<" and ">" to HTML-safe sequences.
+        If the optional flag quote is true, the quotation mark character (")
+        is also translated.'''
+        s = s.replace("&", "&amp;") # Must be done first!
+        s = s.replace("<", "&lt;")
+        s = s.replace(">", "&gt;")
+        if quote:
+            s = s.replace('"', "&quot;")
+        return s

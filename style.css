@@ -1,0 +1,243 @@
+div {
+    border : solid 0px #000000;
+    margin: auto;
+}
+
+div#menu { }
+
+div#header { }
+
+div#footer {
+    padding-top: 50px;
+    text-align : center;
+}
+
+div#welcome {
+    text-align: left;
+}
+div#report {
+    text-align: left;
+}
+    
+div#content {
+    padding-top: 0px;
+    margin: auto;
+    min-width: 900px;
+    padding-right: 0px;
+}
+
+div#schedule {
+    /*border: solid 1px #000000;*/
+}
+div#timetable {
+    
+    text-align: center;
+    vertical-align: middle;
+    margin-left: auto;
+    margin-right: auto;
+    width: 880px;
+    /*border: solid 1px #000000;*/
+}
+div#classlist {
+    margin: auto;
+    padding: 20px;
+   
+}
+
+div#searchbox {
+    /*font-size: large;*/
+    padding-top: 30px;
+    width: 100%;
+    text-align: center;
+    vertical-align: middle;
+    
+}
+
+div#searchresult {
+    text-align: left;
+    /*border: 1px solid black;*/
+}
+
+div#searchbox p {
+    font-size: small;
+}
+
+div#start {
+    text-align: center;
+    padding: 20px;
+}
+
+div#adsense {
+    float: right;
+    min-width: 120px;
+    min-height: 600px;
+    /*border: solid 1px #000000;*/
+}
+
+div#browse {
+    vertical-align: middle;
+    width: 800px;
+}
+
+div.warning {
+    border: solid 1px #ff9999;
+    background: #ffeeee;
+    width: 500px;
+    margin: auto;
+    margin-bottom: 20px;
+    padding-bottom: 1em;
+    padding-left:   1em;
+    padding-right:  1em;
+    text-align: center;
+}
+
+
+table {
+   border-collapse: collapse;
+   border-spacing: 0px;
+   table-layout: fixed;
+   margin: 0px;
+   padding: 0px;
+}
+
+table.timetable {
+    margin: 0px;
+    padding: 0px;
+}
+
+
+table.timetable th {
+    vertical-align: top;
+    text-align: left;
+    width: 0%;
+}
+
+table.timetable td.timeslot {
+    border: solid 1px #808080;
+    padding: 0px;
+    margin: 0px;
+    width: 100px;
+    height: 30px;
+}
+table.timetable td.timeslot:hover {
+    background: #dddddd;
+}
+
+table.timetable td.weekend {
+    background: #d0d0d0;
+}
+
+table.sections th.session {
+    border-bottom: solid 1px #000000;
+}
+
+
+div.timeslot {
+    width: 98px;
+    height: 27px;
+    background: #aaaaaa;
+    border: 2px solid black;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    font-size: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+div.LEC {
+    background: #ffddaa;
+}
+div.TUT {
+    background: #aaddff;
+}
+div.LAB {
+    background: #ddffaa;
+}
+
+div.class_long {
+    /*background: #f0f0ff;*/
+    visibility: hidden;
+    position: absolute;
+    z-index: -1;
+}
+div.expand {
+    visibility: visible;
+    position: relative;
+    z-index: 0;
+}
+
+table.sections tr:hover{
+    background-color: #dddddd;
+}
+
+tr.conflicted {
+    background: #ffcccc;
+}
+tr.added {
+    background: #ccffcc;
+}
+
+
+th {
+    white-space: nowrap;
+    text-align: left;
+    padding-right: 20px;
+    padding-top: 1em;
+}
+th a{
+    text-decoration: none;
+}
+a h2{
+    text-decoration: underline;
+}
+
+td {
+    white-space: nowrap;
+    padding-right: 20px;
+    vertical-align: top;
+    text-align: left;
+}
+
+span.checkbox_label {
+    padding-left: 0px;
+    padding-right: 10px;
+}
+
+span.search {
+   background-color: #bbffbb;
+}
+
+span.fixedwidth {
+    font-family: monospace;
+}
+
+span.menu {
+   font-weight: bold;
+}
+
+
+
+a{
+    color: #444444;
+
+}
+
+img{
+    border: none;
+
+}
+strong
+{
+    font-weight: bold;
+}
+
+
+body, html { }
+
+body {
+    margin-left: 20px;
+    background-color: #FFFFFF;
+    font : small arial;
+    color: #000000;
+    min-width :840px;
+}

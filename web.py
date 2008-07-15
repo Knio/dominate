@@ -95,12 +95,12 @@ def get_cookie():
 
 env = os.environ
 
-localfile = env['SCRIPT_FILENAME']
-localroot = env['DOCUMENT_ROOT']
+localfile = env.get('SCRIPT_FILENAME','')
+localroot = env.get('DOCUMENT_ROOT','')
 
-server = env['SERVER_NAME']
-if env['SERVER_PORT'] != '80':
-    server += ':' + env['SERVER_PORT']
+server = env.get('SERVER_NAME')
+if env.get('SERVER_PORT') and env.get('SERVER_PORT') != '80':
+    server += ':' + env.get('SERVER_PORT')
     
 assert localfile.startswith(localroot)
 urlroot = '/'
@@ -111,14 +111,40 @@ fullurlfile = fullurlroot + urlfile
 
 data = sys.stdin.read()
 
-get     = parse_query(env['QUERY_STRING'])
+get     = parse_query(env.get('QUERY_STRING',''))
 post    = ''#get_post(data)
 
+if 'PATH_INFO' in env:
+    info = env['PATH_INFO'].split('/')[1:]
+else:
+    info = []
+    
+infop = '/'.join(info)
 
-def path():
+# browser information
+
+
+is_internetexplorer6 = ('MSIE 6.0' in env.get('HTTP_USER_AGENT', ''))
+is_internetexplorer7 = ('MSIE 7.0' in env.get('HTTP_USER_AGENT', ''))
+                      
+is_internetexplorer = is_internetexplorer6 or is_internetexplorer7
+
+
+
+# safari2 Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en) AppleWebKit/XX (KHTML, like Gecko) Safari/YY
+# safari3 Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en) AppleWebKit/XX (KHTML, like Gecko) Version/ZZ Safari/YY
+
+is_safari = 'AppleWebKit' in env.get('HTTP_USER_AGENT', '')
+is_safari2 = is_safari and not 'Version' in env.get('HTTP_USER_AGENT', '')
+is_safari3 = is_safari and     'Version' in env.get('HTTP_USER_AGENT', '')
+
+
+def path(*args):
     p = os.path.dirname(env['SCRIPT_NAME'])
     if p == '/': p = ''
-    return p
+    return os.path.join(*([p] + list(args))).replace('\\','/')
     
-    
+def fpath(*args):
+    p = env['SCRIPT_NAME']
+    return os.path.join(*([p] + list(args))).replace('\\','/')
 

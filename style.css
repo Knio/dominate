@@ -28,14 +28,24 @@ div#content {
 
 div#schedule {
     /*border: solid 1px #000000;*/
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 970px;
 }
+
+div#selectlist {
+    float: right;
+    margin-right: auto;
+}
+
 div#timetable {
     
     text-align: center;
     vertical-align: middle;
-    margin-left: auto;
+    margin-left: 0;
     margin-right: auto;
-    width: 880px;
+    width: 800px;
+    height: 500px;
     /*border: solid 1px #000000;*/
 }
 div#classlist {
@@ -50,7 +60,8 @@ div#searchbox {
     width: 100%;
     text-align: center;
     vertical-align: middle;
-    
+    margin-left:  auto;
+    margin-right: auto;
 }
 
 div#searchresult {
@@ -60,6 +71,7 @@ div#searchresult {
 
 div#searchbox p {
     font-size: small;
+
 }
 
 div#start {
@@ -78,6 +90,16 @@ div#browse {
     vertical-align: middle;
     width: 800px;
 }
+
+div#login {
+    
+}
+
+div #loginmsg {
+    text-align: center;
+    padding: 30px;
+}
+
 
 div.warning {
     border: solid 1px #ff9999;
@@ -98,6 +120,19 @@ table {
    table-layout: fixed;
    margin: 0px;
    padding: 0px;
+}
+table.bigtable {
+    border-left: 1px #ffffff;
+    border-right: 1px #ffffff;
+}
+
+
+h4 {
+margin-top: 1em;
+}
+table.table1 {
+    margin-top: 0em;
+    width: 220px;
 }
 
 table.timetable {
@@ -129,6 +164,7 @@ table.timetable td.weekend {
 
 table.sections th.session {
     border-bottom: solid 1px #000000;
+    
 }
 
 
@@ -143,6 +179,7 @@ div.timeslot {
     font-size: 10px;
     font-weight: bold;
     white-space: nowrap;
+    text-align: left;
 }
 div.LEC {
     background: #ffddaa;
@@ -164,6 +201,12 @@ div.expand {
     visibility: visible;
     position: relative;
     z-index: 0;
+}
+
+
+table.table1 td.td1
+{
+    text-align: right;
 }
 
 table.sections tr:hover{
@@ -224,6 +267,7 @@ a{
 
 img{
     border: none;
+    margin: 10px;
 
 }
 strong
@@ -236,8 +280,8 @@ body, html { }
 
 body {
     margin-left: 20px;
-    background-color: #FFFFFF;
+    background-color: #000000;
     font : small arial;
-    color: #000000;
+    color: #ffffff;
     min-width :840px;
 }

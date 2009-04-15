@@ -76,7 +76,7 @@ def parse_query(string):
             key, value = i.split('=', 1)
         except ValueError:
             key, value = i, ''
-        d[key] = unquote_plus(value)
+        d[ unquote_plus(key)] = unquote_plus(value)
     return d
 
 def get_post(data):
@@ -86,6 +86,7 @@ def get_post(data):
         return get_multipart(data)
     if env['CONTENT_TYPE'].startswith('application/x-www-form-urlencoded'):
         return parse_query(data)
+    return {'_error':'unknown content type %s' % env['CONTENT_TYPE']}
 
 def get_cookie():
     if 'HTTP_COOKIE' not in env:
@@ -112,7 +113,7 @@ fullurlfile = fullurlroot + urlfile
 data = sys.stdin.read()
 
 get     = parse_query(env.get('QUERY_STRING',''))
-post    = ''#get_post(data)
+post    = get_post(data)
 
 if 'PATH_INFO' in env:
     info = env['PATH_INFO'].split('/')[1:]
@@ -122,21 +123,27 @@ else:
 infop = '/'.join(info)
 
 # browser information
-
+user_agent = env.get('HTTP_USER_AGENT', '')
 
 is_internetexplorer6 = ('MSIE 6.0' in env.get('HTTP_USER_AGENT', ''))
 is_internetexplorer7 = ('MSIE 7.0' in env.get('HTTP_USER_AGENT', ''))
                       
 is_internetexplorer = is_internetexplorer6 or is_internetexplorer7
 
-
+is_chrome = ('Chrome' in env.get('HTTP_USER_AGENT', ''))
 
 # safari2 Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en) AppleWebKit/XX (KHTML, like Gecko) Safari/YY
 # safari3 Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en) AppleWebKit/XX (KHTML, like Gecko) Version/ZZ Safari/YY
+# chrome  Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.2.149.27 Safari/525.13
 
-is_safari = 'AppleWebKit' in env.get('HTTP_USER_AGENT', '')
+
+is_safari = 'AppleWebKit' in env.get('HTTP_USER_AGENT', '') and not is_chrome
 is_safari2 = is_safari and not 'Version' in env.get('HTTP_USER_AGENT', '')
 is_safari3 = is_safari and     'Version' in env.get('HTTP_USER_AGENT', '')
+
+
+# googlebot Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)              
+is_googlebot = 'Googlebot/2.1' in user_agent
 
 
 def path(*args):

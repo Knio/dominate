@@ -1,6 +1,11 @@
 from html   import *
 from web    import *
 
+## TODO List
+## 
+## Add DOCTYPE/XML support
+## Create class heirarchy HTMLPage > HTML4PAGE, HTML5PAGE, XHTML10PAGE, XHTML11PAGE
+
 class cookie(object):
     def __init__(self, name, value, perm=False):
         self.name   = name

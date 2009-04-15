@@ -7,6 +7,8 @@ if __name__ == '__main__':
     
     fname = sys.argv[1]
     mname = os.path.basename(fname).split('.')[0]
+    dname = os.path.dirname(fname)
+    sys.path.append(dname)
     
     f = open(fname, 'U')
     

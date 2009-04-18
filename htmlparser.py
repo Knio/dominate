@@ -20,37 +20,38 @@ def XHTMLParse(data, allow_invalid=False, debug=False):
     r_com = re.compile(r'''<!--(?P<separator>)(?P<comment>.*)(?=separator)-->''')
     
     #page = xhtmlpage()
+    start = 0
     
-    xml = r_xml.search(data)
+    xml = r_xml.search(data, start)
     if xml:
         start, end = xml.span()
         xml = data[start:end]
         print "GOT XML: %s" % xml
         #page.xml = xml
-        data = data[end:]
+        start = end
     
-    doctype = r_doc.search(data)
+    doctype = r_doc.search(data, start)
     if doctype:
         start, end = doctype.span()
         doctype = data[start:end]
         print "GOT DOCTYPE: %s" % doctype
         #page.doctype = doctype
-        data = data[end:]
+        start = end
     
-    result = html.html_tag()
+    result = html.dummy()
     stack = [result]
     
-    while data:
+    while start < len(data):
         #Get next tag match
-        match = r_tag.search(data)
+        match = r_tag.search(data, start)
         if not match: break
-        start, end = match.span()
-        if debug: print "\nMATCHED: %s" % data[start:end]
+        match_start, match_end = match.span()
+        if debug: print "\nMATCHED: %s" % data[match_start:match_end]
         
         #If we don't match at 0 add text to previous tag (if not whitespace)
-        if start and len(data[0:start].strip()) > 0:
-            stack[-1] += data[0:start]
-            if debug: print "  ADDED TEXT: %s" % data[0:start]
+        if match_start and len(data[start:match_start].strip()) > 0:
+            stack[-1] += data[start:match_start]
+            if debug: print "  ADDED TEXT: %s" % data[start:match_start]
         
         #Get the tag name
         name = match.group('name')
@@ -86,7 +87,7 @@ def XHTMLParse(data, allow_invalid=False, debug=False):
                 if debug: print "  PUSHED: %s (%s)" % (name, ','.join(type(x).__name__ for x in stack[:-1]))
         
         #Move to after current tag
-        data = data[end:]
+        start = match_end
     
     #return page
     return result

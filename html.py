@@ -27,14 +27,15 @@ class html_tag(object):
         for i in args:
             self.add(i)
         
+        #Check for special attributes. Must do first and not in the loop!
+        if ATTRIBUTE_INVALID in kwargs.keys():
+            self.allow_invalid = kwargs[ATTRIBUTE_INVALID]
+            del kwargs[ATTRIBUTE_INVALID]
+        if ATTRIBUTE_INLINE in kwargs.keys():
+            self.do_inline = kwargs[ATTRIBUTE_INLINE]
+            del kwargs[ATTRIBUTE_INLINE]
+        
         for attribute, value in kwargs.items():
-            if attribute == ATTRIBUTE_INLINE:
-                self.do_inline = value
-                continue
-            elif attribute == ATTRIBUTE_INVALID:
-                self.allow_invalid = value
-                continue
-            
             #Workaround for python's reserved words
             if attribute[0] == '_': attribute = attribute[1:]
             #Workaround for inability to use colon in python keywords
@@ -161,6 +162,11 @@ class single (html_tag): is_single = True
 class ugly   (html_tag): is_pretty = False
 class dummy  (html_tag): pass
 class comment(html_tag): valid = [ATTRIBUTE_SEPARATOR]
+class invalid(html_tag):
+    def render(self, n=1, inline=False):
+        import warnings
+        warnings.warn("Using invalid tag: %s" % type(self).__name__)
+        return html_tag.render(self, n, inline)
 
 ################################################################################
 ########################## XHTML 1.1 Tag Specification #########################
@@ -286,6 +292,20 @@ class rbc(html_tag): valid = COMMON
 class rp (html_tag): valid = COMMON
 class rt (html_tag): valid = ['rbspan'] + COMMON
 class rtc(html_tag): valid = COMMON
+
+################################################################################
+########################## !!! NON-XHTML SPEC TAGS !!! #########################
+################################################################################
+
+class iframe(invalid): valid = COMMON
+class embed (invalid):
+    allow_invalid = True
+    valid = ['src', 'width', 'height', 'align', 'name', 'pluginspage',
+             'pluginurl', 'hidden', 'href', 'target', 'autostart', 'loop',
+             'playcount', 'volume', 'controls', 'controller', 'mastersound',
+             'starttime', 'endtime']
+class layer (invalid):
+    valid = ['id', 'left', 'top', 'bgcolor', 'width', 'height', 'visibility', 'src']
 
 ################################################################################
 ################## Utilities for easily manipulating HTML ######################

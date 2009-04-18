@@ -164,8 +164,8 @@ class dummy  (html_tag): pass
 class comment(html_tag): valid = [ATTRIBUTE_SEPARATOR]
 class invalid(html_tag):
     def render(self, n=1, inline=False):
-        import warnings
-        warnings.warn("Using invalid tag: %s" % type(self).__name__)
+        #import warnings
+        #warnings.warn("Using invalid tag: %s" % type(self).__name__)
         return html_tag.render(self, n, inline)
 
 ################################################################################

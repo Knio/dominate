@@ -297,15 +297,13 @@ class rtc(html_tag): valid = COMMON
 ########################## !!! NON-XHTML SPEC TAGS !!! #########################
 ################################################################################
 
-class iframe(invalid): valid = COMMON
+class iframe(invalid):
+    valid = ['align', 'frameborder', 'height', 'longdesc', 'marginheight', 'marginwidth', 'name', 'scroling', 'src', 'width'] + COMMON_CORE + COMMON_STYLE
 class embed (invalid):
-    allow_invalid = True
-    valid = ['src', 'width', 'height', 'align', 'name', 'pluginspage',
-             'pluginurl', 'hidden', 'href', 'target', 'autostart', 'loop',
-             'playcount', 'volume', 'controls', 'controller', 'mastersound',
-             'starttime', 'endtime']
+    valid = ['src', 'width', 'height', 'align', 'name', 'pluginspage', 'pluginurl', 'hidden', 'href', 'target', 'autostart', 'loop', 'playcount', 'volume', 'controls', 'controller', 'mastersound', 'starttime', 'endtime']
 class layer (invalid):
     valid = ['id', 'left', 'top', 'bgcolor', 'width', 'height', 'visibility', 'src']
+class u     (invalid): valid = COMMON
 
 ################################################################################
 ################## Utilities for easily manipulating HTML ######################

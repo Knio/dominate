@@ -21,35 +21,42 @@ def XHTMLParse(data, allow_invalid=False, debug=False):
     
     #page = xhtmlpage()
     start = 0
+    is_pretty = 0
     
+    #Locate possible XML declaration and add it to xhtmlpage
     xml = r_xml.search(data, start)
     if xml:
         start, end = xml.span()
         xml = data[start:end]
-        print "GOT XML: %s" % xml
+        if debug: print "GOT XML: %s" % xml
         #page.xml = xml
         start = end
     
+    #Locate possible DOCTYPE declaration and add it to xhtmlpage
     doctype = r_doc.search(data, start)
     if doctype:
         start, end = doctype.span()
         doctype = data[start:end]
-        print "GOT DOCTYPE: %s" % doctype
+        if debug: print "GOT DOCTYPE: %s" % doctype
         #page.doctype = doctype
         start = end
     
+    #Initialize tag tree stack with dummy element
     result = html.dummy()
     stack = [result]
     
     while start < len(data):
-        #Get next tag match
+        #Attempt to get next match
         match = r_tag.search(data, start)
         if not match: break
+        
+        #Get indeces of current match
         match_start, match_end = match.span()
         if debug: print "\nMATCHED: %s" % data[match_start:match_end]
         
-        #If we don't match at 0 add text to previous tag (if not whitespace)
-        if match_start and len(data[start:match_start].strip()) > 0:
+        #If there anything but whitespace since the last match and we are not
+        #  inside a "pretty" function add it
+        if match_start > start and is_pretty == 0 and len(data[start:match_start].strip()) > 0:
             stack[-1] += data[start:match_start]
             if debug: print "  ADDED TEXT: %s" % data[start:match_start]
         
@@ -64,21 +71,28 @@ def XHTMLParse(data, allow_invalid=False, debug=False):
             result = stack.pop()
             if debug: print "  POPPED: %s (%s)" % (type(result).__name__, ','.join(type(x).__name__ for x in stack))
             
+            if result.is_pretty:
+                is_pretty -= 1
+            
+            #Check if the tag we are popping off the stack is matching tag
             if type(result).__name__ != name:
                 raise TypeError('Tag mismatch. %s != %s' % (type(result).__name__, name))
         else:
-            #Iterate over the attributes
+            #Iterate over the attributes and assemble into dictionary
             kwargs = {}
             if match.group('attributes'):
                 for attribute in r_att.finditer(match.group('attributes')):
                     kwargs[attribute.group('name')] = attribute.group('value')
                     if debug: print '  ATTR: %s = "%s"' % (attribute.group('name'), attribute.group('value'))
             
-            #Create object and push it to the stack
+            #Create tag object and add it as child tag to parent
             new = getattr(html, name)(__invalid=allow_invalid, **kwargs)
             stack[-1] += new
             
-            #If it is a single tag mark as such, otherwise push `new` to stack head
+            if new.is_pretty:
+                is_pretty += 1
+            
+            #If it is a single tag mark as such, otherwise push it to the stack
             if match.group('isSingleTag') or new.is_single:
                 stack[-1].is_single = True
                 if debug: print "  IS SINGLE TAG\n  ADDED TO: %s (%s)" % (type(stack[-1]).__name__, ','.join(type(x).__name__ for x in stack[:-1]))

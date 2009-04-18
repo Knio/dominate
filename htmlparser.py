@@ -21,7 +21,7 @@ def XHTMLParse(data, allow_invalid=False, debug=False):
     
     #page = xhtmlpage()
     start = 0
-    is_pretty = 0
+    is_ugly = 0
     
     #Locate possible XML declaration and add it to xhtmlpage
     xml = r_xml.search(data, start)
@@ -56,9 +56,13 @@ def XHTMLParse(data, allow_invalid=False, debug=False):
         
         #If there anything but whitespace since the last match and we are not
         #  inside a "pretty" function add it
-        if match_start > start and is_pretty == 0 and len(data[start:match_start].strip()) > 0:
-            stack[-1] += data[start:match_start]
-            if debug: print "  ADDED TEXT: %s" % data[start:match_start]
+        if match_start > start:
+            text = data[start:match_start]
+            if len(text.strip()) > 0:
+                if '\n' in text and not is_ugly:
+                    text = text.strip()
+                stack[-1] += text
+                if debug: print "  ADDED TEXT: %s" % text
         
         #Get the tag name
         name = match.group('name')
@@ -71,8 +75,8 @@ def XHTMLParse(data, allow_invalid=False, debug=False):
             result = stack.pop()
             if debug: print "  POPPED: %s (%s)" % (type(result).__name__, ','.join(type(x).__name__ for x in stack))
             
-            if result.is_pretty:
-                is_pretty -= 1
+            if not result.is_pretty:
+                is_ugly -= 1
             
             #Check if the tag we are popping off the stack is matching tag
             if type(result).__name__ != name:
@@ -89,8 +93,8 @@ def XHTMLParse(data, allow_invalid=False, debug=False):
             new = getattr(html, name)(__invalid=allow_invalid, **kwargs)
             stack[-1] += new
             
-            if new.is_pretty:
-                is_pretty += 1
+            if not new.is_pretty:
+                is_ugly += 1
             
             #If it is a single tag mark as such, otherwise push it to the stack
             if match.group('isSingleTag') or new.is_single:

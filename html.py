@@ -8,7 +8,7 @@ COMMON               = COMMON_CORE + COMMON_INTERNATIONAL + COMMON_EVENT + COMMO
 
 ATTRIBUTE_INLINE    = '__inline'
 ATTRIBUTE_INVALID   = '__invalid'
-ATTRIBUTE_SEPARATOR = 'separator'
+ATTRIBUTE_CONDITION = 'condition'
 
 class html_tag(object):
     child         = None
@@ -97,31 +97,21 @@ class html_tag(object):
         self.add(obj)
         return self
     
+    def __contains__(self, item):
+        for child in self.children:
+            if item == type(child):
+                return True
+        return False
+    
     def render(self, n=1, inline=False):
         inline = self.do_inline or inline
-        
-        if isinstance(self, dummy):
-            #Ignore dummy element just used to set up blocks in methods
-            return self.render_children(n, inline)
-        elif isinstance(self, comment):
-            #No easy way to render a comment except with a special case
-            separator = ' '
-            if ATTRIBUTE_SEPARATOR in self.attributes:
-                separator = self.attributes[ATTRIBUTE_SEPARATOR]
-                #For multiline comments:
-                # comment("I'm on my own line!", separator='\n')
-                #For IE's "if" statement comments:
-                # comment("[lt IE6]>", p("Upgrade your browser."), "<![endif]", separator='')
-            return "<!--%s%s%s-->" % (separator, self.render_children(n, inline), separator)
-        
-        s = '<'
         
         #Workaround for python keywords
         if type(self).__name__[0] == "_":
             name = type(self).__name__[1:]
         else:
             name = type(self).__name__
-        s += name
+        s = '<' + name
         
         for k, v in self.attributes.items():
             s += ' %s="%s"' % (k, str(v))
@@ -158,12 +148,43 @@ class html_tag(object):
     def __str__(self):
         return self.render()
 
+################################################################################
+######################## Html_tag-based Utility Classes ########################
+################################################################################
+
 class single (html_tag): is_single = True
 class ugly   (html_tag): is_pretty = False
-class dummy  (html_tag): pass
-class comment(html_tag): valid = [ATTRIBUTE_SEPARATOR]
+
+class dummy  (html_tag):
+    '''
+    Ignore dummy element just used to set up blocks in methods
+    '''
+    def render(self, n=1, inline=False):
+        return self.render_children(n, inline)
+
+class comment(html_tag):
+    '''
+    Normal, one-line comment:
+      comment("Hello, comments!")
+    
+    For multiline comments:
+      comment(dummy("I'm on my own line!"))
+    
+    For IE's "if" statement comments:
+      comment(p("Upgrade your browser."), condition='lt IE6')
+    '''
+    is_single = True
+    valid = [ATTRIBUTE_CONDITION]
+    
+    def render(self, n=1, inline=False):
+        if ATTRIBUTE_CONDITION in self.attributes:
+            return '<!--[%s]>%s<![endif]-->' % (self.attributes[ATTRIBUTE_CONDITION], self.render_children(n, inline))
+        else:
+            return '<!--%s-->' % self.render_children(n, inline)
+
 class invalid(html_tag):
     def render(self, n=1, inline=False):
+        #XXX: This might affect rendering
         #import warnings
         #warnings.warn("Using invalid tag: %s" % type(self).__name__)
         return html_tag.render(self, n, inline)

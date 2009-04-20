@@ -1,10 +1,7 @@
 from html   import *
-from web    import *
 
 ## TODO List
-## 
-## Add DOCTYPE/XML support
-## Create class heirarchy HTMLPage > HTML4PAGE, HTML5PAGE, XHTML10PAGE, XHTML11PAGE
+## -Create class heirarchy HTMLPage > HTML4PAGE, HTML5PAGE, XHTML10PAGE, XHTML11PAGE
 
 class cookie(object):
     def __init__(self, name, value, perm=False):
@@ -21,14 +18,17 @@ class cookie(object):
 
 class xhtmlpage(object):
     def __init__(self, title='XHTML Page'):
+        self.xml = '<?xml version="1.0" encoding="utf-8"?>'
+        self.doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'
+        
         self.title = title
-        self.html = html()
-        self.html.attributes = {'xmlns':'http://www.w3.org/1999/xhtml', 
-                                'xml:lang':'en',
-                                'xmlns:xsi':"http://www.w3.org/2001/XMLSchema-instance" #,
-                                # apparently the w3 validator doesn't know the xhtml spec
-                                #'xsi:schemaLocation':"http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd"
-                                }
+        
+        self.html = html(xmlns='http://www.w3.org/1999/xhtml',
+            xml_lang='en',
+            xmlns_xsi='http://www.w3.org/2001/XMLSchema-instance')
+            #Apparently the w3 validator doesn't know the xhtml spec
+            #xsi_schemaLocation='http://www.w3.org/MarkUp/SCHEMA/xhtml11.xsd')
+        
         self.html.head = self.html.add(head())
         self.html.body = self.html.add(body())
         self._entry = self.html.body
@@ -44,11 +44,13 @@ class xhtmlpage(object):
     def set_cookie(self, name, value, perm=False):
         self.cookies[name] = cookie(name, value, perm)
         
-        
     def render(self):
-        self.html.head.title = self.html.head.add(title(self.title))
+        import web
         
-        user = env.get('HTTP_USER_AGENT', '')
+        if not title in self.html.head:
+            self.html.head.add(title(self.title))
+        
+        user = web.env.get('HTTP_USER_AGENT', '')
         if ('MSIE 6.0' in user) or ('MSIE 7.0' in user):
             # IE doesn't know how to open application/xhtml+xml
             print 'Content-Type: text/html'
@@ -59,15 +61,11 @@ class xhtmlpage(object):
         
         print 'Cache-Control: no-cache'
         
-        for i in self.cookies.values():
-            print i.render()
-        
+        print '\n'.join(cookie.render() for cookie in self.cookies.values())
         print
         
-        #print '<?xml version="1.0" encoding="iso-8859-1"?>'
-        print '<?xml version="1.0" encoding="utf-8"?>'
-        print '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'
-        #print '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
+        print self.xml
+        print self.doctype
         print
         print self.html
     

@@ -4,11 +4,24 @@ import re
 
 ## TODO
 ## -Cookies? Mmmm...
+## -Parse DOCTYPE and allow_invalid accordingly
+## -Add levels of invalidity (uppercase tags, invalid attributes, not including
+##    all required attributes, etc.)
+## -Use **kwargs and parse so there are not 1000 args with defaults
+
+COMMENTS_FIX = (
+    (re.compile(r'<!--\[if (.*?)\]>'), r'<comment condition="\1">'),
+    (re.compile(r'<!--'), '<comment>'),
+    (re.compile(r'(<!\[endif\])?-->'), r'</comment>'),
+)
 
 def XHTMLParse(data, allow_invalid=False, debug=False, start=0):
-    r_tag = re.compile(r'''<(?P<isEndTag>/)?(?P<name>[a-z0-9]+)(?(isEndTag)|(?P<attributes>(\s([\-a-z0-9:]+)=(".*?")\s*)*)(?P<isSingleTag>/)?)>''')
+    #Change comments to fake tags for easy parsing
+    for search, replace in COMMENTS_FIX:
+        data = search.sub(replace, data)
+    
+    r_tag = re.compile(r'''<(?P<isEndTag>/)?(?P<name>[a-z0-9]+)(?(isEndTag)|(?P<attributes>(\s([\-a-z0-9:]+)=(".*?")\s*)*)(?P<isSingleTag>/)?)>|(?P<comment><!--(\[.*\]>)?|(<!\[endif\])?-->)''')
     r_att = re.compile(r'''(?P<name>[\-a-z0-9:]+)="(?P<value>.*?)"''')
-    r_com = re.compile(r'''<!(--(?P<body>.*)--|--\[(?P<condition>.+)\]|\[(?P<isEndTag>endif)\]--)>''')
     
     if allow_invalid:
         r_tag = re.compile(r'''<(?P<isEndTag>/)?(?P<name>[a-zA-Z0-9]+)(?(isEndTag)|(?P<attributes>(\s([\-a-zA-Z0-9:]+)=("?.*?"?)\s*)*)(?P<isSingleTag>/)?)>''')
@@ -24,67 +37,41 @@ def XHTMLParse(data, allow_invalid=False, debug=False, start=0):
         #Attempt to get next match
         match = r_tag.search(data, start)
         if not match: break
+        match_start, match_end = match.span()
+        
+        #If match ahead of start point, add plain text
+        if start < match_start:
+            text = data[start:match_start]
+            #Only add text if it is not all whitespace
+            if len(text.strip()) > 0:
+                if '\n' in text and not preserve_whitespace:
+                    text = text.strip()
+                stack[-1] += text
+                if debug: print "  ADDED TEXT: %s" % text
         
         name = match.group('name')
         if allow_invalid: name = name.lower()
-        
-        #Get indeces of current match
-        match_start, match_end = match.span()
-        
-        #If match ahead of start point, plain text and/or comments before
-        while start < match_start:
-            comment_match = r_com.search(data, start, match_start)
-            if comment_match:
-                comment_start, comment_end = comment_match.span()
-            else:
-                comment_start = comment_end = match_start
-            
-            #If comment ahead of start point, plain text before
-            if start < comment_start:
-                text = data[start:comment_start]
-                #Only add text if it is not all whitespace
-                if len(text.strip()) > 0:
-                    if '\n' in text and not preserve_whitespace:
-                        text = text.strip()
-                    stack[-1] += text
-                    if debug: print "  ADDED TEXT: %s" % text
-            
-            #This is a beastly...
-            if comment_match:
-                if comment_match.group('body'):
-                    new = html.comment(comment_match.group('body'))
-                    stack[-1] += new
-                    if debug: print "  ADDED COMMENT: %s" % new
-                elif comment_match.group('condition'):
-                    new = html.comment(__invalid=allow_invalid, condition=comment_match.group('condition'))
-                    stack[-1] += new
-                    stack.append(new)
-                    if debug: print "\n%s\n  MATCHED: comment\n  PUSHED: comment (%s)" % (data[comment_start:comment_end], ','.join(type(x).__name__ for x in stack[:-1]))
-                else:
-                    #This will send us into the first 'if' branch below and rearrage variables
-                    name = html.comment.__name__
-                    match = comment_match
-                    comment_end = match_start
-                    match_start, match_end = comment_match.span()
-            
-            start = comment_end
-            
         if debug: print "\n%s\n  MATCHED: %s" % (data[match_start:match_end], name)
         
         if match.group('isEndTag'):
-            if debug: print "  IS END TAG"
-            
-            #Pop last tag off the stack
-            result = stack.pop()
-            if debug: print "  POPPED: %s (%s)" % (type(result).__name__, ','.join(type(x).__name__ for x in stack))
-            
-            #Update value of preserve_whitespace
-            if not result.is_pretty:
-                preserve_whitespace -= 1
-            
-            #Check if the tag we are popping off the stack is matching tag
-            if type(result).__name__ != name:
-                raise TypeError('Tag mismatch. %s != %s' % (type(result).__name__, name))
+            #Fix things like <div>--></div> which should use <div>--&gt;</div>
+            if name == html.comment.__name__ and not any(isinstance(tag, html.comment) for tag in stack):
+                stack[-1] += '--&gt;'
+                if debug: print "  ADDED TEXT: --%gt;"
+            else:
+                if debug: print "  IS END TAG"
+                
+                #Pop last tag off the stack
+                result = stack.pop()
+                if debug: print "  POPPED: %s (%s)" % (type(result).__name__, ','.join(type(x).__name__ for x in stack))
+                
+                #Update value of preserve_whitespace
+                if not result.is_pretty:
+                    preserve_whitespace -= 1
+                
+                #Check if the tag we are popping off the stack is matching tag
+                if type(result).__name__ != name:
+                    raise TypeError('Tag mismatch. %s != %s' % (type(result).__name__, name))
         else:
             #Assemble attributes (if exist) into a dictionary
             kwargs = dict(r_att.findall(match.group('attributes') or ''))

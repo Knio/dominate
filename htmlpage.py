@@ -1,6 +1,7 @@
 from html   import *
 
 ## TODO List
+## -Don't auto create crap unless it is asked for
 ## -Create class heirarchy HTMLPage > HTML4PAGE, HTML5PAGE, XHTML10PAGE, XHTML11PAGE
 
 class cookie(object):

@@ -11,7 +11,6 @@ ATTRIBUTE_INVALID   = '__invalid'
 ATTRIBUTE_CONDITION = 'condition'
 
 class html_tag(object):
-    child         = None
     is_single     = False
     is_pretty     = True
     do_inline     = False #Does not insert newlines on all children if True (recursive attribute)
@@ -62,8 +61,10 @@ class html_tag(object):
         
     def add(self, *args):
         for obj in args:
-            if self.child and not isinstance(obj, self.child):
-                obj = self.child(obj)
+            if isinstance(obj, dummy):
+                self.add(*obj.children)
+                continue
+            
             self.children.append(obj)
             if isinstance(obj, html_tag):
                 obj.parent = self
@@ -82,28 +83,32 @@ class html_tag(object):
             result.extend(i.get(attr, value, type))
         return result
     
-    def __getattr__(self, attr):
+    def __getitem__(self, attr):
         try: return self.attributes[attr]
         except KeyError: raise AttributeError
     
     def __setitem__(self, attr, value):
         self.attributes[attr] = value
     
+    def __len__(self, key):
+        return self.children[key]
+    
+    def __iter__(self):
+        return self.children.__iter__()
+    
     def __add__(self, obj):
-        self.add(obj)
-        return self
+        if isinstance(self, dummy):
+            return self.__iadd__(obj)
+        elif isinstance(obj, dummy):
+            return obj.__iadd__(self)
+        else:
+            return dummy(self, obj)
     
     def __iadd__(self, obj):
         self.add(obj)
         return self
     
-    def __contains__(self, item):
-        for child in self.children:
-            if item == type(child):
-                return True
-        return False
-    
-    def render(self, n=1, inline=False):
+    def render(self, indent=1, inline=False):
         inline = self.do_inline or inline
         
         #Workaround for python keywords
@@ -113,34 +118,34 @@ class html_tag(object):
             name = type(self).__name__
         s = '<' + name
         
-        for k, v in self.attributes.items():
-            s += ' %s="%s"' % (k, str(v))
+        for attribute, value in self.attributes.items():
+            s += ' %s="%s"' % (attribute, str(value))
         
         if self.is_single and not self.children:
             s += ' />'
         else:
             s += '>'
-            s += self.render_children(n, inline)
+            s += self.render_children(indent, inline)
             
             # if there are no children, or only 1 child that is not an html element, do not add tabs and newlines
             no_children = self.is_pretty and self.children and (not (len(self.children) == 1 and not isinstance(self.children[0], html_tag)))
             
             if no_children and not inline:
                 s += '\n'
-                s += TAB*(n-1)
+                s += TAB * (indent - 1)
             s += '</'
             s += name
             s += '>'
         return s
         
-    def render_children(self, n=1, inline=False):
+    def render_children(self, indent=1, inline=False):
         s = ''
         for i in self.children:
             if isinstance(i, html_tag):
                 if not inline and self.is_pretty:
                     s += '\n'
-                    s += TAB*n
-                s += i.render(n+1, inline)
+                    s += TAB * indent
+                s += i.render(indent + 1, inline)
             else:
                 s += str(i)
         return s
@@ -157,10 +162,10 @@ class ugly   (html_tag): is_pretty = False
 
 class dummy  (html_tag):
     '''
-    Ignore dummy element just used to set up blocks in methods
+    Ignore dummy element just used to set up blocks in methods, unwrapped by add
     '''
-    def render(self, n=1, inline=False):
-        return self.render_children(n, inline)
+    def render(self, indent=1, inline=False):
+        return self.render_children(indent - 1, inline)[indent + 1:]
 
 class comment(html_tag):
     '''
@@ -176,18 +181,18 @@ class comment(html_tag):
     is_single = True
     valid = [ATTRIBUTE_CONDITION]
     
-    def render(self, n=1, inline=False):
+    def render(self, indent=1, inline=False):
         if ATTRIBUTE_CONDITION in self.attributes:
-            return '<!--[%s]>%s<![endif]-->' % (self.attributes[ATTRIBUTE_CONDITION], self.render_children(n, inline))
+            return '<!--[%s]>%s\n%s<![endif]-->' % (self.attributes[ATTRIBUTE_CONDITION], self.render_children(indent, inline), TAB * (indent-1))
         else:
-            return '<!--%s-->' % self.render_children(n, inline)
+            return '<!--%s-->' % self.render_children(indent, inline)
 
 class invalid(html_tag):
-    def render(self, n=1, inline=False):
+    def render(self, indent=1, inline=False):
         #XXX: This might affect rendering
         #import warnings
         #warnings.warn("Using invalid tag: %s" % type(self).__name__)
-        return html_tag.render(self, n, inline)
+        return html_tag.render(self, indent, inline)
 
 ################################################################################
 ########################## XHTML 1.1 Tag Specification #########################
@@ -350,12 +355,12 @@ class pipe(html_tag):
     def __init__(self, cmd, data=''):
         self.data = pread(cmd, data)
         
-    def render(self, n=1, inline=False):
+    def render(self, indent=1, inline=False):
         return self.data
 
 class escape(html_tag):
-    def render(self, n=1, inline=False):
-        return self.escape(html_tag.render_children(self, n))
+    def render(self, indent=1, inline=False):
+        return self.escape(html_tag.render_children(self, indent))
         
     def escape(self, s, quote=None): # stoled from std lib cgi 
         '''Replace special characters "&", "<" and ">" to HTML-safe sequences.
@@ -408,5 +413,5 @@ class lazy(html_tag):
         self.args = args
         self.kwargs = kwargs
         
-    def render(self, n=1, inline=False):
+    def render(self, indent=1, inline=False):
         return self.func(*self.args, **self.kwargs)

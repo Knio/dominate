@@ -181,7 +181,7 @@ class comment(html_tag):
     def render(self, indent=1, inline=False):
         s = '<!--'
         if ATTRIBUTE_CONDITION in self.attributes:
-            s += '[%s]>' % self.attributes[ATTRIBUTE_CONDITION]
+            s += '[if %s]>' % self.attributes[ATTRIBUTE_CONDITION]
         
         s += self.render_children(indent, inline)
         

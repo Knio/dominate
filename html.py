@@ -86,6 +86,9 @@ class html_tag(object):
             result.extend(i.get(attr, value, type))
         return result
     
+    def __getattr__(self, attr):
+        return self.__getitem__(attr)
+    
     def __getitem__(self, attr):
         try: return self.attributes[attr]
         except KeyError: raise AttributeError

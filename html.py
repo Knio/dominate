@@ -64,6 +64,9 @@ class html_tag(object):
             if isinstance(obj, dummy):
                 self.add(*obj.children)
                 continue
+            elif isinstance(obj, str) and len(self.children) > 0 and isinstance(self.children[-1], str):
+                self.children[-1] += obj
+                continue
             
             self.children.append(obj)
             if isinstance(obj, html_tag):
@@ -90,8 +93,8 @@ class html_tag(object):
     def __setitem__(self, attr, value):
         self.attributes[attr] = value
     
-    def __len__(self, key):
-        return self.children[key]
+    def __len__(self):
+        return len(self.children)
     
     def __iter__(self):
         return self.children.__iter__()
@@ -159,21 +162,12 @@ class html_tag(object):
 
 class single (html_tag): is_single = True
 class ugly   (html_tag): is_pretty = False
-
-class dummy  (html_tag):
-    '''
-    Ignore dummy element just used to set up blocks in methods, unwrapped by add
-    '''
-    def render(self, indent=1, inline=False):
-        return self.render_children(indent - 1, inline)[indent + 1:]
+class dummy  (html_tag): pass #Ignored, automatically unboxed
 
 class comment(html_tag):
     '''
     Normal, one-line comment:
       comment("Hello, comments!")
-    
-    For multiline comments:
-      comment(dummy("I'm on my own line!"))
     
     For IE's "if" statement comments:
       comment(p("Upgrade your browser."), condition='lt IE6')
@@ -182,10 +176,20 @@ class comment(html_tag):
     valid = [ATTRIBUTE_CONDITION]
     
     def render(self, indent=1, inline=False):
+        s = '<!--'
         if ATTRIBUTE_CONDITION in self.attributes:
-            return '<!--[%s]>%s\n%s<![endif]-->' % (self.attributes[ATTRIBUTE_CONDITION], self.render_children(indent, inline), TAB * (indent-1))
-        else:
-            return '<!--%s-->' % self.render_children(indent, inline)
+            s += '[%s]>' % self.attributes[ATTRIBUTE_CONDITION]
+        
+        s += self.render_children(indent, inline)
+        
+        if any(isinstance(child, html_tag) for child in self.children):
+            s += '\n'
+            s += TAB * (indent-1)
+        
+        if ATTRIBUTE_CONDITION in self.attributes:
+            s += '<![endif]'
+        s += '-->'
+        return s
 
 class invalid(html_tag):
     def render(self, indent=1, inline=False):

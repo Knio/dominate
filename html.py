@@ -1,4 +1,4 @@
-TAB = '  '#'    '
+TAB = '\t'
 
 COMMON_CORE          = ['class', 'id', 'title']
 COMMON_INTERNATIONAL = ['xml:lang', 'dir']
@@ -64,7 +64,7 @@ class html_tag(object):
             if isinstance(obj, dummy):
                 self.add(*obj.children)
                 continue
-            elif isinstance(obj, str) and len(self.children) > 0 and isinstance(self.children[-1], str):
+            elif isinstance(obj, basestring) and len(self.children) > 0 and isinstance(self.children[-1], basestring):
                 self.children[-1] += obj
                 continue
             
@@ -74,7 +74,7 @@ class html_tag(object):
         return args[-1]
     
     def tag(self, tag):
-        if isinstance(tag, str): tag = globals()[tag]
+        if isinstance(tag, basestring): tag = globals()[tag]
         return [i for i in self.children if type(i) is tag]
     
     def get(self, attr, value, type=object):
@@ -165,7 +165,14 @@ class html_tag(object):
 
 class single (html_tag): is_single = True
 class ugly   (html_tag): is_pretty = False
-class dummy  (html_tag): pass #Ignored, automatically unboxed
+
+class dummy  (html_tag):
+    '''
+    Container for building adjacent tags without a parent. Automatically unboxed
+    by add() but sometimes still might be rendered.
+    '''
+    def render(self, indent=1, inline=False):
+        return self.render_children(indent - 1, inline)[1:] #Removes our indent and newline
 
 class comment(html_tag):
     '''
@@ -175,8 +182,11 @@ class comment(html_tag):
     For IE's "if" statement comments:
       comment(p("Upgrade your browser."), condition='lt IE6')
     '''
-    is_single = True
     valid = [ATTRIBUTE_CONDITION]
+    
+    def __init__(self, *args, **kwargs):
+        html_tag.__init__(*args, **kwargs)
+        self.is_pretty = ATTRIBUTE_CONDITION not in self.attributes
     
     def render(self, indent=1, inline=False):
         s = '<!--'

@@ -4,28 +4,29 @@ import re
 
 ## TODO
 ## -Cookies? Mmmm...
-## -Parse DOCTYPE and allow_invalid accordingly
-## -Add levels of invalidity (uppercase tags, invalid attributes, not including
-##    all required attributes, etc.)
-## -Use **kwargs and parse so there are not 1000 args with defaults
+## -Develop multiple html.py tag sets based on the different specifications
+## -Parse DOCTYPE and choose html.py set accordingly
 
 COMMENTS_FIX = (
-    (re.compile(r'<!--\[if (.*?)\]>'), r'<comment condition="\1">'),
-    (re.compile(r'<!--'), '<comment>'),
-    (re.compile(r'(<!\[endif\])?-->'), r'</comment>'),
+    (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S), r'<comment condition="\1">\2</comment>'),
+    (re.compile(r'<!--(.*?)-->', re.S)                        , r'<comment>\1</comment>'),
 )
 
-def XHTMLParse(data, allow_invalid=False, debug=False, start=0):
+def XHTMLParse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
+    if allow_invalid:
+        allow_invalid_attributes = allow_invalid_markup = allow_invalid
+    
     #Change comments to fake tags for easy parsing
     for search, replace in COMMENTS_FIX:
         data = search.sub(replace, data)
     
-    r_tag = re.compile(r'''<(?P<isEndTag>/)?(?P<name>[a-z0-9]+)(?(isEndTag)|(?P<attributes>(\s([\-a-z0-9:]+)=(".*?")\s*)*)(?P<isSingleTag>/)?)>|(?P<comment><!--(\[.*\]>)?|(<!\[endif\])?-->)''')
-    r_att = re.compile(r'''(?P<name>[\-a-z0-9:]+)="(?P<value>.*?)"''')
+    if allow_invalid_markup:
+        regex_attributes = {'name': 'a-zA-Z0-9', 'attribute_name': r'\-a-zA-Z0-9:', 'attribute_quote': '"?'}
+    else:
+        regex_attributes = {'name': 'a-z0-9'   , 'attribute_name': r'\-a-z0-9:'   , 'attribute_quote': '"' }
     
-    if allow_invalid:
-        r_tag = re.compile(r'''<(?P<isEndTag>/)?(?P<name>[a-zA-Z0-9]+)(?(isEndTag)|(?P<attributes>(\s([\-a-zA-Z0-9:]+)=("?.*?"?)\s*)*)(?P<isSingleTag>/)?)>''')
-        r_att = re.compile(r'''(?P<name>[\-a-zA-Z0-9:]+)="?(?P<value>.*?)"?''')
+    r_tag = re.compile(r'''<(?P<isEndTag>/)?(?P<name>[%(name)s]+)(?(isEndTag)|(?P<attributes>(\s([%(attribute_name)s]+)=(%(attribute_quote)s.*?%(attribute_quote)s)\s*)*)(?P<isSingleTag>/)?)>''' % regex_attributes)
+    r_att = re.compile(r'''(?P<name>[%(attribute_name)s]+)=%(attribute_quote)s(?P<value>.*?)%(attribute_quote)s''' % regex_attributes)
     
     #Initialize tag tree stack with dummy element
     result = html.dummy()
@@ -50,34 +51,29 @@ def XHTMLParse(data, allow_invalid=False, debug=False, start=0):
                 if debug: print "  ADDED TEXT: %s" % text
         
         name = match.group('name')
-        if allow_invalid: name = name.lower()
+        if allow_invalid_markup: name = name.lower()
         if debug: print "\n%s\n  MATCHED: %s" % (data[match_start:match_end], name)
         
         if match.group('isEndTag'):
-            #Fix things like <div>--></div> which should use <div>--&gt;</div>
-            if name == html.comment.__name__ and not any(isinstance(tag, html.comment) for tag in stack):
-                stack[-1] += '--&gt;'
-                if debug: print "  ADDED TEXT: --%gt;"
-            else:
-                if debug: print "  IS END TAG"
-                
-                #Pop last tag off the stack
-                result = stack.pop()
-                if debug: print "  POPPED: %s (%s)" % (type(result).__name__, ','.join(type(x).__name__ for x in stack))
-                
-                #Update value of preserve_whitespace
-                if not result.is_pretty:
-                    preserve_whitespace -= 1
-                
-                #Check if the tag we are popping off the stack is matching tag
-                if type(result).__name__ != name:
-                    raise TypeError('Tag mismatch. %s != %s' % (type(result).__name__, name))
+            if debug: print "  IS END TAG"
+            
+            #Pop last tag off the stack
+            result = stack.pop()
+            if debug: print "  POPPED: %s (%s)" % (type(result).__name__, ','.join(type(x).__name__ for x in stack))
+            
+            #Update value of preserve_whitespace
+            if not result.is_pretty:
+                preserve_whitespace -= 1
+            
+            #Check if the tag we are popping off the stack is matching tag
+            if type(result).__name__ != name:
+                raise TypeError('Tag mismatch. %s != %s' % (type(result).__name__, name))
         else:
             #Assemble attributes (if exist) into a dictionary
             kwargs = dict(r_att.findall(match.group('attributes') or ''))
             
             #Create new object and push onto the stack
-            new = getattr(html, name)(__invalid=allow_invalid, **kwargs)
+            new = getattr(html, name)(__invalid=allow_invalid_attributes, **kwargs)
             stack[-1] += new
             
             #Update value of preserve_whitespace
@@ -85,24 +81,27 @@ def XHTMLParse(data, allow_invalid=False, debug=False, start=0):
                 preserve_whitespace += 1
             
             #If it is a single tag (or supposed to be) mark as such
-            if match.group('isSingleTag'):
+            if match.group('isSingleTag') or (allow_invalid_markup and new.is_single):
                 stack[-1].is_single = True
                 if debug: print "  IS SINGLE TAG\n  ADDED TO: %s (%s)" % (type(stack[-1]).__name__, ','.join(type(x).__name__ for x in stack[:-1]))
-            elif not allow_invalid or not new.is_single:
+            else:
                 stack.append(new)
                 if debug: print "  PUSHED: %s (%s)" % (name, ','.join(type(x).__name__ for x in stack[:-1]))
         
         #Move to after current tag
         start = match_end
     
+    #If their were adjacent top-level tags return them in a dummy tag
+    if len(stack[-1]) > 1:
+        result = stack.pop()
+    
     return result
 
 
-def PageParse(data, allow_invalid=False, debug=False):
+def PageParse(data, start=0, allow_invalid=False, debug=False):
     r_xml = re.compile(r'''<\?xml ([a-z]="\w+")+\?>''')
     r_doc = re.compile(r'''<!DOCTYPE\s+(:HTML|html)\s+PUBLIC\s+"[^"]+"\s+"[^"]+">''')
     
-    start = 0
     page = xhtmlpage()
     
     #Locate possible XML declaration and add it to page
@@ -124,7 +123,7 @@ def PageParse(data, allow_invalid=False, debug=False):
         start = end
     
     #Parse main XHTML data
-    page.html = XHTMLParse(data, allow_invalid, debug, start)
+    page.html = XHTMLParse(data, allow_invalid=allow_invalid, debug=debug, start=start)
     
     return page
 
@@ -138,4 +137,4 @@ def parse(data):
 
 def test(url='http://docs.python.org/library/re.html'):
     import urllib
-    return XHTMLParse(urllib.urlopen(url).read(), True, True)
+    return XHTMLParse(urllib.urlopen(url).read(), debug=True, allow_invalid_attributes=True)

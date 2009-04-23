@@ -72,29 +72,29 @@ Comments can be created using objects too!
     >>> print comment(p("Stop using IE5!"), condition='lt IE6')
     <!--[if lt IE6]><p>Stop using IE5!</p><![endif]-->
 
-More usage examples to come...
+More usage examples to come. Check out the `examples` folder as well.
 
 
 Developed By
 ============
-* Tom Flanagan - theknio@gmail.com
-* Jake Wharton - jakewharton@gmail.com
+* Tom Flanagan - <theknio@gmail.com>
+* Jake Wharton - <jakewharton@gmail.com>
 
 http://github.com/JakeWharton/pyy
 
 
 License
 =======
-Copyright 2009 Tom Flanagan, Jake Wharton
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+    Copyright 2009 Tom Flanagan, Jake Wharton
+    
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    
+       http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.

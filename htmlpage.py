@@ -1,8 +1,5 @@
 from html import *
 
-## TODO List
-## -Don't auto create crap unless it is asked for
-
 class cookie(object):
     def __init__(self, name, value, perm=False):
         self.name   = name
@@ -64,7 +61,9 @@ class xhtmlpage(object):
             print '\n'.join(cookie.render() for cookie in self.cookies.values())
             print
         
-        print self.xml
+        #Don't print XML declaration if IE so DOCTYPE is first
+        if not just_html and not is_internetexplorer:
+            print self.xml
         print self.doctype
         print
         print self.html

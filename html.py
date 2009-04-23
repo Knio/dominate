@@ -27,12 +27,12 @@ class html_tag(object):
             self.add(i)
         
         #Check for special attributes. Must do first and not in the loop!
-        if ATTRIBUTE_INVALID in kwargs.keys():
-            self.allow_invalid = kwargs[ATTRIBUTE_INVALID]
-            del kwargs[ATTRIBUTE_INVALID]
-        if ATTRIBUTE_INLINE in kwargs.keys():
-            self.do_inline = kwargs[ATTRIBUTE_INLINE]
-            del kwargs[ATTRIBUTE_INLINE]
+        if html_tag.ATTRIBUTE_INVALID in kwargs.keys():
+            self.allow_invalid = kwargs[html_tag.ATTRIBUTE_INVALID]
+            del kwargs[html_tag.ATTRIBUTE_INVALID]
+        if html_tag.ATTRIBUTE_INLINE in kwargs.keys():
+            self.do_inline = kwargs[html_tag.ATTRIBUTE_INLINE]
+            del kwargs[html_tag.ATTRIBUTE_INLINE]
         
         for attribute, value in kwargs.items():
             #Workaround for python's reserved words
@@ -40,7 +40,7 @@ class html_tag(object):
             #Workaround for inability to use colon in python keywords
             attribute = attribute.replace('_', ':')
             
-            if not attribute in self.valid and not self.allow_invalid:
+            if attribute not in self.valid and not self.allow_invalid:
                 raise AttributeError("Invalid attribute '%s'." % attribute)
             
             self.attributes[attribute] = value
@@ -79,7 +79,7 @@ class html_tag(object):
         if isinstance(tag, basestring): tag = globals()[tag]
         return [i for i in self.children if type(i) is tag]
     
-    def get(self, attr, value, type=object):
+    def get(self, attr=None, value=None, type=object):
         result = []
         for i in self.children:
             if not isinstance(i, html_tag): continue
@@ -179,34 +179,46 @@ class dummy  (html_tag):
 class comment(html_tag):
     '''
     Normal, one-line comment:
-      comment("Hello, comments!")
+      >>> print comment("Hello, comments!")
+      <!--Hello, comments!-->
     
     For IE's "if" statement comments:
-      comment(p("Upgrade your browser."), condition='lt IE6')
+      >>> print comment(p("Upgrade your browser."), condition='lt IE6')
+      <!--[if lt IE6]><p>Upgrade your browser.</p><![endif]-->
     
     Downlevel conditional comments:
-      comment(p("You are using a ", em("downlevel"), " browser."), condition='false', downlevel='revealed')
+      >>> print comment(p("You are using a ", em("downlevel"), " browser."), condition='false', downlevel='revealed')
+      <![if false]><p>You are using a <em>downlevel</em> browser.</p><![endif]>
     
     For more on conditional comments see MSDN:
       http://msdn.microsoft.com/en-us/library/ms537512(VS.85).aspx
     '''
+    import re
+    
     ATTRIBUTE_CONDITION = 'condition'
     ATTRIBUTE_DOWNLEVEL = 'downlevel' #Valid values are 'hidden' or 'revealed'
+    REPLACE = [
+        (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S), r'<comment condition="\1">\2</comment>'),
+        (re.compile(r'<!--(.*?)-->', re.S)                        , r'<comment>\1</comment>'),
+        (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif]>', re.S)     , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
+    ]
     
-    valid    = [ATTRIBUTE_CONDITION, ATTRIBUTE_DOWNLEVEL]
-    required = [ATTRIBUTE_DOWNLEVEL]
-    default  = {ATTRIBUTE_DOWNLEVEL: 'hidden'}
+    valid = [ATTRIBUTE_CONDITION, ATTRIBUTE_DOWNLEVEL]
     
     def __init__(self, *args, **kwargs):
-        html_tag.__init__(*args, **kwargs)
-        self.is_pretty = ATTRIBUTE_CONDITION not in self.attributes
+        html_tag.__init__(self, *args, **kwargs)
+        #Preserve whitespace if we are not a conditional comment
+        self.is_pretty = comment.ATTRIBUTE_CONDITION not in self.attributes
     
     def render(self, indent=1, inline=False):
+        has_condition = comment.ATTRIBUTE_CONDITION in self.attributes
+        is_revealed = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
+        
         s = '<!'
-        if self.attributes[ATTRIBUTE_DOWNLEVEL] == 'hidden':
+        if not is_revealed:
             s+= '--'
-        if ATTRIBUTE_CONDITION in self.attributes:
-            s += '[if %s]>' % self.attributes[ATTRIBUTE_CONDITION]
+        if has_condition:
+            s += '[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION]
         
         s += self.render_children(indent, inline)
         
@@ -215,12 +227,18 @@ class comment(html_tag):
             s += '\n'
             s += TAB * (indent - 1)
         
-        if ATTRIBUTE_CONDITION in self.attributes:
+        if has_condition:
             s += '<![endif]'
-        if self.attributes[ATTRIBUTE_DOWNLEVEL] == 'hidden':
+        if not is_revealed:
             s += '--'
         s += '>'
         return s
+    
+    @staticmethod
+    def comments2tags(data):
+        for search, replace in comment.REPLACE:
+            data = search.sub(replace, data)
+        return data
 
 class invalid(html_tag):
     def render(self, indent=1, inline=False):
@@ -393,21 +411,20 @@ class pipe(html_tag):
     def render(self, indent=1, inline=False):
         return self.data
 
+def _escape(data, quote=False): # stoled from std lib cgi 
+    '''Replace special characters "&", "<" and ">" to HTML-safe sequences.
+    If the optional flag quote is true, the quotation mark character (")
+    is also translated.'''
+    data = data.replace("&", "&amp;") # Must be done first!
+    data = data.replace("<", "&lt;")
+    data = data.replace(">", "&gt;")
+    if quote:
+        data = data.replace('"', "&quot;")
+    return data
+
 class escape(html_tag):
     def render(self, indent=1, inline=False):
-        return self.escape(html_tag.render_children(self, indent))
-        
-    def escape(self, s, quote=None): # stoled from std lib cgi 
-        '''Replace special characters "&", "<" and ">" to HTML-safe sequences.
-        If the optional flag quote is true, the quotation mark character (")
-        is also translated.'''
-        s = s.replace("&", "&amp;") # Must be done first!
-        s = s.replace("<", "&lt;")
-        s = s.replace(">", "&gt;")
-        if quote:
-            s = s.replace('"', "&quot;")
-        return s
-
+        return _escape(html_tag.render_children(self, indent, inline))
 
 _unescape = {'quot' :34,
              'amp'  :38,

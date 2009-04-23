@@ -2,32 +2,26 @@ import html
 from htmlpage import xhtmlpage
 import re
 
-COMMENTS_FIX = (
-    (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S), r'<comment condition="\1">\2</comment>'),
-    (re.compile(r'<!--(.*?)-->', re.S)                        , r'<comment>\1</comment>'),
-    (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif]>', re.S)     , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
-)
-
 def XHTMLParse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
     if allow_invalid:
         allow_invalid_attributes = allow_invalid_markup = allow_invalid
     
     #Change comments to fake tags for easy parsing
-    for search, replace in COMMENTS_FIX:
-        data = search.sub(replace, data)
+    data = html.comment.comments2tags(data)
     
     if allow_invalid_markup:
         regex_attributes = {'name': 'a-zA-Z0-9', 'attribute_name': r'\-a-zA-Z0-9:', 'attribute_quote': '"?'}
     else:
         regex_attributes = {'name': 'a-z0-9'   , 'attribute_name': r'\-a-z0-9:'   , 'attribute_quote': '"' }
     
-    r_tag = re.compile(r'''<(?P<isEndTag>/)?(?P<name>[%(name)s]+)(?(isEndTag)|(?P<attributes>(\s([%(attribute_name)s]+)=(%(attribute_quote)s.*?%(attribute_quote)s)\s*)*)(?P<isSingleTag>/)?)>''' % regex_attributes)
-    r_att = re.compile(r'''(?P<name>[%(attribute_name)s]+)=%(attribute_quote)s(?P<value>.*?)%(attribute_quote)s''' % regex_attributes)
+    r_tag = re.compile(r'''<(?P<isEndTag>/)?(?P<name>[%(name)s]+)(?(isEndTag)|(?P<attributes>(\s+([%(attribute_name)s]+)\s?=\s?(%(attribute_quote)s.*?%(attribute_quote)s)\s*)*)(?P<isSingleTag>/)?)>''' % regex_attributes)
+    r_att = re.compile(r'''(?P<name>[%(attribute_name)s]+)\s?=\s?%(attribute_quote)s(?P<value>.*?)%(attribute_quote)s''' % regex_attributes)
     
     #Initialize tag tree stack with dummy element
     result = html.dummy()
     stack = [result]
     preserve_whitespace = 0
+    in_normal_comment = False
     
     data_length = len(data)
     while start < data_length:
@@ -48,6 +42,13 @@ def XHTMLParse(data, start=0, debug=False, allow_invalid=False, allow_invalid_at
         
         name = match.group('name')
         if allow_invalid_markup: name = name.lower()
+        
+        #If we are inside a <!--regular--> comment just add tags as text
+        if in_normal_comment and name != html.comment.__name__:
+            stack[-1] += data[match_start:match_end]
+            start = match_end
+            continue
+        
         if debug: print "\n%s\n  MATCHED: %s" % (data[match_start:match_end], name)
         
         if match.group('isEndTag'):
@@ -60,6 +61,10 @@ def XHTMLParse(data, start=0, debug=False, allow_invalid=False, allow_invalid_at
             #Update value of preserve_whitespace
             if not result.is_pretty:
                 preserve_whitespace -= 1
+            
+            #If we are popping out of a comment indicate such so tag parsing resumes
+            if type(result) == html.comment:
+                in_normal_comment = False
             
             #Check if the tag we are popping off the stack is matching tag
             if type(result).__name__ != name:
@@ -83,6 +88,10 @@ def XHTMLParse(data, start=0, debug=False, allow_invalid=False, allow_invalid_at
             else:
                 stack.append(new)
                 if debug: print "  PUSHED: %s (%s)" % (name, ','.join(type(x).__name__ for x in stack[:-1]))
+                
+                #If we are in a <!--regular--> comment indicate such so tag parsing ceases
+                if type(new) == html.comment and comment.ATTRIBUTE_CONDITION not in new:
+                    in_normal_comment = True
         
         #Move to after current tag
         start = match_end
@@ -94,9 +103,13 @@ def XHTMLParse(data, start=0, debug=False, allow_invalid=False, allow_invalid_at
     return result
 
 
-def PageParse(data, start=0, allow_invalid=False, debug=False):
+def PageParse(data, start=0, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False, debug=False):
     r_xml = re.compile(r'''<\?xml version="(?P<version>\d\.\d)"(?: encoding="(?P<encoding>[\-a-zA-Z0-9]+)")?\?>''')
-    r_doc = re.compile(r'''<!DOCTYPE\s+(?P<topelement>[a-zA-Z]+)(?:\s+(?P<availability>PUBLIC|SYSTEM)\s+"(?<registration>-|+)//(?P<organization>W3C|IETF)//(?<type>DTD) (?P<name>(?P<html>X?HTML) (?P<is_basic>Basic )?(?P<version>\d\.\d{1,2})(?: (?P<type>Strict|Transitional|Frameset|Final))?)//(?P<language>[A-Z]{2})"(?:\s+"(?P<url>http://www\.w3\.org/TR/(?P<id>[\-a-z0-9]+)/(?:DTD/)?(?P<file>[\-a-z0-9]+\.dtd))")?)?>''')
+    r_doc = re.compile(r'''<!DOCTYPE\s+(?P<topelement>[a-zA-Z]+)(?:\s+(?P<availability>PUBLIC|SYSTEM)\s+"(?P<registration>-|\+)//(?P<organization>W3C|IETF)//(?P<type>DTD) (?P<name>(?P<html>X?HTML) (?P<is_basic>Basic )?(?P<version>\d\.\d{1,2})(?: (?P<strength>Strict|Transitional|Frameset|Final))?)//(?P<language>[A-Z]{2})"(?:\s+"(?P<url>http://www\.w3\.org/TR/[\-a-z0-9]+/(?:DTD/)?[\-a-z0-9]+\.dtd)")?)?>''')
+    
+    def remove_spaces(data):
+        spaces = re.compile(r'\s+', re.S)
+        return spaces.sub(' ', data)
     
     page = xhtmlpage()
     
@@ -104,7 +117,7 @@ def PageParse(data, start=0, allow_invalid=False, debug=False):
     xml = r_xml.search(data, start)
     if xml:
         start, end = xml.span()
-        xml = data[start:end]
+        xml = remove_spaces(data[start:end])
         if debug: print "GOT XML: %s" % xml
         page.xml = xml
         start = end
@@ -113,13 +126,13 @@ def PageParse(data, start=0, allow_invalid=False, debug=False):
     doctype = r_doc.search(data, start)
     if doctype:
         start, end = doctype.span()
-        doctype = data[start:end]
+        doctype = remove_spaces(data[start:end])
         if debug: print "GOT DOCTYPE: %s" % doctype
         page.doctype = doctype
         start = end
     
     #Parse main XHTML data
-    page.html = XHTMLParse(data, allow_invalid=allow_invalid, debug=debug, start=start)
+    page.html = XHTMLParse(data, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup, debug=debug, start=start)
     
     return page
 
@@ -133,4 +146,4 @@ def parse(data):
 
 def test(url='http://docs.python.org/library/re.html'):
     import urllib
-    return XHTMLParse(urllib.urlopen(url).read(), debug=True, allow_invalid_attributes=True)
+    return PageParse(urllib.urlopen(url).read(), debug=True, allow_invalid=True)

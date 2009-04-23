@@ -1,4 +1,4 @@
-TAB = '\t'
+TAB = '  '#'\t'
 
 COMMON_CORE          = ['class', 'id', 'title']
 COMMON_INTERNATIONAL = ['xml:lang', 'dir']
@@ -6,23 +6,23 @@ COMMON_EVENT         = ['onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'on
 COMMON_STYLE         = ['style']
 COMMON               = COMMON_CORE + COMMON_INTERNATIONAL + COMMON_EVENT + COMMON_STYLE
 
-ATTRIBUTE_INLINE    = '__inline'
-ATTRIBUTE_INVALID   = '__invalid'
-ATTRIBUTE_CONDITION = 'condition'
-
 class html_tag(object):
-    is_single     = False
-    is_pretty     = True
+    ATTRIBUTE_INLINE    = '__inline'
+    ATTRIBUTE_INVALID   = '__invalid'
+    
+    is_single     = False #Tag does not require matching end tag (ex. <hr/>)
+    is_pretty     = True  #Text inside the tag should be left as is (ex. <pre>)
     do_inline     = False #Does not insert newlines on all children if True (recursive attribute)
     allow_invalid = False #Allows missing required attributes and invalid attributes if True
-    valid         = []
-    required      = []
-    default       = {}
+    valid         = []    #List of all attributes which are valid for a tag
+    required      = []    #List of all attributes which are required for a tag (must be in self.valid)
+    default       = {}    #Default values to be used for omitted required attributes
     
     def __init__(self, *args, **kwargs):
         self.attributes = {}
         self.children   = []
         
+        #Add child tags
         for i in args:
             self.add(i)
         
@@ -62,9 +62,11 @@ class html_tag(object):
     def add(self, *args):
         for obj in args:
             if isinstance(obj, dummy):
+                #Unbox dummy tags
                 self.add(*obj.children)
                 continue
             elif isinstance(obj, basestring) and len(self.children) > 0 and isinstance(self.children[-1], basestring):
+                #Join adjacent strings
                 self.children[-1] += obj
                 continue
             
@@ -181,27 +183,43 @@ class comment(html_tag):
     
     For IE's "if" statement comments:
       comment(p("Upgrade your browser."), condition='lt IE6')
+    
+    Downlevel conditional comments:
+      comment(p("You are using a ", em("downlevel"), " browser."), condition='false', downlevel='revealed')
+    
+    For more on conditional comments see MSDN:
+      http://msdn.microsoft.com/en-us/library/ms537512(VS.85).aspx
     '''
-    valid = [ATTRIBUTE_CONDITION]
+    ATTRIBUTE_CONDITION = 'condition'
+    ATTRIBUTE_DOWNLEVEL = 'downlevel' #Valid values are 'hidden' or 'revealed'
+    
+    valid    = [ATTRIBUTE_CONDITION, ATTRIBUTE_DOWNLEVEL]
+    required = [ATTRIBUTE_DOWNLEVEL]
+    default  = {ATTRIBUTE_DOWNLEVEL: 'hidden'}
     
     def __init__(self, *args, **kwargs):
         html_tag.__init__(*args, **kwargs)
         self.is_pretty = ATTRIBUTE_CONDITION not in self.attributes
     
     def render(self, indent=1, inline=False):
-        s = '<!--'
+        s = '<!'
+        if self.attributes[ATTRIBUTE_DOWNLEVEL] == 'hidden':
+            s+= '--'
         if ATTRIBUTE_CONDITION in self.attributes:
             s += '[if %s]>' % self.attributes[ATTRIBUTE_CONDITION]
         
         s += self.render_children(indent, inline)
         
+        #XXX: This might be able to be changed to if len(self.children) > 1 since adjacent strings should always be joined
         if any(isinstance(child, html_tag) for child in self.children):
             s += '\n'
-            s += TAB * (indent-1)
+            s += TAB * (indent - 1)
         
         if ATTRIBUTE_CONDITION in self.attributes:
             s += '<![endif]'
-        s += '-->'
+        if self.attributes[ATTRIBUTE_DOWNLEVEL] == 'hidden':
+            s += '--'
+        s += '>'
         return s
 
 class invalid(html_tag):

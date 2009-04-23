@@ -2,14 +2,10 @@ import html
 from htmlpage import xhtmlpage
 import re
 
-## TODO
-## -Cookies? Mmmm...
-## -Develop multiple html.py tag sets based on the different specifications
-## -Parse DOCTYPE and choose html.py set accordingly
-
 COMMENTS_FIX = (
     (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S), r'<comment condition="\1">\2</comment>'),
     (re.compile(r'<!--(.*?)-->', re.S)                        , r'<comment>\1</comment>'),
+    (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif]>', re.S)     , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
 )
 
 def XHTMLParse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
@@ -99,8 +95,8 @@ def XHTMLParse(data, start=0, debug=False, allow_invalid=False, allow_invalid_at
 
 
 def PageParse(data, start=0, allow_invalid=False, debug=False):
-    r_xml = re.compile(r'''<\?xml ([a-z]="\w+")+\?>''')
-    r_doc = re.compile(r'''<!DOCTYPE\s+(:HTML|html)\s+PUBLIC\s+"[^"]+"\s+"[^"]+">''')
+    r_xml = re.compile(r'''<\?xml version="(?P<version>\d\.\d)"(?: encoding="(?P<encoding>[\-a-zA-Z0-9]+)")?\?>''')
+    r_doc = re.compile(r'''<!DOCTYPE\s+(?P<topelement>[a-zA-Z]+)(?:\s+(?P<availability>PUBLIC|SYSTEM)\s+"(?<registration>-|+)//(?P<organization>W3C|IETF)//(?<type>DTD) (?P<name>(?P<html>X?HTML) (?P<is_basic>Basic )?(?P<version>\d\.\d{1,2})(?: (?P<type>Strict|Transitional|Frameset|Final))?)//(?P<language>[A-Z]{2})"(?:\s+"(?P<url>http://www\.w3\.org/TR/(?P<id>[\-a-z0-9]+)/(?:DTD/)?(?P<file>[\-a-z0-9]+\.dtd))")?)?>''')
     
     page = xhtmlpage()
     

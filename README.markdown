@@ -4,7 +4,7 @@ About
 This allows you to tightly integrate your XHTML generation with your backend
 without the need of using an intermediate templating language.
 
-`pyy` also provides you with two helper classes: `htmlparser` and `htmlpage`.
+`pyy` also provides you with two helper classes: `htmlpage` and `htmlparser`.
 
 `htmlpage` allows for the creation of all aspects needed to respond to an
 HTTP request. Your XHTML tree you created can be packaged with a DOCTYPE, XML
@@ -21,7 +21,7 @@ All these examples assume you have executed `from html import *` previously.
 
 Hello, pyy!
 -----------
-Constructing a "Hello, World!" style example is as easy as this:
+Constructing a "Hello, World!"-style example is as easy as this:
     >>> print html(body(h1("Hello, pyy!")))
     <html xmlns="http://www.w3.org/1999/xhtml">
       <body>
@@ -29,9 +29,12 @@ Constructing a "Hello, World!" style example is as easy as this:
       </body>
     </html>
 
+Notice how the class automatically adds the required `<html>` attribute `xmlns`.
+
 Complex Structures
 ------------------
-Through the use of the `+=` operator and the `.add()` method you can easily create more advanced structures.
+Through the use of the `+=` operator and the `.add()` method you can easily
+create more advanced structures.
 
 Create a simple list:
     >>> list = ul()
@@ -72,7 +75,7 @@ Comments can be created using objects too!
     >>> print comment(p("Stop using IE5!"), condition='lt IE6')
     <!--[if lt IE6]><p>Stop using IE5!</p><![endif]-->
 
-More usage examples to come. Check out the `examples` folder as well.
+More usage examples to come. Check out the files in the `examples` folder too.
 
 
 Developed By
@@ -80,7 +83,8 @@ Developed By
 * Tom Flanagan - <theknio@gmail.com>
 * Jake Wharton - <jakewharton@gmail.com>
 
-http://github.com/JakeWharton/pyy
+Git repository located at
+[github.com/JakeWharton/pyy](http://github.com/JakeWharton/pyy)
 
 
 License

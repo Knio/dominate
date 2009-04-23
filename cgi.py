@@ -1,4 +1,3 @@
-
 if __name__ == '__main__':
 
     import os
@@ -19,15 +18,14 @@ if __name__ == '__main__':
         pass
         
     except Exception, e:
+        import traceback
         print 'Content-Type: text/html'
         print
         print '<pre>'
         print 'An error occured while generating this page:'
         print
-        import traceback
         print traceback.format_exc()
         print '</pre>'
         
     f.close()
     sys.exit(0)
-    

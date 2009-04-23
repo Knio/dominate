@@ -1,4 +1,4 @@
-from html   import *
+from html import *
 
 ## TODO List
 ## -Don't auto create crap unless it is asked for
@@ -8,7 +8,7 @@ class cookie(object):
         self.name   = name
         self.value  = value
         self.perm   = perm
-        
+    
     def render(self):
         if self.perm: 
             return 'Set-Cookie: %s=%s; expires=Thu, 14-Jan-2021 01:25:36 GMT; path=/; domain=%s;' % (self.name, self.value, server)
@@ -33,36 +33,36 @@ class xhtmlpage(object):
         self.html.body = self.html.add(body())
         self._entry = self.html.body
         self.cookies = {}
-        
+    
     def add(self, obj):
         return self._entry.add(obj)
-        
+    
     def __add__(self, obj):
         self.add(obj)
         return self
-        
+    
     def set_cookie(self, name, value, perm=False):
         self.cookies[name] = cookie(name, value, perm)
-        
-    def render(self):
-        import web
-        
-        if not title in self.html.head:
-            self.html.head.add(title(self.title))
-        
-        user = web.env.get('HTTP_USER_AGENT', '')
-        if ('MSIE 6.0' in user) or ('MSIE 7.0' in user):
-            # IE doesn't know how to open application/xhtml+xml
-            print 'Content-Type: text/html'
-        else:
-            # google adsense doesnt work on strict xhtml
-            print 'Content-Type: text/html'
-            #print 'Content-Type: application/xhtml+xml'
-        
-        print 'Cache-Control: no-cache'
-        
-        print '\n'.join(cookie.render() for cookie in self.cookies.values())
-        print
+    
+    def render(self, just_html=False):
+        if not just_html:
+            import web
+            
+            if not title in self.html.head:
+                self.html.head.add(title(self.title))
+            
+            if is_internetexplorer:
+                # IE doesn't know how to open application/xhtml+xml
+                print 'Content-Type: text/html'
+            else:
+                # google adsense doesnt work on strict xhtml
+                print 'Content-Type: text/html'
+                #print 'Content-Type: application/xhtml+xml'
+            
+            print 'Cache-Control: no-cache'
+            
+            print '\n'.join(cookie.render() for cookie in self.cookies.values())
+            print
         
         print self.xml
         print self.doctype

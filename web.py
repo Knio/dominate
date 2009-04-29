@@ -124,7 +124,7 @@ infop = '/'.join(info)
 # browser information
 user_agent = env.get('HTTP_USER_AGENT', '')
 
-is_internetexplorer5 = 'MSIE 5.'  in evn.get('HTTP_USER_AGENT', '')
+is_internetexplorer5 = 'MSIE 5.'  in env.get('HTTP_USER_AGENT', '')
 is_internetexplorer6 = 'MSIE 6.0' in env.get('HTTP_USER_AGENT', '')
 is_internetexplorer7 = 'MSIE 7.0' in env.get('HTTP_USER_AGENT', '')
 is_internetexplorer8 = 'MSIE 8.0' in env.get('HTTP_USER_AGENT', '')

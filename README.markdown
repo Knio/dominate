@@ -84,7 +84,7 @@ Developed By
 * Jake Wharton - <jakewharton@gmail.com>
 
 Git repository located at
-[github.com/JakeWharton/pyy](http://github.com/JakeWharton/pyy)
+[github.com/Knio/pyy](http://github.com/Knio/pyy)
 
 
 License

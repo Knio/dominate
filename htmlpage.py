@@ -48,7 +48,7 @@ class xhtmlpage(object):
             if not title in self.html.head:
                 self.html.head.add(title(self.title))
             
-            if is_internetexplorer:
+            if web.is_internetexplorer:
                 # IE doesn't know how to open application/xhtml+xml
                 print 'Content-Type: text/html'
             else:
@@ -62,7 +62,7 @@ class xhtmlpage(object):
             print
         
         #Don't print XML declaration if IE so DOCTYPE is first
-        if not just_html and not is_internetexplorer:
+        if not just_html and not web.is_internetexplorer:
             print self.xml
         print self.doctype
         print

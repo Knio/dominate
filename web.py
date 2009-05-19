@@ -139,7 +139,7 @@ is_chrome = ('Chrome' in env.get('HTTP_USER_AGENT', ''))
 is_safari = 'AppleWebKit' in env.get('HTTP_USER_AGENT', '') and not is_chrome
 is_safari2 = is_safari and not 'Version' in env.get('HTTP_USER_AGENT', '')
 is_safari3 = is_safari and     'Version' in env.get('HTTP_USER_AGENT', '')
-is_safarimobile = is_safari and 'iPhone' in evn.get('HTTP_USER_AGENT', '')
+is_safarimobile = is_safari and 'iPhone' in env.get('HTTP_USER_AGENT', '')
 
 is_firefoxmobile = 'Fennec' in env.get('HTTP_USER_AGENT', '')
 

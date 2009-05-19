@@ -1,3 +1,7 @@
+# cgi.py - pyy GCI gateway
+#
+# Edit this file very carefully, a bug will crash your site.
+
 if __name__ == '__main__':
 
     import os

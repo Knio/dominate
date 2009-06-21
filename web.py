@@ -73,20 +73,19 @@ def parse_query(string):
     for i in string:
         array = False
         try:
-            key, value = i.split('=', 1)
+            key, value = map(unquote_plus, i.split('=', 1))
             if key.endswith('[]'):
                 key = key[:-2]
                 array = True
         except ValueError:
-            key, value = i, ''
-        key = unquote_plus(key)
+            key, value = unquote_plus(i), ''
         if array:
             if key in d:
                 d[key].append(value)
             else:
                 d[key] = [value]
         else:
-            d[key] = unquote_plus(value)
+            d[key] = value
     return d
 
 def get_post(data):

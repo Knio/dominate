@@ -71,11 +71,22 @@ def parse_query(string):
     d = {}
     string = string.split('&')
     for i in string:
+        array = False
         try:
             key, value = i.split('=', 1)
+            if key.endswith('[]'):
+                key = key[:-2]
+                array = True
         except ValueError:
             key, value = i, ''
-        d[ unquote_plus(key)] = unquote_plus(value)
+        key = unquote_plus(key)
+        if array:
+            if key in d:
+                d[key].append(value)
+            else:
+                d[key] = [value]
+        else:
+            d[key] = unquote_plus(value)
     return d
 
 def get_post(data):

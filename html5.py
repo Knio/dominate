@@ -6,7 +6,7 @@ COMMON = COMMON_MAIN + COMMON_EVENTS
 
 #Root element
 class html(html_tag):
-    attributes = COMMON + 'manifest'
+    attributes = COMMON + ['manifest']
 
 #Document metadata
 class head(html_tag): valid = COMMON

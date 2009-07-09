@@ -1,1 +1,1 @@
-__all__ = ['cgi', 'html', 'htmlpage', 'htmlparser', 'web']
+__all__ = ['cgi', 'xhtml11', 'htmlpage', 'htmlparser', 'web']

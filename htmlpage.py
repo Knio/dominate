@@ -1,5 +1,5 @@
-from html import *
-from web  import *
+from xhtml11 import *
+from web     import *
 
 class cookie(object):
     def __init__(self, name, value, perm=False):

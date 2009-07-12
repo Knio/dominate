@@ -4,29 +4,29 @@ COMMON_CORE = ['class', 'id', 'title']
 COMMON_I18N = ['xml:lang', 'dir']
 COMMON_EVENT = ['onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'onmouseover', 'onmousemove', 'onmouseout', 'onkeypress', 'onkeydown', 'onkeyup']
 COMMON_STYLE = ['style']
-COMMON       = COMMON_CORE + COMMON_INTERNATIONAL + COMMON_EVENT + COMMON_STYLE
+COMMON       = COMMON_CORE + COMMON_I18N + COMMON_EVENT + COMMON_STYLE
 
 #Structure & Header
 class base (single):
     valid    = ['href']
     required = ['href']
 class body (html_tag): valid = ['onload', 'onunload'] + COMMON
-class head (html_tag): valid = ['profile'] + COMMON_INTERNATIONAL
+class head (html_tag): valid = ['profile'] + COMMON_I18N
 class html (html_tag):
-    valid    = ['xmlns', 'xml:lang', 'xmlns:xsi', 'xsi:schemaLocation', 'version'] + COMMON_INTERNATIONAL
+    valid    = ['xmlns', 'xml:lang', 'xmlns:xsi', 'xsi:schemaLocation', 'version'] + COMMON_I18N
     required = ['xmlns']
     default  = {'xmlns': 'http://www.w3.org/1999/xhtml'}
 class link (single):   valid = ['href', 'media', 'type', 'charset', 'hreflang', 'rel', 'rev'] + COMMON
 class meta (single):
-    valid    = ['content', 'name', 'http-equiv', 'scheme'] + COMMON_INTERNATIONAL
+    valid    = ['content', 'name', 'http-equiv', 'scheme'] + COMMON_I18N
     required = ['name']
 class script(ugly):
     valid    = ['src', 'type', 'charset', 'defer', 'xml:space'] + COMMON
     required = ['type']
 class style(ugly):
-    valid    = ['media', 'title', 'type', 'xml:space'] + COMMON_INTERNATIONAL
+    valid    = ['media', 'title', 'type', 'xml:space'] + COMMON_I18N
     required = ['type']
-class title(html_tag): valid = COMMON_INTERNATIONAL
+class title(html_tag): valid = COMMON_I18N
 
 #Block elements
 class address   (html_tag): valid = COMMON

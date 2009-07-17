@@ -73,34 +73,47 @@ class html_tag(object):
     
     def tag(self, tag):
         if isinstance(tag, basestring): tag = globals()[tag]
-        return [i for i in self.children if type(i) is tag]
+        return [child for child in self.children if type(child) is tag]
     
-    def get(self, attr=None, value=None, type=object):
-        result = []
-        for i in self.children:
-            if not isinstance(i, html_tag): continue
-            if (not attr or i.attributes.get(attr, None) == value) and isinstance(i, type):
-                result.append(i)
-            result.extend(i.get(attr, value, type))
-        return result
+    def get(self, type=object, **kwargs):
+        '''
+        Recursively searches children for tags of a certain type with matching attributes.
+        '''
+        results = []
+        for child in filter(lambda child: isinstance(child, html_tag) and isinstance(child, type), self.children):
+            for attribute, value in kwargs.iteritems():
+                if attribute in self.attributes and self.attributes[attribute] != value:
+                    continue
+            results.append(child)
+            results.extend(child.get(type, **kwargs))
+        return results
     
     def __getattr__(self, attr):
         return self.__getitem__(attr)
     
     def __getitem__(self, attr):
         try: return self.attributes[attr]
-        except KeyError: raise AttributeError
+        except KeyError: raise AttributeError('Attribute "%s" does not exist.' % attr)
     
     def __setitem__(self, attr, value):
         self.attributes[attr] = value
     
     def __len__(self):
+        '''
+        Number of child elements
+        '''
         return len(self.children)
     
     def __iter__(self):
+        '''
+        Iterates over child elements
+        '''
         return self.children.__iter__()
     
     def __add__(self, obj):
+        '''
+        Allows binary addition of tags. Results are encased in a dummy().
+        '''
         if isinstance(self, dummy):
             return self.__iadd__(obj)
         elif isinstance(obj, dummy):
@@ -109,6 +122,9 @@ class html_tag(object):
             return dummy(self, obj)
     
     def __iadd__(self, obj):
+        '''
+        Reflexive binary addition simply adds tag as a child.
+        '''
         self.add(obj)
         return self
     
@@ -120,39 +136,39 @@ class html_tag(object):
             name = type(self).__name__[1:]
         else:
             name = type(self).__name__
-        s = '<' + name
+        rendered = '<' + name
         
         for attribute, value in self.attributes.items():
-            s += ' %s="%s"' % (attribute, str(value))
+            rendered += ' %s="%s"' % (attribute, str(value))
         
         if self.is_single and not self.children:
-            s += ' />'
+            rendered += ' />'
         else:
-            s += '>'
-            s += self.render_children(indent, inline)
+            rendered += '>'
+            rendered += self.render_children(indent, inline)
             
             # if there are no children, or only 1 child that is not an html element, do not add tabs and newlines
             no_children = self.is_pretty and self.children and (not (len(self.children) == 1 and not isinstance(self.children[0], html_tag)))
             
             if no_children and not inline:
-                s += '\n'
-                s += TAB * (indent - 1)
-            s += '</'
-            s += name
-            s += '>'
-        return s
+                rendered += '\n'
+                rendered += TAB * (indent - 1)
+            rendered += '</'
+            rendered += name
+            rendered += '>'
+        return rendered
         
     def render_children(self, indent=1, inline=False):
-        s = ''
-        for i in self.children:
-            if isinstance(i, html_tag):
+        children = ''
+        for child in self.children:
+            if isinstance(child, html_tag):
                 if not inline and self.is_pretty:
-                    s += '\n'
-                    s += TAB * indent
-                s += i.render(indent + 1, inline)
+                    children += '\n'
+                    children += TAB * indent
+                children += child.render(indent + 1, inline)
             else:
-                s += str(i)
-        return s
+                children += str(child)
+        return children
     
     def __str__(self):
         return self.render()
@@ -161,10 +177,10 @@ class html_tag(object):
 ######################## Html_tag-based Utility Classes ########################
 ################################################################################
 
-class single (html_tag): is_single = True
-class ugly   (html_tag): is_pretty = False
+class single(html_tag): is_single = True
+class ugly  (html_tag): is_pretty = False
 
-class dummy  (html_tag):
+class dummy(html_tag):
     '''
     Container for building adjacent tags without a parent. Automatically unboxed
     by add() but sometimes still might be rendered.
@@ -210,80 +226,74 @@ class comment(html_tag):
         has_condition = comment.ATTRIBUTE_CONDITION in self.attributes
         is_revealed = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
         
-        s = '<!'
+        rendered = '<!'
         if not is_revealed:
-            s+= '--'
+            rendered += '--'
         if has_condition:
-            s += '[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION]
+            rendered += '[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION]
         
-        s += self.render_children(indent, inline)
+        rendered += self.render_children(indent, inline)
         
         #XXX: This might be able to be changed to if len(self.children) > 1 since adjacent strings should always be joined
         if any(isinstance(child, html_tag) for child in self.children):
-            s += '\n'
-            s += TAB * (indent - 1)
+            rendered += '\n'
+            rendered += TAB * (indent - 1)
         
         if has_condition:
-            s += '<![endif]'
+            rendered += '<![endif]'
         if not is_revealed:
-            s += '--'
-        s += '>'
-        return s
+            rendered += '--'
+        rendered += '>'
+        return rendered
     
     @staticmethod
     def comments2tags(data):
+        '''
+        Changes <!--comments--> to <comment>tags</comment> for easy parsing.
+        '''
         for search, replace in comment.REPLACE:
             data = search.sub(replace, data)
         return data
-
-class invalid(html_tag):
-    def render(self, indent=1, inline=False):
-        #XXX: This might affect rendering
-        #import warnings
-        #warnings.warn("Using invalid tag: %s" % type(self).__name__)
-        return html_tag.render(self, indent, inline)
-
-################################################################################
-################## Utilities for easily manipulating HTML ######################
-################################################################################
 
 class include(html_tag):
     def __init__(self, f):
         fl = file(f, 'rb')
         self.data = fl.read()
         fl.close()
-        
+    
     def render(self, n=1, inline=False):
         return self.data
-        
-def pread(cmd, data='', mode='t'):
-    import os
-    fin, fout = os.popen4(cmd, mode)
-    fin.write(data)
-    fin.close()
-    return fout.read()
-        
+
 class pipe(html_tag):
     def __init__(self, cmd, data=''):
-        self.data = pread(cmd, data)
-        
+        self.data = self.pread(cmd, data)
+    
+    def pread(cmd, data='', mode='t'):
+        import os
+        fin, fout = os.popen4(cmd, mode)
+        fin.write(data)
+        fin.close()
+        return fout.read()
+    
     def render(self, indent=1, inline=False):
         return self.data
 
-def _escape(data, quote=False): # stoled from std lib cgi 
-    '''Replace special characters "&", "<" and ">" to HTML-safe sequences.
-    If the optional flag quote is true, the quotation mark character (")
-    is also translated.'''
-    data = data.replace("&", "&amp;") # Must be done first!
-    data = data.replace("<", "&lt;")
-    data = data.replace(">", "&gt;")
-    if quote:
-        data = data.replace('"', "&quot;")
-    return data
-
 class escape(html_tag):
+    def escape(data, quote=False): # stoled from std lib cgi 
+        '''
+        Replace special characters "&", "<" and ">" to HTML-safe sequences.
+        If the optional flag quote is true, the quotation mark character (")
+        is also translated.
+        '''
+        data = data.replace("&", "&amp;") # Must be done first!
+        data = data.replace("<", "&lt;")
+        data = data.replace(">", "&gt;")
+        if quote:
+            data = data.replace('"', "&quot;")
+        return data
+    
     def render(self, indent=1, inline=False):
-        return _escape(html_tag.render_children(self, indent, inline))
+        return self.escape(html_tag.render_children(self, indent, inline))
 
 _unescape = {'quot' :34,
              'amp'  :38,
@@ -319,6 +329,9 @@ def unescape(data):
     return ''.join(result)
     
 class lazy(html_tag):
+    '''
+    Delays function execution until render
+    '''
     def __init__(self, func, *args, **kwargs):
         self.func = func
         self.args = args
@@ -329,6 +342,7 @@ class lazy(html_tag):
 
 ################################################################################
 ################################################################################
+
 class cookie(object):
     def __init__(self, name, value, perm=False):
         self.name   = name

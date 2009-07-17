@@ -1,4 +1,4 @@
-from html import html_tag, single, ugly
+from html import html_tag, single, ugly, basepage
 
 COMMON_CORE = ['class', 'id', 'title']
 COMMON_I18N = ['xml:lang', 'dir']
@@ -130,9 +130,9 @@ class rtc(html_tag): valid = COMMON
 
 ###############################################################################
 
-class htmlpage(html.htmlpage):
+class htmlpage(basepage):
     def __init__(self, title='XHTML1.1 Page'):
-        html.htmlpage.__init__(self, title)
+        basepage.__init__(self, title)
         
         self.html = html()
         self.html.head = self.html.add(head())
@@ -143,7 +143,6 @@ class htmlpage(html.htmlpage):
             print 'Content-Type: text/html'
             print 'Cache-Control: no-cache'
             print '\n'.join(cookie.render() for cookie in self.cookies.values())
-            print
             
             import web
             if not web.is_internetexplorer:

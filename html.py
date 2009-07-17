@@ -342,7 +342,7 @@ class cookie(object):
             return 'Set-Cookie: %s=%s; path=/; domain=%s;' % (self.name, self.value, server)
 
 
-class htmlpage(object):
+class basepage(object):
     def __init__(self, title='HTML Page'):
         self.title = title
         self.cookies = {}

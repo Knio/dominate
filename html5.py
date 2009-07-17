@@ -1,4 +1,4 @@
-from html import html_tag, ugly, single
+from html import html_tag, ugly, single, basepage
 
 COMMON_MAIN   = ['accesskey', 'class', 'contenteditable', 'contextmenu', 'dir', 'draggable', 'id', 'item', 'hidden', 'lang', 'itemprop', 'spellcheck', 'style', 'subject', 'tabindex', 'title']
 COMMON_EVENTS = ['onabord', 'onblur', 'oncanplay', 'oncanplaythrough', 'onchange', 'onclick', 'oncontextmenu', 'ondblclick', 'ondrag', 'ondragend', 'ondragenter', 'ondragleavea', 'ondragover', 'ondragstart', 'ondrop', 'ondurationchange', 'onemptied', 'onended', 'onerror', 'onfocus', 'onformchange', 'onforminput', 'oninput', 'oninvalid', 'onkeydown', 'onkeypress', 'onkeyup', 'onload', 'onloadeddata', 'onloadedmetadata', 'onloadstart', 'onmousedown', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onpause', 'onplay', 'onplaying', 'onprogress', 'onratechange', 'onreadystatechange', 'onscroll', 'onseeked', 'onseeking', 'onselect', 'onshow', 'onstalled', 'onsubmit', 'onsuspend', 'ontimeupdate', 'onvolumechange', 'onwaiting']
@@ -185,9 +185,9 @@ class div(html_tag): valid = COMMON
 
 ###############################################################################
 
-class htmlpage(html.htmlpage):
+class htmlpage(basepage):
     def __init__(self, title='HTML5 Page'):
-        html.htmlpage.__init__(self, title)
+        basepage.__init__(self, title)
         
         self.html = html()
         self.html.head = self.html.add(head())
@@ -198,7 +198,6 @@ class htmlpage(html.htmlpage):
             print 'Content-Type: text/html'
             print 'Cache-Control: no-cache'
             print '\n'.join(cookie.render() for cookie in self.cookies.values())
-            print
             
         print '<!DOCTYPE html>'
         print

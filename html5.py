@@ -182,3 +182,28 @@ class menu(html_tag):
 #Miscellaneous elements
 class legend(html_tag): valid = COMMON
 class div(html_tag): valid = COMMON
+
+###############################################################################
+
+class htmlpage(html.htmlpage):
+    def __init__(self, title='HTML5 Page'):
+        html.htmlpage.__init__(self, title)
+        
+        self.html = html()
+        self.html.head = self.html.add(head())
+        self.html.body = self.html.add(body())
+    
+    def render(self, just_html=False):
+        if not just_html:
+            print 'Content-Type: text/html'
+            print 'Cache-Control: no-cache'
+            print '\n'.join(cookie.render() for cookie in self.cookies.values())
+            print
+            
+        print '<!DOCTYPE html>'
+        print
+        
+        if not title in self.html.head:
+            self.html.head.add(title(self.title))
+        
+        print self.html

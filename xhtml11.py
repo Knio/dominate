@@ -127,3 +127,32 @@ class rbc(html_tag): valid = COMMON
 class rp (html_tag): valid = COMMON
 class rt (html_tag): valid = ['rbspan'] + COMMON
 class rtc(html_tag): valid = COMMON
+
+###############################################################################
+
+class htmlpage(html.htmlpage):
+    def __init__(self, title='XHTML1.1 Page'):
+        html.htmlpage.__init__(self, title)
+        
+        self.html = html()
+        self.html.head = self.html.add(head())
+        self.html.body = self.html.add(body())
+    
+    def render(self, just_html=False):
+        if not just_html:
+            print 'Content-Type: text/html'
+            print 'Cache-Control: no-cache'
+            print '\n'.join(cookie.render() for cookie in self.cookies.values())
+            print
+            
+            import web
+            if not web.is_internetexplorer:
+                print '<?xml version="1.0" encoding="utf-8"?>'
+            
+        print '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'
+        print
+        
+        if not title in self.html.head:
+            self.html.head.add(title(self.title))
+        
+        print self.html

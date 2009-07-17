@@ -324,3 +324,39 @@ class lazy(html_tag):
         
     def render(self, indent=1, inline=False):
         return self.func(*self.args, **self.kwargs)
+
+################################################################################
+################################################################################
+class cookie(object):
+    def __init__(self, name, value, perm=False):
+        self.name   = name
+        self.value  = value
+        self.perm   = perm
+    
+    def render(self):
+        import web
+        server = web.server
+        if self.perm: 
+            return 'Set-Cookie: %s=%s; expires=Thu, 14-Jan-2021 01:25:36 GMT; path=/; domain=%s;' % (self.name, self.value, server)
+        else:
+            return 'Set-Cookie: %s=%s; path=/; domain=%s;' % (self.name, self.value, server)
+
+
+class htmlpage(object):
+    def __init__(self, title='HTML Page'):
+        self.title = title
+        self.cookies = {}
+    
+    def set_cookie(self, name, value, perm=False):
+        self.cookies[name] = cookie(name, value, perm)
+    
+    def render(self, just_html=False):
+        if not just_html:
+            print 'Content-Type: text/html'
+            print 'Cache-Control: no-cache'
+            print '\n'.join(cookie.render() for cookie in self.cookies.values())
+            print
+        print ''
+    
+    def __str__(self):
+        return self.render()

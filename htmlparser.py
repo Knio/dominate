@@ -1,8 +1,8 @@
-import html
-from htmlpage import xhtmlpage
 import re
+import html, xhtml11, html5
+from htmlpage import xhtmlpage
 
-def XHTMLParse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
+def XHTMLParse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
     if allow_invalid:
         allow_invalid_attributes = allow_invalid_markup = allow_invalid
     
@@ -74,7 +74,7 @@ def XHTMLParse(data, start=0, debug=False, allow_invalid=False, allow_invalid_at
             kwargs = dict(r_att.findall(match.group('attributes') or ''))
             
             #Create new object and push onto the stack
-            new = getattr(html, name)(__invalid=allow_invalid_attributes, **kwargs)
+            new = getattr(spec, name)(__invalid=allow_invalid_attributes, **kwargs)
             stack[-1] += new
             
             #Update value of preserve_whitespace
@@ -119,7 +119,6 @@ def PageParse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
         start, end = xml.span()
         xml = remove_spaces(data[start:end])
         if debug: print "GOT XML: %s" % xml
-        page.xml = xml
         start = end
     
     #Locate possible DOCTYPE declaration and add it to page
@@ -128,8 +127,11 @@ def PageParse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
         start, end = doctype.span()
         doctype = remove_spaces(data[start:end])
         if debug: print "GOT DOCTYPE: %s" % doctype
-        page.doctype = doctype
         start = end
+    
+    #Determine which spec to use
+    #Create spec's htmlpage
+    #Add doctype and xml to it
     
     #Parse main XHTML data
     page.html = XHTMLParse(data, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup, debug=debug, start=start)
@@ -141,7 +143,7 @@ def parse(data):
     '''
     DEPRICATED: Use XHTMLParse
     '''
-    return XHTMLParse(data, True)
+    return XHTMLParse(data, allow_invalid=True)
 
 
 def test(url='http://docs.python.org/library/re.html'):

@@ -58,16 +58,18 @@ class html_tag(object):
             if isinstance(obj, dummy):
                 #Unbox dummy tags
                 self.add(*obj.children)
-                continue
             elif isinstance(obj, basestring) and len(self.children) > 0 and isinstance(self.children[-1], basestring):
                 #Join adjacent strings
                 self.children[-1] += obj
-                continue
-            
-            self.children.append(obj)
-            if isinstance(obj, html_tag):
-                obj.parent = self
-        return args[-1]
+            elif not isinstance(obj, html_tag) and hasattr(obj, '__iter__'):
+                #Add all items of an interable as long as they are not html tags
+                for subobj in obj:
+                    self.add(subobj)
+            else:
+                self.children.append(obj)
+                if isinstance(obj, html_tag):
+                    obj.parent = self
+        return args
     
     def tag(self, tag):
         if isinstance(tag, basestring): tag = globals()[tag]

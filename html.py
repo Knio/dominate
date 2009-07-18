@@ -65,10 +65,6 @@ class html_tag(object):
                     obj.parent = self
         return args
     
-    def tag(self, tag):
-        if isinstance(tag, basestring): tag = globals()[tag]
-        return [child for child in self.children if type(child) is tag]
-    
     def get(self, type=object, **kwargs):
         '''
         Recursively searches children for tags of a certain type with matching attributes.

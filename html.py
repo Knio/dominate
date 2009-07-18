@@ -90,9 +90,11 @@ class html_tag(object):
         '''
         results = self.get(id=id)
         if len(results) > 1:
-            raise AttributeError('Multiple tags with id "%s" found.' % id)
-        else:
+            raise ValueError('Multiple tags with id "%s" found.' % id)
+        elif results:
             return results[0]
+        else:
+            return None
     
     def getElementsByTagName(self, name):
         '''
@@ -104,11 +106,17 @@ class html_tag(object):
             return None
     
     def __getitem__(self, attr):
+        '''
+        Returns the stored value of the specified attribute (if it exists).
+        '''
         try: return self.attributes[attr]
         except KeyError: raise AttributeError('Attribute "%s" does not exist.' % attr)
     __getattr__ = __getitem__
     
     def __setitem__(self, attr, value):
+        '''
+        Add or update the value of an attribute.
+        '''
         self.attributes[attr] = value
     
     def __len__(self):

@@ -1,8 +1,7 @@
 import re
 import html, xhtml11, html5
-from htmlpage import xhtmlpage
 
-def XHTMLParse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
+def parse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
     if allow_invalid:
         allow_invalid_attributes = allow_invalid_markup = allow_invalid
     
@@ -18,7 +17,7 @@ def XHTMLParse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, al
     r_att = re.compile(r'''(?P<name>[%(attribute_name)s]+)\s?=\s?%(attribute_quote)s(?P<value>.*?)%(attribute_quote)s''' % regex_attributes)
     
     #Initialize tag tree stack with dummy element
-    result = html.dummy()
+    result = []
     stack = [result]
     preserve_whitespace = 0
     in_normal_comment = False
@@ -37,7 +36,12 @@ def XHTMLParse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, al
             if len(text.strip()) > 0:
                 if '\n' in text and not preserve_whitespace:
                     text = text.strip()
-                stack[-1] += text
+                
+                if isinstance(stack[-1], html.html_tag):
+                    stack[-1] += text
+                else:
+                    stack[-1].append(text)
+                
                 if debug: print "  ADDED TEXT: %s" % text
         
         name = match.group('name')
@@ -45,7 +49,10 @@ def XHTMLParse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, al
         
         #If we are inside a <!--regular--> comment just add tags as text
         if in_normal_comment and name != html.comment.__name__:
-            stack[-1] += data[match_start:match_end]
+            if isinstance(stack[-1], html.html_tag):
+                stack[-1] += data[match_start:match_end]
+            else:
+                stack[-1].append(data[match_start:match_end])
             start = match_end
             continue
         
@@ -75,7 +82,10 @@ def XHTMLParse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, al
             
             #Create new object and push onto the stack
             new = getattr(spec, name)(__invalid=allow_invalid_attributes, **kwargs)
-            stack[-1] += new
+            if isinstance(stack[-1], html.html_tag):
+                stack[-1] += new
+            else:
+                stack[-1].append(new)
             
             #Update value of preserve_whitespace
             if not new.is_pretty:
@@ -96,22 +106,20 @@ def XHTMLParse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, al
         #Move to after current tag
         start = match_end
     
-    #If their were adjacent top-level tags return them in a dummy tag
-    if len(stack[-1]) > 1:
-        result = stack.pop()
-    
-    return result
+    #If their were adjacent top-level tags return highest level tag
+    if isinstance(stack[-1], list):
+        return stack[-1]
+    else:
+        return result
 
 
-def PageParse(data, start=0, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False, debug=False):
+def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False, debug=False):
     r_xml = re.compile(r'''<\?xml version="(?P<version>\d\.\d)"(?: encoding="(?P<encoding>[\-a-zA-Z0-9]+)")?\?>''')
     r_doc = re.compile(r'''<!DOCTYPE\s+(?P<topelement>[a-zA-Z]+)(?:\s+(?P<availability>PUBLIC|SYSTEM)\s+"(?P<registration>-|\+)//(?P<organization>W3C|IETF)//(?P<type>DTD) (?P<name>(?P<html>X?HTML) (?P<is_basic>Basic )?(?P<version>\d\.\d{1,2})(?: (?P<strength>Strict|Transitional|Frameset|Final))?)//(?P<language>[A-Z]{2})"(?:\s+"(?P<url>http://www\.w3\.org/TR/[\-a-z0-9]+/(?:DTD/)?[\-a-z0-9]+\.dtd)")?)?>''')
     
     def remove_spaces(data):
         spaces = re.compile(r'\s+', re.S)
         return spaces.sub(' ', data)
-    
-    page = xhtmlpage()
     
     #Locate possible XML declaration and add it to page
     xml = r_xml.search(data, start)
@@ -130,22 +138,14 @@ def PageParse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
         start = end
     
     #Determine which spec to use
+    spec = xhtml11 ##FIXME!
     #Create spec's htmlpage
+    page = spec.htmlpage()
     #Add doctype and xml to it
+    page.doctype = doctype
+    page.xml     = xml
     
     #Parse main XHTML data
     page.html = XHTMLParse(data, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup, debug=debug, start=start)
     
     return page
-
-
-def parse(data):
-    '''
-    DEPRICATED: Use XHTMLParse
-    '''
-    return XHTMLParse(data, allow_invalid=True)
-
-
-def test(url='http://docs.python.org/library/re.html'):
-    import urllib
-    return PageParse(urllib.urlopen(url).read(), debug=True, allow_invalid=True)

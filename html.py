@@ -62,25 +62,46 @@ class html_tag(object):
             else:
                 self.children.append(obj)
                 if isinstance(obj, html_tag):
-                    obj.parent = self
+                    #DOM API: add link to parent node
+                    obj.parentNode = self
         return args
     
-    def get(self, type=object, **kwargs):
+    def get(self, tag=object, **kwargs):
         '''
         Recursively searches children for tags of a certain type with matching attributes.
         '''
         #Stupid workaround since we can not use html_tag in the method declaration
-        if type == object: type = html_tag
+        if tag == object: tag = html_tag
         
         results = []
         for child in self.children:
-            if isinstance(child, type) and all(html_tag.clean_attribute(attribute) in child.attributes and child.attributes[html_tag.clean_attribute(attribute)] == value for attribute, value in kwargs.iteritems()):
-                #If the child is of correct type and has all attribute and values in kwargs add as a result
-                results.append(child)
+            if (isinstance(tag, basestring) and type(child).__name__ == tag) or (not isinstance(tag, basestring) and isinstance(child, tag)):
+                if all(html_tag.clean_attribute(attribute) in child.attributes and child.attributes[html_tag.clean_attribute(attribute)] == value for attribute, value in kwargs.iteritems()):
+                    #If the child is of correct type and has all attribute and values in kwargs add as a result
+                    results.append(child)
             if isinstance(child, html_tag):
                 #If the child is an html_tag extend the search down its children
-                results.extend(child.get(type, **kwargs))
+                results.extend(child.get(tag, **kwargs))
         return results
+    
+    def getElementById(self, id):
+        '''
+        DOM API: Returns single element with matching id value.
+        '''
+        results = self.get(id=id)
+        if len(results) > 1:
+            raise AttributeError('Multiple tags with id "%s" found.' % id)
+        else:
+            return results[0]
+    
+    def getElementsByTagName(self, name):
+        '''
+        DOM API: Returns all tags that match name.
+        '''
+        if isinstance(name, basestring):
+            return self.get(name)
+        else:
+            return None
     
     def __getitem__(self, attr):
         try: return self.attributes[attr]
@@ -89,7 +110,6 @@ class html_tag(object):
     
     def __setitem__(self, attr, value):
         self.attributes[attr] = value
-    
     
     def __len__(self):
         '''
@@ -103,11 +123,27 @@ class html_tag(object):
         '''
         return self.children.__iter__()
     
-    def append(self, *args):
-        self.children.append(*args)
+    def appendChild(self, obj):
+        '''
+        DOM API: Add an item to the end of the children list.
+        '''
+        self.children.append(obj)
+        return self
+    append = appendChild
     
-    def extend(self, *args):
-        self.children.extend(*args)
+    def extend(self, obj_list):
+        '''
+        Extend the children list by adding all the items in the given list.
+        '''
+        self.children.extend(obj_list)
+        return self
+    
+    def insert(self, position, obj):
+        '''
+        Insert an item into the children list at the given position.
+        '''
+        self.children.insert(position, obj)
+        return self
     
     def __iadd__(self, obj):
         '''
@@ -117,6 +153,10 @@ class html_tag(object):
         return self
     
     def render(self, indent=1, inline=False):
+        '''
+        Returns a well-formatted string representation of the tag and renderings
+        of all its child tags.
+        '''
         inline = self.do_inline or inline
         
         #Workaround for python keywords

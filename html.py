@@ -55,10 +55,7 @@ class html_tag(object):
         
     def add(self, *args):
         for obj in args:
-            if isinstance(obj, dummy):
-                #Unbox dummy tags
-                self.add(*obj.children)
-            elif isinstance(obj, basestring) and len(self.children) > 0 and isinstance(self.children[-1], basestring):
+            if isinstance(obj, basestring) and len(self.children) > 0 and isinstance(self.children[-1], basestring):
                 #Join adjacent strings
                 self.children[-1] += obj
             elif not isinstance(obj, html_tag) and hasattr(obj, '__iter__'):
@@ -112,14 +109,14 @@ class html_tag(object):
     
     def __add__(self, obj):
         '''
-        Allows binary addition of tags. Results are encased in a dummy().
+        Bllows binary addition of tags. Joins with lists which are rolled out in add().
         '''
-        if isinstance(self, dummy):
-            return self.__iadd__(obj)
-        elif isinstance(obj, dummy):
-            return obj.__iadd__(self)
+        if isinstance(self, list):
+            return self.append(obj)
+        elif isinstance(obj, list):
+            return obj.insert(0, self)
         else:
-            return dummy(self, obj)
+            return [self, obj]
     
     def __iadd__(self, obj):
         '''
@@ -179,14 +176,6 @@ class html_tag(object):
 
 class single(html_tag): is_single = True
 class ugly  (html_tag): is_pretty = False
-
-class dummy(html_tag):
-    '''
-    Container for building adjacent tags without a parent. Automatically unboxed
-    by add() but sometimes still might be rendered.
-    '''
-    def render(self, indent=1, inline=False):
-        return self.render_children(indent - 1, inline)[1:] #Removes our indent and newline
 
 class comment(html_tag):
     '''

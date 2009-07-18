@@ -37,10 +37,7 @@ def parse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, allow_i
                 if '\n' in text and not preserve_whitespace:
                     text = text.strip()
                 
-                if isinstance(stack[-1], html.html_tag):
-                    stack[-1] += text
-                else:
-                    stack[-1].append(text)
+                stack[-1].append(text)
                 
                 if debug: print "  ADDED TEXT: %s" % text
         
@@ -49,10 +46,7 @@ def parse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, allow_i
         
         #If we are inside a <!--regular--> comment just add tags as text
         if in_normal_comment and name != html.comment.__name__:
-            if isinstance(stack[-1], html.html_tag):
-                stack[-1] += data[match_start:match_end]
-            else:
-                stack[-1].append(data[match_start:match_end])
+            stack[-1].append(data[match_start:match_end])
             start = match_end
             continue
         
@@ -82,10 +76,7 @@ def parse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, allow_i
             
             #Create new object and push onto the stack
             new = getattr(spec, name)(__invalid=allow_invalid_attributes, **kwargs)
-            if isinstance(stack[-1], html.html_tag):
-                stack[-1] += new
-            else:
-                stack[-1].append(new)
+            stack[-1].append(new)
             
             #Update value of preserve_whitespace
             if not new.is_pretty:
@@ -106,8 +97,8 @@ def parse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, allow_i
         #Move to after current tag
         start = match_end
     
-    #If their were adjacent top-level tags return highest level tag
-    if isinstance(stack[-1], list):
+    #Return the top of the stack
+    if len(stack) > 1:
         return stack[-1]
     else:
         return result

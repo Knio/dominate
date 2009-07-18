@@ -5,7 +5,7 @@ class html_tag(object):
     ATTRIBUTE_INVALID = '__invalid' #Special attribute to allow invalid attributes on element
     
     is_single     = False #Tag does not require matching end tag (ex. <hr/>)
-    is_pretty     = True  #Text inside the tag should be left as is (ex. <pre>)
+    is_pretty     = True  #Text inside the tag should be left as-is (ex. <pre>)
     do_inline     = False #Does not insert newlines on all children if True (recursive attribute)
     allow_invalid = False #Allows missing required attributes and invalid attributes if True
     valid         = []    #List of all attributes which are valid for a tag
@@ -29,10 +29,7 @@ class html_tag(object):
             del kwargs[html_tag.ATTRIBUTE_INLINE]
         
         for attribute, value in kwargs.items():
-            #Workaround for python's reserved words
-            if attribute[0] == '_': attribute = attribute[1:]
-            #Workaround for inability to use colon in python keywords
-            attribute = attribute.replace('_', ':')
+            attribute = html_tag.clean_attribute(attribute)
             
             if attribute not in self.valid and not self.allow_invalid:
                 raise AttributeError("Invalid attribute '%s'." % attribute)
@@ -76,36 +73,45 @@ class html_tag(object):
         '''
         Recursively searches children for tags of a certain type with matching attributes.
         '''
+        #Stupid workaround since we can not use html_tag in the method declaration
+        if type == object: type = html_tag
+        
         results = []
-        for child in filter(lambda child: isinstance(child, html_tag) and isinstance(child, type), self.children):
-            for attribute, value in kwargs.iteritems():
-                if attribute in self.attributes and self.attributes[attribute] != value:
-                    continue
-            results.append(child)
-            results.extend(child.get(type, **kwargs))
+        for child in self.children:
+            if isinstance(child, type) and all(html_tag.clean_attribute(attribute) in child.attributes and child.attributes[html_tag.clean_attribute(attribute)] == value for attribute, value in kwargs.iteritems()):
+                #If the child is of correct type and has all attribute and values in kwargs add as a result
+                results.append(child)
+            if isinstance(child, html_tag):
+                #If the child is an html_tag extend the search down its children
+                results.extend(child.get(type, **kwargs))
         return results
-    
-    def __getattr__(self, attr):
-        return self.__getitem__(attr)
     
     def __getitem__(self, attr):
         try: return self.attributes[attr]
         except KeyError: raise AttributeError('Attribute "%s" does not exist.' % attr)
+    __getattr__ = __getitem__
     
     def __setitem__(self, attr, value):
         self.attributes[attr] = value
     
+    
     def __len__(self):
         '''
-        Number of child elements
+        Number of child elements.
         '''
         return len(self.children)
     
     def __iter__(self):
         '''
-        Iterates over child elements
+        Iterates over child elements.
         '''
         return self.children.__iter__()
+    
+    def append(self, *args):
+        self.children.append(*args)
+    
+    def extend(self, *args):
+        self.children.extend(*args)
     
     def __iadd__(self, obj):
         '''
@@ -142,8 +148,12 @@ class html_tag(object):
             rendered += '</'
             rendered += name
             rendered += '>'
-        return rendered
         
+        return rendered
+    
+    #String and unicode representations are the same as render()
+    __str__ = __unicode__ = render
+    
     def render_children(self, indent=1, inline=False):
         children = ''
         for child in self.children:
@@ -156,8 +166,25 @@ class html_tag(object):
                 children += str(child)
         return children
     
-    def __str__(self):
-        return self.render()
+    def __repr__(self):
+        name = '%s.%s' % (self.__module__, type(self).__name__)
+        
+        attributes_len = len(self.attributes)
+        attributes = '%s attribute' % attributes_len
+        if attributes_len > 1: attributes += 's'
+        
+        children_len = len(self.children)
+        children = '%s child' % children_len
+        if children_len > 1: children += 'ren'
+        
+        return '<%s: %s, %s>' % (name, attributes, children)
+    
+    @staticmethod
+    def clean_attribute(attribute):
+        #Workaround for python's reserved words
+        if attribute[0] == '_': attribute = attribute[1:]
+        #Workaround for inability to use colon in python keywords
+        return attribute.replace('_', ':')
 
 ################################################################################
 ######################## Html_tag-based Utility Classes ########################
@@ -180,7 +207,7 @@ class comment(html_tag):
       >>> print comment(p("You are using a ", em("downlevel"), " browser."), condition='false', downlevel='revealed')
       <![if false]><p>You are using a <em>downlevel</em> browser.</p><![endif]>
     
-    For more on conditional comments see MSDN:
+    For more on conditional comments see:
       http://msdn.microsoft.com/en-us/library/ms537512(VS.85).aspx
     '''
     import re

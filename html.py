@@ -107,17 +107,6 @@ class html_tag(object):
         '''
         return self.children.__iter__()
     
-    def __add__(self, obj):
-        '''
-        Bllows binary addition of tags. Joins with lists which are rolled out in add().
-        '''
-        if isinstance(self, list):
-            return self.append(obj)
-        elif isinstance(obj, list):
-            return obj.insert(0, self)
-        else:
-            return [self, obj]
-    
     def __iadd__(self, obj):
         '''
         Reflexive binary addition simply adds tag as a child.

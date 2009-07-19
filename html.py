@@ -16,11 +16,11 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-TAB = '  '#'\t'
-
 class html_tag(object):
     ATTRIBUTE_INLINE  = '__inline'  #Special attribute to output all child elements on one line
     ATTRIBUTE_INVALID = '__invalid' #Special attribute to allow invalid attributes on element
+    
+    TAB = '  '#'\t'
     
     is_single     = False #Tag does not require matching end tag (ex. <hr/>)
     is_pretty     = True  #Text inside the tag should be left as-is (ex. <pre>)
@@ -206,7 +206,7 @@ class html_tag(object):
             
             if no_children and not inline:
                 rendered += '\n'
-                rendered += TAB * (indent - 1)
+                rendered += html_tag.TAB * (indent - 1)
             rendered += '</'
             rendered += name
             rendered += '>'
@@ -222,7 +222,7 @@ class html_tag(object):
             if isinstance(child, html_tag):
                 if not inline and self.is_pretty:
                     children += '\n'
-                    children += TAB * indent
+                    children += html_tag.TAB * indent
                 children += child.render(indent + 1, inline)
             else:
                 children += str(child)
@@ -304,7 +304,7 @@ class comment(html_tag):
         #XXX: This might be able to be changed to if len(self.children) > 1 since adjacent strings should always be joined
         if any(isinstance(child, html_tag) for child in self.children):
             rendered += '\n'
-            rendered += TAB * (indent - 1)
+            rendered += html_tag.TAB * (indent - 1)
         
         if has_condition:
             rendered += '<![endif]'

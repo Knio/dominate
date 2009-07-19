@@ -17,7 +17,7 @@ object tree.
 
 Usage
 =====
-All these examples assume you have executed `from html import *` previously.
+All these examples assume you have executed `from xhtml11 import *` previously.
 
 Hello, pyy!
 -----------
@@ -74,6 +74,16 @@ Comments can be created using objects too!
     <!--BEGIN HEADER-->
     >>> print comment(p("Stop using IE5!"), condition='lt IE6')
     <!--[if lt IE6]><p>Stop using IE5!</p><![endif]-->
+
+If you are using a database or other backend to fetch data, `pyy` supports
+iterables to help streamline your code:
+    >>> print ul(li(a(name, href=link), __inline=True) for name, link in menu_items)
+    <ul>
+      <li><a href="/home/">Home</a></li>
+      <li><a href="/about/">About</a></li>
+      <li><a href="/downloads/">Downloads</a></li>
+      <li><a href="/links/">Links</a></li>
+    </ul>
 
 More usage examples to come. Check out the files in the `examples` folder too.
 

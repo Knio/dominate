@@ -1,8 +1,8 @@
 About
 =====
-`pyy` is a python library for creating XHTML pages through the use of objects.
-This allows you to tightly integrate XHTML generation with your backend without
-the need of using an intermediate templating language.
+`pyy` is a python library for creating (X)HTML pages with the use of objects.
+This allows you to tightly integrate (X)HTML generation into your backend
+without the need of using an intermediate templating language.
 
 `pyy` also provides you with helper classes for generating and parsing (X)HTML
 documents.
@@ -35,7 +35,8 @@ Constructing a "Hello, World!"-style example is as easy as this:
       </body>
     </html>
 
-Notice how the class automatically adds the required `<html>` attribute `xmlns`.
+Notice how the class automatically adds the XHTML 1.1 required `<html>`
+attribute `xmlns`.
 
 Complex Structures
 ------------------
@@ -54,6 +55,16 @@ Create a simple list:
       <li>Item #3</li>
     </ul>
 
+If you are using a database or other backend to fetch data, `pyy` supports
+iterables to help streamline your code:
+    >>> print ul(li(a(name, href=link), __inline=True) for name, link in menu_items)
+    <ul>
+      <li><a href="/home/">Home</a></li>
+      <li><a href="/about/">About</a></li>
+      <li><a href="/downloads/">Downloads</a></li>
+      <li><a href="/links/">Links</a></li>
+    </ul>
+
 A simple document tree:
     >>> _html = html()
     >>> _body = _html.add(body())
@@ -69,6 +80,24 @@ A simple document tree:
       </body>
     </html>
 
+For clean code, the `.add()` method returns children in tuples. The above
+example can be cleaned up and expanded like this:
+    >>> _html = html()
+    >>> _head, _body = _html.add(head(title('Simple Document Tree')), body())
+    >>> names = ['header', 'content', 'footer']
+    >>> header, content, footer = _body.add(div(id=name) for name in names)
+    >>> print _html
+    <html xmlns="http://www.w3.org/1999/xhtml">
+      <head>
+        <title>Simple Document Tree</title>
+      </head>
+      <body>
+        <div id="header"></div>
+        <div id="content"></div>
+        <div id="footer"></div>
+      </body>
+    </html>
+
 You can modify the attributes of tags through a dictionary-like interface:
     >>> header = div()
     >>> header['id'] = 'header'
@@ -80,16 +109,6 @@ Comments can be created using objects too!
     <!--BEGIN HEADER-->
     >>> print comment(p("Stop using IE5!"), condition='lt IE6')
     <!--[if lt IE6]><p>Stop using IE5!</p><![endif]-->
-
-If you are using a database or other backend to fetch data, `pyy` supports
-iterables to help streamline your code:
-    >>> print ul(li(a(name, href=link), __inline=True) for name, link in menu_items)
-    <ul>
-      <li><a href="/home/">Home</a></li>
-      <li><a href="/about/">About</a></li>
-      <li><a href="/downloads/">Downloads</a></li>
-      <li><a href="/links/">Links</a></li>
-    </ul>
 
 More usage examples to come. Check out the files in the `examples` folder too.
 

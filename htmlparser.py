@@ -17,7 +17,7 @@ Public License along with pyy.  If not, see
 '''
 
 import re
-import html, xhtml11, html5
+import html, xhtml11, xhtml10strict, xhtml10frameset, html5, html4strict, html4frameset
 
 def parse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
     if allow_invalid:
@@ -134,7 +134,7 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
     xml = r_xml.search(data, start)
     if xml:
         start, end = xml.span()
-        xml = remove_spaces(data[start:end])
+        xml_text = remove_spaces(data[start:end])
         if debug: print "GOT XML: %s" % xml
         start = end
     
@@ -142,17 +142,60 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
     doctype = r_doc.search(data, start)
     if doctype:
         start, end = doctype.span()
-        doctype = remove_spaces(data[start:end])
+        doctype_text = remove_spaces(data[start:end])
         if debug: print "GOT DOCTYPE: %s" % doctype
         start = end
+        
+        #Determine which spec to use
+        if doctype.group('html') == 'XHTML':
+            #XHTML
+            version = doctype.group('version')
+            if version == '1.0':
+                #XHTML 1.0
+                strength = doctype.group('strength')
+                if strength == 'Strict':
+                    spec = xhtml10strict
+                elif strength == 'Frameset':
+                    spec = xhtml10frameset
+                elif strength == 'Transitional':
+                    raise ValueError('No class set for XHTML 1.0 Transitional.')
+                else:
+                    raise ValueError('Unknown XHTML 1.0 strength "%s".' % strength)
+            elif version == '1.1':
+                spec = xhtml11
+            else:
+                raise ValueError('Unknown XHTML version "%s".' % version)
+        elif doctype.group('html') == 'HTML':
+            #HTML
+            version = doctype.group('version')
+            if version == '4.01':
+                strength = doctype.group('strength')
+                if not strength or strength == 'Strict':
+                    spec = html4strict
+                elif strength == 'Frameset':
+                    spec = html4frameset
+                elif strength == 'Transitional':
+                    raise ValueError('No class set for HTML 4.01 Transitional')
+                else:
+                    raise ValueError('Unknown HTML 4.01 strength "%s".' % strength)
+            elif version == '3' or version == '2':
+                raise ValueError('No class set for HTML version %s.' % version)
+            else:
+                raise ValueError('Unknown HTML version "%s".' % version)
+        elif not doctype.group('html') and doctype.group('topelement') == 'html':
+            #HTML 5
+            spec = html5
+        else:
+            raise ValueError('Unknown doctype "%s".' % doctype_text)
     
-    #Determine which spec to use
-    spec = xhtml11 ##FIXME!
     #Create spec's htmlpage
     page = spec.htmlpage()
-    #Add doctype and xml to it
-    page.doctype = doctype
-    page.xml     = xml
+    
+    #Add DOCTYPE and xml declaration if found
+    if doctype:
+        page.doctype = doctype_text
+    if xml:
+        page.xml = xml_text
     
     #Parse main XHTML data
     page.html = XHTMLParse(data, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup, debug=debug, start=start)

@@ -21,15 +21,14 @@ Public License along with pyy.  If not, see
 import sys
 sys.path.append('..')
 
-import htmlpage
-from html import *
+from xhtml11 import *
 
-page = htmlpage.xhtmlpage()
+page = htmlpage()
 
-page.add(div('I ', strong('am'), ' valid XHTML 1.1'))
-page.add(div(a(img(src="http://www.w3.org/Icons/valid-xhtml11", 
-                   alt="Valid XHTML 1.1", height="31", width="88"),
-               href='http://validator.w3.org/check?uri=referer')))
-page.add(div(pre()))
+page.html.body += div('I ', strong('am'), ' valid XHTML 1.1')
+page.html.body += div(a(img(src='http://www.w3.org/Icons/valid-xhtml11',
+                            alt='Valid XHTML 1.1', height='31', width='88'),
+                        href='http://validator.w3.org/check?uri=referer'))
+page.html.body += pre('I am a pre.')
 
 page.render(True)

@@ -204,7 +204,7 @@ class div(html_tag): valid = COMMON
 ###############################################################################
 
 class htmlpage(basepage):
-    def __init__(self, title='HTML5 Page'):
+    def __init__(self, title='HTML 5 Page'):
         basepage.__init__(self, title)
         
         self.html = html()

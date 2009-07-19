@@ -18,8 +18,8 @@ Public License along with pyy.  If not, see
 
 from html import html_tag, single, ugly, basepage
 
-COMMON_CORE = ['class', 'id', 'title']
-COMMON_I18N = ['xml:lang', 'dir']
+COMMON_CORE  = ['class', 'id', 'title']
+COMMON_I18N  = ['xml:lang', 'dir']
 COMMON_EVENT = ['onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'onmouseover', 'onmousemove', 'onmouseout', 'onkeypress', 'onkeydown', 'onkeyup']
 COMMON_STYLE = ['style']
 COMMON       = COMMON_CORE + COMMON_I18N + COMMON_EVENT + COMMON_STYLE
@@ -149,7 +149,7 @@ class rtc(html_tag): valid = COMMON
 ###############################################################################
 
 class htmlpage(basepage):
-    def __init__(self, title='XHTML1.1 Page'):
+    def __init__(self, title='XHTML 1.1 Page'):
         basepage.__init__(self, title)
         
         self.html = html()

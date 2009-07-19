@@ -82,7 +82,11 @@ class html_tag(object):
                 if isinstance(obj, html_tag):
                     #DOM API: add link to parent node
                     obj.parentNode = self
-        return args
+        
+        if len(args) > 1:
+            return args
+        elif len(args) == 1:
+            return args[0]
     
     def get(self, tag=object, **kwargs):
         '''

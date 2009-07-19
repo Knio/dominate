@@ -1,23 +1,29 @@
 About
 =====
 `pyy` is a python library for creating XHTML pages through the use of objects.
-This allows you to tightly integrate your XHTML generation with your backend
-without the need of using an intermediate templating language.
+This allows you to tightly integrate XHTML generation with your backend without
+the need of using an intermediate templating language.
 
-`pyy` also provides you with two helper classes: `htmlpage` and `htmlparser`.
+`pyy` also provides you with helper classes for generating and parsing (X)HTML
+documents.
 
-`htmlpage` allows for the creation of all aspects needed to respond to an
-HTTP request. Your XHTML tree you created can be packaged with a DOCTYPE, XML
-declaration, and any cookies you wish to send. When rendered, this class will
-automatically format all of the contained information.
+Each specification includes an `htmlpage` class that aids in the creation of
+all aspects needed to respond to an HTTP request. The (X)HTML tree you created
+can be packaged with a DOCTYPE, XML declaration, and any cookies you wish to
+send. When rendered, this class will automatically format all of the contained
+information properly.
 
-`htmlparser` will take valid and mostly-valid XHTML input and return a pyy
-object tree.
+The `parser` class contains two methods: `parse` and `pageparse`. `parse` will
+take valid and mostly-valid (X)HTML input and return a tag tree. `pageparse`
+will take an entire document and return an `htmlpage` instance complete with
+the XML declaration and DOCTYPE (if present) and a tag tree using the (X)HTML
+version specified by the DOCTYPE.
 
 
 Usage
 =====
-All these examples assume you have executed `from xhtml11 import *` previously.
+All these examples assume you have imported the appropriate classes from one of
+the (X)HTML specification files (i.e. `from xhtml11 import *`).
 
 Hello, pyy!
 -----------

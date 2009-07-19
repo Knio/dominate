@@ -128,11 +128,6 @@ class s(html_tag): valid = COMMON
 class u(html_tag): valid = COMMON
 class hr(single): valid = COMMON
 
-class frameset(html_tag): valid = ['rows', 'cols', 'onload', 'onunload'] + COMMON_CORE
-class frame(single): valid = ['longdesc', 'name', 'src', 'frameborder', 'marginwidth', 'marginheight', 'noresize', 'scrolling'] + COMMON_CORE
-class noframes(html_tag): valid = COMMON
-class iframe(html_tag): valid = ['longdesc', 'name', 'src', 'frameborder', 'marginwidth', 'marginheight', 'scrolling', 'align', 'height', 'width'] + COMMON_CORE
-
 class form(html_tag):
     valid    = ['action', 'method', 'enctype', 'accept', 'name', 'onsubmit', 'onreset', 'accept-charset'] + COMMON
     required = ['action']

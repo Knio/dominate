@@ -326,6 +326,8 @@ class comment(html_tag):
             data = search.sub(replace, data)
         return data
 
+# TODO these utilities should be somewhere else.
+
 class include(html_tag):
     def __init__(self, f):
         fl = file(f, 'rb')
@@ -414,6 +416,8 @@ class lazy(html_tag):
 ################################################################################
 ################################################################################
 
+# TODO cookie class should be in a separate file
+
 class cookie(object):
     def __init__(self, name, value, perm=False):
         self.name   = name
@@ -429,21 +433,34 @@ class cookie(object):
             return 'Set-Cookie: %s=%s; path=/; domain=%s;' % (self.name, self.value, server)
 
 
+# TODO  this class needs to be refactored; it's subclasses are all reimplementing
+#       the same things in the same way.
+
 class basepage(object):
     def __init__(self, title='HTML Page'):
         self.title = title
         self.cookies = {}
+        self.headers = {}
     
     def set_cookie(self, name, value, perm=False):
         self.cookies[name] = cookie(name, value, perm)
     
+
+    def render_headers(self):
+        # TODO add cookies to headers here!
+        return '\n'.join("%s: %s" % (k,v) for k,v in self.headers.items())
+
+
     def render(self, just_html=False):
+        r = []
         if not just_html:
-            print 'Content-Type: text/html'
-            print 'Cache-Control: no-cache'
-            print '\n'.join(cookie.render() for cookie in self.cookies.values())
-            print
-        print ''
+            r.append(self.render_headers())
+            r.append('\n'.join(cookie.render() for cookie in self.cookies.values()))
+            r.append('\n')
+        
+        # XXX where is the content?
+        return ''.join(r)
     
     def __str__(self):
         return self.render()
+

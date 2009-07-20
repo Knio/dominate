@@ -24,11 +24,12 @@ sys.path.append('..')
 from xhtml11 import *
 
 page = htmlpage()
+page.html.body = page.html.add(body())
 
-page.html.body += div('I ', strong('am'), ' valid XHTML 1.1')
+page.html.body += div('I ', strong('am'), ' valid XHTML 1.1', __inline=True)
 page.html.body += div(a(img(src='http://www.w3.org/Icons/valid-xhtml11',
                             alt='Valid XHTML 1.1', height='31', width='88'),
                         href='http://validator.w3.org/check?uri=referer'))
 page.html.body += pre('I am a pre.')
 
-page.render(True)
+print page.render(True)

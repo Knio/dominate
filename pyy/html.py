@@ -438,29 +438,51 @@ class cookie(object):
 
 class basepage(object):
     def __init__(self, title='HTML Page'):
-        self.title = title
+        self.title   = title
+        self.html    = None
+        self.xml     = None
+        self.doctype = None
         self.cookies = {}
-        self.headers = {}
+        self.headers = {
+            'Content-Type' : 'text/html',
+            'Cache-Control': 'no-cache',
+        }
+    
+    def __iadd__(self, obj):
+        if self.html:
+            body = self.html.getElementsByTagName('body')
+            if body:
+                body[0] += obj
+                return
+            else:
+                raise ValueError('No body tag found.')
+        else:
+            raise ValueError('No html tag found.') #Likely not instantiated from a child class
     
     def set_cookie(self, name, value, perm=False):
         self.cookies[name] = cookie(name, value, perm)
     
-
     def render_headers(self):
         # TODO add cookies to headers here!
         return '\n'.join("%s: %s" % (k,v) for k,v in self.headers.items())
-
-
+    
     def render(self, just_html=False):
         r = []
         if not just_html:
             r.append(self.render_headers())
             r.append('\n'.join(cookie.render() for cookie in self.cookies.values()))
+            r.append('\n\n')
+        
+        if self.xml: #and not web.is_internetexplorer: #<--needs "import web"
+            r.append(self.xml)
             r.append('\n')
         
-        # XXX where is the content?
-        return ''.join(r)
+        if self.doctype:
+            r.append(self.doctype)
+            r.append('\n')
+        
+        r.append(self.html)
+        return ''.join(map(str, r))
     
     def __str__(self):
         return self.render()
-

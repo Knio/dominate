@@ -207,20 +207,5 @@ class htmlpage(basepage):
     def __init__(self, title='HTML 5 Page'):
         basepage.__init__(self, title)
         
-        self.html = html()
-        self.html.head = self.html.add(head())
-        self.html.body = self.html.add(body())
-    
-    def render(self, just_html=False):
-        if not just_html:
-            print 'Content-Type: text/html'
-            print 'Cache-Control: no-cache'
-            print '\n'.join(cookie.render() for cookie in self.cookies.values())
-            
-        print '<!DOCTYPE html>'
-        print
-        
-        if not title in self.html.head:
-            self.html.head.add(title(self.title))
-        
-        print self.html
+        self.html    = html()
+        self.doctype = '<!DOCTYPE html>'

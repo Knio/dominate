@@ -152,24 +152,15 @@ class htmlpage(basepage):
     def __init__(self, title='XHTML 1.1 Page'):
         basepage.__init__(self, title)
         
-        self.html = html()
-        self.html.head = self.html.add(head())
-        self.html.body = self.html.add(body())
+        self.xml     = '<?xml version="1.0" encoding="utf-8"?>'
+        self.doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'
+        self.html    = html()
+        self.headers['Content-Type'] = 'application/xml'
     
     def render(self, just_html=False):
         if not just_html:
-            print 'Content-Type: text/html'
-            print 'Cache-Control: no-cache'
-            print '\n'.join(cookie.render() for cookie in self.cookies.values())
-            
             import web
-            if not web.is_internetexplorer:
-                print '<?xml version="1.0" encoding="utf-8"?>'
+            if web.is_internetexplorer:
+                self.headers['Content-Type'] = 'text/html'
         
-        print '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'
-        print
-        
-        if not title in self.html.head:
-            self.html.head.add(title(self.title))
-        
-        print self.html
+        return basepage.render(self, just_html)

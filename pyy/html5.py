@@ -207,5 +207,6 @@ class htmlpage(basepage):
     def __init__(self, title='HTML 5 Page'):
         basepage.__init__(self, title)
         
-        self.html    = html()
         self.doctype = '<!DOCTYPE html>'
+        self.html    = html()
+        self.html.head, self.html.body = self.html.add(head(), body())

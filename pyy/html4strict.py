@@ -154,5 +154,6 @@ class htmlpage(basepage):
     def __init__(self, title='HTML 4.01 Strict Page'):
         basepage.__init__(self, title)
         
-        self.html    = html()
         self.doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'
+        self.html    = html()
+        self.html.head, self.html.body = self.html.add(head(), body())

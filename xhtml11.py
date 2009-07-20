@@ -87,11 +87,11 @@ class img     (single):
     valid    = ['alt', 'height', 'src', 'width', 'ismap', 'longdesc', 'usemap'] + COMMON
     required = ['alt', 'src']
     default  = {'alt': ''}
-class input   (single):   valid = ['alt', 'checked', 'maxlength', 'name', 'size', 'type', 'value', 'accept', 'accesskey', 'disabled', 'ismap', 'onblur', 'onchange', 'onfocus', 'onselect', 'readonly', 'src', 'tabindex', 'usemap'] + COMMON
+class _input  (single):   valid = ['alt', 'checked', 'maxlength', 'name', 'size', 'type', 'value', 'accept', 'accesskey', 'disabled', 'ismap', 'onblur', 'onchange', 'onfocus', 'onselect', 'readonly', 'src', 'tabindex', 'usemap'] + COMMON
 class kbd     (html_tag): valid = COMMON
 class label   (html_tag): valid = ['for', 'accesskey', 'onblur', 'onfocus'] + COMMON
 class _map    (html_tag): valid = COMMON
-class object  (html_tag): valid = ['classid', 'codebase', 'height', 'name', 'type', 'width', 'archive', 'codetype', 'data', 'declare', 'standby', 'tabindex', 'usemap'] + COMMON
+class _object (html_tag): valid = ['classid', 'codebase', 'height', 'name', 'type', 'width', 'archive', 'codetype', 'data', 'declare', 'standby', 'tabindex', 'usemap'] + COMMON
 class q       (html_tag): valid = ['cite'] + COMMON
 class ruby    (html_tag): valid = COMMON
 class samp    (html_tag): valid = COMMON

@@ -32,10 +32,10 @@ from html4strict import html, head, title, meta, body,
                         ul, ol, li, dl, dt, dd,
                         table, caption, thead, tbody, tfoot, colgroup, col, tr, td, th,
                         a, link, base,
-                        img, object, param, map, area,
+                        img, _object, param, _map, area,
                         style,
                         tt, i, b, big, small, strike, s, u, hr,
-                        form, input, button, select, optgroup, option, textarea, label, fieldset, legend,
+                        form, _input, button, select, optgroup, option, textarea, label, fieldset, legend,
                         script, noscript
 
 ###############################################################################

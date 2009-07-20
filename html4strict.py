@@ -102,11 +102,11 @@ class img(single):
     valid    = ['src', 'alt', 'longdesc', 'name', 'height', 'width', 'usemap', 'ismap'] + COMMON
     required = ['src', 'alt']
     default  = {'alt', ''}
-class object(html_tag): valid = ['declare', 'classid', 'codebase', 'data', 'type', 'codetype', 'archive', 'standby', 'height', 'width', 'usemap', 'name', 'tabindex'] + COMMON
+class _object(html_tag): valid = ['declare', 'classid', 'codebase', 'data', 'type', 'codetype', 'archive', 'standby', 'height', 'width', 'usemap', 'name', 'tabindex'] + COMMON
 class param(single):
     valid    = ['id', 'name', 'value', 'valuetype', 'type']
     required = ['name']
-class map(html_tag):
+class _map(html_tag):
     valid    = ['name'] + COMMON
     required = ['name']
 class area(single):
@@ -131,7 +131,7 @@ class hr(single): valid = COMMON
 class form(html_tag):
     valid    = ['action', 'method', 'enctype', 'accept', 'name', 'onsubmit', 'onreset', 'accept-charset'] + COMMON
     required = ['action']
-class input(single): valid = ['type', 'name', 'value', 'checked', 'disabled', 'readonly', 'size', 'maxlength', 'src', 'alt', 'usemap', 'ismap', 'tabindex', 'accesskey', 'onfocus', 'onblur', 'onselect', 'onchange', 'accept'] + COMMON
+class _input(single): valid = ['type', 'name', 'value', 'checked', 'disabled', 'readonly', 'size', 'maxlength', 'src', 'alt', 'usemap', 'ismap', 'tabindex', 'accesskey', 'onfocus', 'onblur', 'onselect', 'onchange', 'accept'] + COMMON
 class button(single): valid = ['name', 'value', 'type', 'disabled', 'tabindex', 'accesskey', 'onfocus', 'onblur'] + COMMON
 class select(html_tag): valid = ['name', 'size', 'multiple', 'disabled', 'tabindex', 'onfocus', 'onblur', 'onchange'] + COMMON
 class optgroup(html_tag): valid = ['disabled', 'label'] + COMMON

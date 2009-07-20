@@ -66,15 +66,3 @@ print '''
 <input type=submit>
 </form>
 '''
-
-raise SystemExit
-
-page = htmlpage.xhtmlpage()
-
-page.add(div('I /was/ valid XHTML 1.1'))
-page.add(div(a(img(src="http://www.w3.org/Icons/valid-xhtml11", 
-                   alt="Valid XHTML 1.1", height="31", width="88"),
-               href='http://validator.w3.org/check?uri=http%3A%2F%2Fstats.h4xn3t.zapto.org%3A8080%2Fbdmt%2Ftest.pyy')))
-page.add(div(pre()))
-
-page.render()

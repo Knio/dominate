@@ -101,7 +101,7 @@ class base(single):
 class img(single):
     valid    = ['src', 'alt', 'longdesc', 'name', 'height', 'width', 'usemap', 'ismap'] + COMMON
     required = ['src', 'alt']
-    default  = {'alt', ''}
+    default  = {'alt': ''}
 class _object(html_tag): valid = ['declare', 'classid', 'codebase', 'data', 'type', 'codetype', 'archive', 'standby', 'height', 'width', 'usemap', 'name', 'tabindex'] + COMMON
 class param(single):
     valid    = ['id', 'name', 'value', 'valuetype', 'type']

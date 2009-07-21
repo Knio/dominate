@@ -29,7 +29,8 @@ class cookie(object):
                 raise TypeError('invalid expiry time. implement me!')
         if self.duration:
             n = datetime.datetime.utcnow()
-            if isinstance(self.duration, float):
+            if isinstance(self.duration, float) or \
+               isinstance(self.duration, int):
                 n +=  datetime.timedelta(seconds=self.duration)
             else:
                 raise TypeError('invalid duration. implement me!')

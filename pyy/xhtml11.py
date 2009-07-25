@@ -70,7 +70,7 @@ class table     (html_tag): valid = ['border', 'cellpadding', 'cellspacing', 'su
 class ul        (html_tag): valid = COMMON
 
 #Inline elements
-class a       (html_tag): valid = ['href', 'accesskey', 'charset', 'choords', 'hreflang', 'onblur', 'onfocus', 'rel', 'rev', 'shape', 'tabindex', 'type'] + COMMON
+class a       (html_tag): valid = ['href', 'accesskey', 'charset', 'coords', 'hreflang', 'onblur', 'onfocus', 'rel', 'rev', 'shape', 'tabindex', 'type'] + COMMON
 class abbr    (html_tag): valid = COMMON
 class acronym (html_tag): valid = COMMON
 class b       (html_tag): valid = COMMON

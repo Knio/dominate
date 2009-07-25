@@ -43,11 +43,11 @@ if __name__ == '__main__':
         import traceback
         print 'Content-Type: text/html'
         print
-        print '<pre>'
+        print '<html><head><title>Error</title></head><body><pre>'
         print 'An error occured while generating this page:'
         print
         print traceback.format_exc()
-        print '</pre>'
+        print '</pre></body></html>'
         
     f.close()
     sys.exit(0)

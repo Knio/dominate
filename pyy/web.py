@@ -116,12 +116,15 @@ def get_post(data):
     return {'_error':'unknown content type %s' % env['CONTENT_TYPE']}
 
 def get_get(uri):
-    if 'urls' in globals():
+    try:
+        from urls import urls
         import re
-        for regex, pageclass in globals()['urls']:
+        for regex, pageclass in urls:
             match = re.match(regex, uri)
             if match:
                 return pageclass, match.groupdict()
+    except ImportError:
+        pass
     return None, None
 
 def get_cookie():

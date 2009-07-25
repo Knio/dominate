@@ -115,6 +115,15 @@ def get_post(data):
         return parse_query(data)
     return {'_error':'unknown content type %s' % env['CONTENT_TYPE']}
 
+def get_get(uri):
+    if 'urls' in globals():
+        import re
+        for regex, pageclass in globals()['urls']:
+            match = re.match(regex, uri)
+            if match:
+                return pageclass, match.groupdict()
+    return None, None
+
 def get_cookie():
     if 'HTTP_COOKIE' not in env:
         return {}
@@ -124,7 +133,7 @@ def get_cookie():
 env = os.environ
 
 localfile = env.get('SCRIPT_FILENAME','')
-localroot = env.get('DOCUMENT_ROOT','')
+localroot = env.get('DOCUMENT_ROOT'  ,'')
 
 server = env.get('SERVER_NAME')
 if env.get('SERVER_PORT') and env.get('SERVER_PORT') != '80':
@@ -139,8 +148,12 @@ fullurlfile = fullurlroot + urlfile
 
 data = sys.stdin.read()
 
-get     = parse_query(env.get('QUERY_STRING',''))
-post    = get_post(data)
+get = parse_query(env.get('QUERY_STRING',''))
+pageclass, uri_get = get_get(env.get('SCRIPT_URL',''))
+if pageclass:
+    get.update(uri_get)
+
+post = get_post(data)
 
 if 'PATH_INFO' in env:
     info = env['PATH_INFO'].split('/')[1:]
@@ -188,4 +201,3 @@ def path(*args):
 def fpath(*args):
     p = env['SCRIPT_NAME']
     return os.path.join(*([p] + list(args))).replace('\\','/')
-

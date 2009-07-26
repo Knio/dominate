@@ -54,7 +54,6 @@ class request:
                 self.post.update(_parse_query(self.data))
         
         self._parse_user_agent()
-        self._resolve_to_class()
         
         self.localfile = self.env.get('SCRIPT_FILENAME','')
         self.localroot = self.env.get('DOCUMENT_ROOT'  ,'')
@@ -182,21 +181,6 @@ class request:
         
         self.is_robot = self.is_googlebot
 
-    def _resolve_to_class(self):
-        try:
-            if 'SCRIPT_URL' not in self.env:
-                return
-            
-            import urls
-            
-            for regex, pageclass in urls.urls:
-                match = re.match(regex, self.env['SCRIPT_URL'])
-                if match:
-                    return pageclass, match.groupdict()
-            raise ValueError("URI did not resolve to a class.")
-        except ImportError:
-            pass
-    
     def path(self, *args):
         p = os.path.dirname(self.env.get('SCRIPT_NAME', ''))
         if p == '/': p = ''

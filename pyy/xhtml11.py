@@ -159,9 +159,11 @@ class htmlpage(basepage):
         self.html.head, self.html.body = self.html.add(head(), body())
     
     def render(self, just_html=False):
-        if not just_html:
-            import web
-            if web.is_internetexplorer:
-                self.headers['Content-Type'] = 'text/html'
-        
+        #TODO: figure out how to do this without calling web. Maybe store
+        #      this inside the page class somwhere.
+        #if not just_html:
+        #    import web
+        #    if web.is_internetexplorer:
+        #        self.headers['Content-Type'] = 'text/html'
+        #        self.xml = None
         return basepage.render(self, just_html)

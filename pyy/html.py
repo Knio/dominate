@@ -417,7 +417,6 @@ class lazy(html_tag):
 ################################################################################
 
 # TODO cookie class should be in a separate file
-
 class cookie(object):
     def __init__(self, name, value, perm=False):
         self.name   = name
@@ -432,10 +431,6 @@ class cookie(object):
         else:
             return 'Set-Cookie: %s=%s; path=/; domain=%s;' % (self.name, self.value, server)
 
-
-# TODO  this class needs to be refactored; it's subclasses are all reimplementing
-#       the same things in the same way.
-
 class basepage(object):
     def __init__(self, title='HTML Page'):
         self.title   = title
@@ -443,6 +438,8 @@ class basepage(object):
         self.xml     = None
         self.doctype = None
         self.cookies = {}
+        self.get     = {}
+        self.post    = {}
         self.headers = {
             'Content-Type' : 'text/html',
             'Cache-Control': 'no-cache',
@@ -473,7 +470,7 @@ class basepage(object):
             r.append('\n'.join(cookie.render() for cookie in self.cookies.values()))
             r.append('\n\n')
         
-        if self.xml: #and not web.is_internetexplorer: #<--needs "import web"
+        if self.xml:
             r.append(self.xml)
             r.append('\n')
         

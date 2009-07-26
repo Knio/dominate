@@ -34,4 +34,4 @@ class htmlpage(response):
     def render(self, just_html=False):
         if not just_html and self.request.browser == BROWSER_IE:
             self.headers['Content-Type'] = 'text/html'
-        return basepage.render(self, just_html)
+        return response.render(self, just_html)

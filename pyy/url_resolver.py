@@ -16,12 +16,15 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
+import re
+
 def resolve(urls, request):
     uri = request.env['SCRIPT_URL']
     for regex, pageclass in urls:
         match = re.match(regex, uri)
         if match:
             page = pageclass()
-            page.get.update(match.groupdict())
+            request.get.update(match.groupdict())
+            page.request = request
             return page
     raise ValueError("URI did not resolve to a class.")

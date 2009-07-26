@@ -25,6 +25,7 @@ class response(object):
             'Content-Type' : 'text/html',
             'Cache-Control': 'no-cache',
         }
+        self.cookies = {}
         self.xml     = None
         self.doctype = None
         self.html    = None

@@ -64,6 +64,16 @@ class response(object):
             r.append(self.doctype)
             r.append('\n')
         
+        if not 'title' in self.html:
+            #Semi-dirty hack to add a title element from whatever spec was imported
+            head = self.html.get('head')
+            if head:
+                head = head[0]
+                import sys
+                for spec in ['pyy.xhtml11', 'pyy.html5', 'pyy.xhtml10strict', 'pyy.html4strict', 'pyy.xhtml10frameset', 'pyy.html4frameset']:
+                    if spec in sys.modules:
+                        head += sys.modules[spec].title(self.title)
+        
         r.append(self.html)
         return ''.join(map(str, r))
     

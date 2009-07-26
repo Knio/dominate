@@ -21,9 +21,22 @@ ez_setup.use_setuptools()
 
 from setuptools import setup, find_packages
 
+
+
+version = '1.0.0dev'
+
+
+try:
+    import os
+    
+    version = os.popen('git describe').read().strip()
+except:
+    pass # not a git repository or something
+    
+
 setup(
     name    = 'pyy',
-    version = '1.0.0dev',
+    version = version,
     author  = 'Tom Flanagan and Jake Wharton',
     license = 'LGPL',
     

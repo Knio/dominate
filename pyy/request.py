@@ -19,6 +19,20 @@ Public License along with pyy.  If not, see
 import os, sys, re
 from urllib import unquote_plus
 
+    
+BROWSER_IE      = 0
+BROWSER_FIREFOX = 1
+BROWSER_CHROME  = 2
+BROWSER_SAFARI  = 3
+BROWSER_OPERA   = 4
+
+USER_AGENT_REGEX = (
+    (re.compile(r'MSIE (?P<version>(?P<major>\d+)(?:\.(?P<minor>\d+))?)'), BROWSER_IE, 'Windows CE'),
+    (re.compile(r'Firefox/(?P<version>(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<release>\d+)(?:\.(?P<build>\d+))?)?((a|b)(?P<beta>\d+))?)'), BROWSER_FIREFOX, 'Fennec'),
+    (re.compile(r'Chrome/(?P<version>(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<release>\d+)(?:\.(?P<build>\d+))?)?)'), BROWSER_CHROME, 'asdfadsfadsfadsf'),
+    (re.compile(r'Version/(?P<version>(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<release>\d+))?)'), BROWSER_SAFARI, 'iPhone'),
+    (re.compile(r'Opera(/| )(?P<version>(?P<major>\d+)\.(?P<minor>\d+))'), BROWSER_OPERA, 'Mini'),
+)
 
 class request:
     def __init__(self, data=''):
@@ -145,21 +159,6 @@ class request:
                 key, value = '', pair
             d[key] = value
         return d
-    
-    
-    BROWSER_IE      = 0
-    BROWSER_FIREFOX = 1
-    BROWSER_CHROME  = 2
-    BROWSER_SAFARI  = 3
-    BROWSER_OPERA   = 4
-    
-    USER_AGENT_REGEX = (
-        (re.compile(r'MSIE (?P<version>(?P<major>\d+)(?:\.(?P<minor>\d+))?)'), BROWSER_IE, 'Windows CE'),
-        (re.compile(r'Firefox/(?P<version>(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<release>\d+)(?:\.(?P<build>\d+))?)?((a|b)(?P<beta>\d+))?)'), BROWSER_FIREFOX, 'Fennec'),
-        (re.compile(r'Chrome/(?P<version>(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<release>\d+)(?:\.(?P<build>\d+))?)?)'), BROWSER_CHROME, 'asdfadsfadsfadsf'),
-        (re.compile(r'Version/(?P<version>(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<release>\d+))?)'), BROWSER_SAFARI, 'iPhone'),
-        (re.compile(r'Opera(/| )(?P<version>(?P<major>\d+)\.(?P<minor>\d+))'), BROWSER_OPERA, 'Mini'),
-    )
     
     def _parse_user_agent(self):
         if not 'HTTP_USER_AGENT' in self.env:

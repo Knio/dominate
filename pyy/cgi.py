@@ -1,6 +1,6 @@
 # cgi.py - pyy GCI gateway
 #
-# Edit this file very carefully, a bug will crash your site.
+# WARNING: Edit this file very carefully, a bug will crash your site!
 
 __license__ = '''
 This file is part of pyy.
@@ -21,7 +21,6 @@ Public License along with pyy.  If not, see
 '''
 
 if __name__ == '__main__':
-
     import os
     import sys
     import imp

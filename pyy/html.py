@@ -34,9 +34,8 @@ class html_tag(object):
         self.attributes = {}
         self.children   = []
         
-        #Add child tags
-        for i in args:
-            self.add(i)
+        #Add child elements
+        self.add(*args)
         
         #Check for special attributes. Must be done first and not in the loop!
         if html_tag.ATTRIBUTE_INVALID in kwargs.keys():
@@ -61,7 +60,7 @@ class html_tag(object):
         for attribute in missing:
             if attribute in self.default:
                 self.attributes[attribute] = self.default[attribute]
-                
+        
         #Recheck for missing attributes
         missing = set(self.required) - set(self.attributes)
         
@@ -88,12 +87,12 @@ class html_tag(object):
         elif len(args) == 1:
             return args[0]
     
-    def get(self, tag=object, **kwargs):
+    def get(self, tag=None, **kwargs):
         '''
         Recursively searches children for tags of a certain type with matching attributes.
         '''
         #Stupid workaround since we can not use html_tag in the method declaration
-        if tag == object: tag = html_tag
+        if not tag: tag = html_tag
         
         results = []
         for child in self.children:
@@ -165,7 +164,7 @@ class html_tag(object):
         '''
         Extend the children list by adding all the items in the given list.
         '''
-        self.children.extend(obj_list)
+        self.add(*obj_list)
         return self
     
     def insert(self, position, obj):
@@ -250,7 +249,7 @@ class html_tag(object):
         #Workaround for python's reserved words
         if attribute[0] == '_': attribute = attribute[1:]
         #Workaround for inability to use colon in python keywords
-        return attribute.replace('_', ':')
+        return attribute.replace('_', ':').lower()
 
 ################################################################################
 ######################## Html_tag-based Utility Classes ########################

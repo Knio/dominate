@@ -352,7 +352,7 @@ class pipe(html_tag):
         return self.data
 
 class escape(html_tag):
-    def escape(data, quote=False): # stoled from std lib cgi 
+    def escape(data, quote=False): # stoled from std lib cgi
         '''
         Replace special characters "&", "<" and ">" to HTML-safe sequences.
         If the optional flag quote is true, the quotation mark character (")
@@ -467,5 +467,3 @@ class basepage(object):
     
     def __str__(self):
         return self.render()
-
-

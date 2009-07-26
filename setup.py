@@ -22,10 +22,10 @@ ez_setup.use_setuptools()
 from setuptools import setup, find_packages
 
 setup(
-    name     = 'pyy',
-    version  = '1.0.0dev',
-    author   = 'Tom Flanagan and Jake Wharton',
-    license  = 'LGPL',
+    name    = 'pyy',
+    version = '1.0.0dev',
+    author  = 'Tom Flanagan and Jake Wharton',
+    license = 'LGPL',
     
     url          = 'http://github.com/Knio/pyy/',
     download_url = 'http://github.com/Knio/pyy/zipball/0.9.0',

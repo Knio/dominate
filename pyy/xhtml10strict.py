@@ -16,27 +16,8 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from html import basepage
-from html4strict import html, head, title, meta, body, \
-                        bdo, \
-                        div, span, \
-                        h1, h2, h3, h4, h5, h6, \
-                        address, \
-                        em, strong, dfn, code, samp, kbd, var, cite, abbr, acronym, \
-                        blockquote, q, \
-                        sub, sup, \
-                        p, \
-                        br, \
-                        pre, \
-                        ins, _del, \
-                        ul, ol, li, dl, dt, dd, \
-                        table, caption, thead, tbody, tfoot, colgroup, col, tr, td, th, \
-                        a, link, base, \
-                        img, _object, param, _map, area, \
-                        style, \
-                        tt, i, b, big, small, strike, s, u, hr, \
-                        form, _input, button, select, optgroup, option, textarea, label, fieldset, legend, \
-                        script, noscript
+from html        import basepage
+from html4strict import *
 
 ###############################################################################
 

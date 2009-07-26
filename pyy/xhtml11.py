@@ -164,4 +164,4 @@ class htmlpage(response):
         if not just_html and self.request.browser == BROWSER_IE:
             self.headers['Content-Type'] = 'text/html'
             self.xml = None
-        return basepage.render(self, just_html)
+        return response.render(self, just_html)

@@ -40,10 +40,10 @@ class request:
         self.data = data
         
         #Parse cookies
-        self.cookies = parse_semi(self.env.get('HTTP_COOKIE', ''))
+        self.cookies = request._parse_semi(self.env.get('HTTP_COOKIE', ''))
         
         #Parse GET
-        self.get = parse_query(self.env.get('QUERY_STRING', ''))
+        self.get = request._parse_query(self.env.get('QUERY_STRING', ''))
         
         #Parse POST
         self.post = {}
@@ -51,7 +51,7 @@ class request:
             if self.env.get('CONTENT_TYPE', '').startswith('multipart/form-data'):
                 self._parse_multipart()
             if self.env.get('CONTENT_TYPE', '').startswith('application/x-www-form-urlencoded'):
-                self.post.update(_parse_query(self.data))
+                self.post.update(request._parse_query(self.data))
         
         self._parse_user_agent()
         
@@ -128,6 +128,7 @@ class request:
                 break
             string = string[len(boundary) + n + 2:]
     
+    @staticmethod
     def _parse_query(string):
         d = {}
         string = string.split('&')
@@ -149,6 +150,7 @@ class request:
                 d[key] = value
         return d
     
+    @staticmethod
     def _parse_semi(string):
         d = {}
         for pair in filter(None, string.split('; ')):
@@ -164,7 +166,7 @@ class request:
             return
         
         user_agent = self.env['HTTP_USER_AGENT']
-        for regex, browser, mobile_string in request.USER_AGENT_REGEX:
+        for regex, browser, mobile_string in USER_AGENT_REGEX:
             match = re.search(regex, user_agent)
             if match:
                 self.browser   = browser

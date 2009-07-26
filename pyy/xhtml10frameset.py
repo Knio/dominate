@@ -17,8 +17,8 @@ Public License along with pyy.  If not, see
 '''
 
 from xhtml10strict import *
-from html4frameset import frameset, frame, noframes, iframe
 from xhtml10strict import htmlpage as strictpage
+from html4frameset import frameset, frame, noframes, iframe
 
 class htmlpage(strictpage):
     def __init__(self, title='XHTML 1.0 Frameset Page'):

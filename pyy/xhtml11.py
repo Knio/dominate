@@ -16,7 +16,9 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from html import html_tag, single, ugly, basepage
+from html     import html_tag, single, ugly
+from response import response
+from request  import BROWSER_IE
 
 COMMON_CORE  = ['class', 'id', 'title']
 COMMON_I18N  = ['xml:lang', 'dir']
@@ -148,9 +150,9 @@ class rtc(html_tag): valid = COMMON
 
 ###############################################################################
 
-class htmlpage(basepage):
+class htmlpage(response):
     def __init__(self, title='XHTML 1.1 Page'):
-        basepage.__init__(self, title)
+        response.__init__(self, title)
         
         self.headers['Content-Type'] = 'application/xml'
         self.xml     = '<?xml version="1.0" encoding="utf-8"?>'
@@ -159,11 +161,7 @@ class htmlpage(basepage):
         self.html.head, self.html.body = self.html.add(head(), body())
     
     def render(self, just_html=False):
-        #TODO: figure out how to do this without calling web. Maybe store
-        #      this inside the page class somwhere.
-        #if not just_html:
-        #    import web
-        #    if web.is_internetexplorer:
-        #        self.headers['Content-Type'] = 'text/html'
-        #        self.xml = None
+        if not just_html and self.request.browser == BROWSER_IE:
+            self.headers['Content-Type'] = 'text/html'
+            self.xml = None
         return basepage.render(self, just_html)

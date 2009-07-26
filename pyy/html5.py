@@ -16,7 +16,8 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from html import html_tag, ugly, single, basepage
+from html     import html_tag, ugly, single
+from response import response
 
 COMMON_MAIN   = ['accesskey', 'class', 'contenteditable', 'contextmenu', 'dir', 'draggable', 'id', 'item', 'hidden', 'lang', 'itemprop', 'spellcheck', 'style', 'subject', 'tabindex', 'title']
 COMMON_EVENTS = ['onabord', 'onblur', 'oncanplay', 'oncanplaythrough', 'onchange', 'onclick', 'oncontextmenu', 'ondblclick', 'ondrag', 'ondragend', 'ondragenter', 'ondragleavea', 'ondragover', 'ondragstart', 'ondrop', 'ondurationchange', 'onemptied', 'onended', 'onerror', 'onfocus', 'onformchange', 'onforminput', 'oninput', 'oninvalid', 'onkeydown', 'onkeypress', 'onkeyup', 'onload', 'onloadeddata', 'onloadedmetadata', 'onloadstart', 'onmousedown', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onpause', 'onplay', 'onplaying', 'onprogress', 'onratechange', 'onreadystatechange', 'onscroll', 'onseeked', 'onseeking', 'onselect', 'onshow', 'onstalled', 'onsubmit', 'onsuspend', 'ontimeupdate', 'onvolumechange', 'onwaiting']
@@ -203,9 +204,9 @@ class div(html_tag): valid = COMMON
 
 ###############################################################################
 
-class htmlpage(basepage):
+class htmlpage(response):
     def __init__(self, title='HTML 5 Page'):
-        basepage.__init__(self, title)
+        response.__init__(self, title)
         
         self.doctype = '<!DOCTYPE html>'
         self.html    = html()

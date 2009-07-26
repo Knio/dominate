@@ -16,7 +16,8 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from html import html_tag, single, ugly, basepage
+from html     import html_tag, single, ugly
+from response import response
 
 COMMON_CORE  = ['class', 'id', 'style', 'title']
 COMMON_I18N  = ['lang', 'dir']
@@ -150,9 +151,9 @@ class noscript(html_tag): valid = COMMON
 
 ###############################################################################
 
-class htmlpage(basepage):
+class htmlpage(response):
     def __init__(self, title='HTML 4.01 Strict Page'):
-        basepage.__init__(self, title)
+        response.__init__(self, title)
         
         self.doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'
         self.html    = html()

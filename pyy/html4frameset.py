@@ -16,7 +16,7 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from html import html_tag, single
+from html        import html_tag, single
 from html4strict import *
 from html4strict import htmlpage as strictpage
 

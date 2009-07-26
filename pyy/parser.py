@@ -134,8 +134,7 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
     xml = r_xml.search(data, start)
     if xml:
         start, end = xml.span()
-        xml_text = remove_spaces(data[start:end])
-        if debug: print "GOT XML: %s" % xml
+        if debug: print "GOT XML: %s" % remove_spaces(data[start:end])
         start = end
     
     #Locate possible DOCTYPE declaration and add it to page
@@ -191,11 +190,9 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
     #Create spec's htmlpage
     page = spec.htmlpage()
     
-    #Add DOCTYPE and xml declaration if found
+    #Add DOCTYPE if found
     if doctype:
         page.doctype = doctype_text
-    if xml:
-        page.xml = xml_text
     
     #Parse main XHTML data
     page.html = XHTMLParse(data, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup, debug=debug, start=start)

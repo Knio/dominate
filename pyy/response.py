@@ -26,7 +26,6 @@ class response(object):
             'Cache-Control': 'no-cache',
         }
         self.cookies = {}
-        self.xml     = None
         self.doctype = None
         self.html    = None
     
@@ -56,10 +55,6 @@ class response(object):
             r.append('\n'.join(cookie.render() for cookie in self.cookies.values()))
             r.append('\n\n')
         
-        if self.xml:
-            r.append(self.xml)
-            r.append('\n')
-        
         if self.doctype:
             r.append(self.doctype)
             r.append('\n')
@@ -68,11 +63,10 @@ class response(object):
             #Semi-dirty hack to add a title element from whatever spec was imported
             head = self.html.get('head')
             if head:
-                head = head[0]
                 import sys
                 for spec in ['pyy.xhtml11', 'pyy.html5', 'pyy.xhtml10strict', 'pyy.html4strict', 'pyy.xhtml10frameset', 'pyy.html4frameset']:
                     if spec in sys.modules:
-                        head += sys.modules[spec].title(self.title)
+                        head[0] += sys.modules[spec].title(self.title)
         
         r.append(self.html)
         return ''.join(map(str, r))

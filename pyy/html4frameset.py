@@ -17,27 +17,7 @@ Public License along with pyy.  If not, see
 '''
 
 from html import html_tag, single
-from html4strict import html, head, title, meta, body, \
-                        bdo, \
-                        div, span, \
-                        h1, h2, h3, h4, h5, h6, \
-                        address, \
-                        em, strong, dfn, code, samp, kbd, var, cite, abbr, acronym, \
-                        blockquote, q, \
-                        sub, sup, \
-                        p, \
-                        br, \
-                        pre, \
-                        ins, _del, \
-                        ul, ol, li, dl, dt, dd, \
-                        table, caption, thead, tbody, tfoot, colgroup, col, tr, td, th, \
-                        a, link, base, \
-                        img, _object, param, _map, area, \
-                        style, \
-                        tt, i, b, big, small, strike, s, u, hr, \
-                        form, _input, button, select, optgroup, option, textarea, label, fieldset, legend, \
-                        script, noscript, \
-                        COMMON_CORE, COMMON
+from html4strict import *
 from html4strict import htmlpage as strictpage
 
 
@@ -51,5 +31,4 @@ class iframe  (html_tag): valid = ['longdesc', 'name', 'src', 'frameborder', 'ma
 class htmlpage(strictpage):
     def __init__(self, title='HTML 4 Frameset Page'):
         strictpage.__init__(self, title)
-        
         self.doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">'

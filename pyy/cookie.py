@@ -1,8 +1,8 @@
 import datetime
 
 class cookie(object):
-    def __init__(self, name, value, expires=None, duration=None, path='/', 
-            domain=None, secure=False, httponly=False):
+    def __init__(self, name, value, expires=None, duration=None, path='/',
+                 domain=None, secure=False, httponly=False):
         
         if duration and expires:
             raise ValueError('cookie cannot have both expiry date and duration')
@@ -17,7 +17,7 @@ class cookie(object):
         self.httponly   = httponly
         
 
-    def render(self, header=False):        
+    def render(self, header=False):
         n = None
         if self.expires:
             if isinstance(self.expires, datetime.datetime):

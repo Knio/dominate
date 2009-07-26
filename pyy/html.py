@@ -400,7 +400,7 @@ def unescape(data):
     
     result.append(data)
     return ''.join(result)
-    
+
 class lazy(html_tag):
     '''
     Delays function execution until render
@@ -413,23 +413,6 @@ class lazy(html_tag):
     def render(self, indent=1, inline=False):
         return self.func(*self.args, **self.kwargs)
 
-################################################################################
-################################################################################
-
-# TODO cookie class should be in a separate file
-class cookie(object):
-    def __init__(self, name, value, perm=False):
-        self.name   = name
-        self.value  = value
-        self.perm   = perm
-    
-    def render(self):
-        import web
-        server = web.server
-        if self.perm: 
-            return 'Set-Cookie: %s=%s; expires=Thu, 14-Jan-2021 01:25:36 GMT; path=/; domain=%s;' % (self.name, self.value, server)
-        else:
-            return 'Set-Cookie: %s=%s; path=/; domain=%s;' % (self.name, self.value, server)
 
 class basepage(object):
     def __init__(self, title='HTML Page'):
@@ -456,13 +439,14 @@ class basepage(object):
         else:
             raise ValueError('No html tag found.') #Likely not instantiated from a child class
     
-    def set_cookie(self, name, value, perm=False):
-        self.cookies[name] = cookie(name, value, perm)
+    def set_cookie(self, cookie):
+        self.cookies[cookie.name] = cookie
     
-    def render_headers(self):
-        # TODO add cookies to headers here!
-        return '\n'.join("%s: %s" % (k,v) for k,v in self.headers.items())
-    
+    def render_headers(self, list=False):
+        l = self.headers.items()
+        l += [('Set-Cookie', c.render()) for c in self.cookies.values()]
+        return list and l or '\n'.join("%s: %s" % (k,v) for k,v in l)
+
     def render(self, just_html=False):
         r = []
         if not just_html:
@@ -483,3 +467,5 @@ class basepage(object):
     
     def __str__(self):
         return self.render()
+
+

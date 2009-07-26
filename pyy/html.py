@@ -197,7 +197,7 @@ class html_tag(object):
         rendered = '<' + name
         
         for attribute, value in self.attributes.items():
-            rendered += ' %s="%s"' % (attribute, str(value))
+            rendered += ' %s="%s"' % (attribute, escape.escape(str(value), True))
         
         if self.is_single and not self.children:
             rendered += ' />'
@@ -338,20 +338,18 @@ class include(html_tag):
         return self.data
 
 class pipe(html_tag):
-    def __init__(self, cmd, data=''):
-        self.data = self.pread(cmd, data)
-    
-    def pread(cmd, data='', mode='t'):
+    def __init__(self, cmd, data='', mode='t'):
         import os
         fin, fout = os.popen4(cmd, mode)
         fin.write(data)
         fin.close()
-        return fout.read()
+        self.data = fout.read()
     
     def render(self, indent=1, inline=False):
         return self.data
 
 class escape(html_tag):
+    @staticmethod
     def escape(data, quote=False): # stoled from std lib cgi
         '''
         Replace special characters "&", "<" and ">" to HTML-safe sequences.

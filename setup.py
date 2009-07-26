@@ -41,7 +41,7 @@ setup(
     license = 'LGPL',
     
     url          = 'http://github.com/Knio/pyy/',
-    download_url = 'http://github.com/Knio/pyy/zipball/0.9.0',
+    download_url = 'http://github.com/Knio/pyy/zipball/'+version,
     
     description      = 'Python library for creating (X)HTML pages with the use of objects.',
     long_description = 'Python library for creating (X)HTML pages with the use of objects. This allows you to tightly integrate (X)HTML generation into your backend without the need of using an intermediate templating language.',

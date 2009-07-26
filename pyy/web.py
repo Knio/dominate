@@ -88,7 +88,7 @@ def parse_semi(string):
 def parse_query(string):
     d = {}
     string = string.split('&')
-    for i in string:
+    for i in filter(None, string):
         array = False
         try:
             key, value = map(unquote_plus, i.split('=', 1))
@@ -150,20 +150,22 @@ fullurlroot = 'http://%s' % server
 fullurlfile = fullurlroot + urlfile
 
 data = sys.stdin.read()
+post = get_post(data)
 
 get = parse_query(env.get('QUERY_STRING',''))
 pageclass, uri_get = get_get(env.get('SCRIPT_URL',''))
 if pageclass:
     get.update(uri_get)
-
-post = get_post(data)
+    page = pageclass()
+    page.get  = get
+    page.post = post
 
 if 'PATH_INFO' in env:
     info = env['PATH_INFO'].split('/')[1:]
 else:
     info = []
-
 infop = '/'.join(info)
+
 
 # browser information
 user_agent = env.get('HTTP_USER_AGENT', '')

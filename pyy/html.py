@@ -152,6 +152,12 @@ class html_tag(object):
         '''
         return self.children.__iter__()
     
+    def __contains__(self, item):
+        '''
+        Checks recursively if item is in children tree. Accepts both a string and class.
+        '''
+        return bool(self.get(item))
+    
     def appendChild(self, obj):
         '''
         DOM API: Add an item to the end of the children list.

@@ -30,15 +30,18 @@ class response(object):
         self.html    = None
     
     def __iadd__(self, obj):
-        if self.html:
-            body = self.html.getElementsByTagName('body')
-            if body:
-                body[0] += obj
-                return
-            else:
-                raise ValueError('No body tag found.')
-        else:
+        if not self.html:
             raise ValueError('No html tag found.') #Likely not instantiated from a child class
+
+        bodys = self.html.getElementsByTagName('body')
+        
+        if not bodys:
+            raise ValueError('No body tag found.')
+
+        body = bodys[0]
+        body += obj
+        return self
+
     
     def set_cookie(self, cookie):
         self.cookies[cookie.name] = cookie

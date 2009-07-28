@@ -154,8 +154,7 @@ class htmlpage(response):
     def __init__(self, title='XHTML 1.1 Page'):
         response.__init__(self, title)
         
-        self.headers['Content-Type'] = 'application/xml'
-        self.xml     = '<?xml version="1.0" encoding="utf-8"?>'
+        self.headers['Content-Type'] = 'application/xhtml+xml'
         self.doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'
         self.html    = html()
         self.html.head, self.html.body = self.html.add(head(), body())
@@ -163,5 +162,4 @@ class htmlpage(response):
     def render(self, just_html=False):
         if not just_html and self.request.browser == BROWSER_IE:
             self.headers['Content-Type'] = 'text/html'
-            self.xml = None
         return response.render(self, just_html)

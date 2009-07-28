@@ -55,8 +55,7 @@ setup(
         'Intended Audience :: Developers',
     ],
     
-    packages    = find_packages('pyy'),
-    package_dir = {'': 'pyy'},
+    packages = find_packages(),
     
     include_package_data = True,
 )

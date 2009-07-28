@@ -43,6 +43,10 @@ rm -rf *
 #Move documentation from temporary folder to branch root
 mv $TEMP_DIR/* .
 
+#HACK: Rename _static/ to static/ and update all reference to it.
+mv _static/ static/
+perl -pi -e 's/_static/static/g' *.html
+
 #Show changed files and prompt for action
 git status
 echo ""

@@ -32,7 +32,7 @@ read
 TEMP_DIR=$(mktemp -d)
 
 #Build all documentation into temporary folder
-sphinx-build -a docs/ $TEMP_DIR
+sphinx-build -b html -a docs/ $TEMP_DIR
 
 #Switch to gh-pages
 git checkout gh-pages

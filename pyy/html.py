@@ -68,6 +68,9 @@ class html_tag(object):
             raise AttributeError("Missing required attribute(s): '%s'" % ','.join(missing))
         
     def add(self, *args):
+        if self.is_single and args:
+            raise ValueError("<%s> tag can not have child elements." % type(self).__name__)
+        
         for obj in args:
             if isinstance(obj, basestring) and len(self.children) > 0 and isinstance(self.children[-1], basestring):
                 #Join adjacent strings
@@ -162,7 +165,7 @@ class html_tag(object):
         '''
         DOM API: Add an item to the end of the children list.
         '''
-        self.children.append(obj)
+        self.add(obj)
         return self
     append = appendChild
     
@@ -177,6 +180,9 @@ class html_tag(object):
         '''
         Insert an item into the children list at the given position.
         '''
+        if self.is_single:
+            raise ValueError("<%s> tag can not contain child elements." % type(self).__name__)
+        
         self.children.insert(position, obj)
         return self
     
@@ -204,7 +210,7 @@ class html_tag(object):
         for attribute, value in self.attributes.items():
             rendered += ' %s="%s"' % (attribute, escape.escape(str(value), True))
         
-        if self.is_single and not self.children:
+        if self.is_single:
             rendered += ' />'
         else:
             rendered += '>'

@@ -41,7 +41,7 @@ git checkout gh-pages
 rm -rf *
 
 #Move documentation from temporary folder to branch root
-mv $TEMPDIR/* .
+mv $TEMP_DIR/* .
 
 #Show changed files and prompt for action
 git status

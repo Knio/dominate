@@ -7,6 +7,7 @@ Welcome to pyy's documentation!
 ===============================
 
 Contents:
+    *Coming soon.*
 
 .. toctree::
    :maxdepth: 2

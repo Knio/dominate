@@ -20,8 +20,12 @@
 #    <http://www.gnu.org/licenses/>.
 
 echo "WARNING: This script must be run from the root folder of the project!"
+echo "         You must also already be tracking the gh-pages branch. Run"
+echo "           git checkout -t origin/gh-pages"
+echo "         if you are not."
 echo ""
-echo "Press [enter] if this is the case..."
+echo "Press [ENTER] if both of these conditions have been satisfied. Otherwise"
+echo "  [CTRL]+C to cease execution."
 read
 
 #Create temporary directory
@@ -35,7 +39,6 @@ git checkout gh-pages
 
 #Delete current documentation
 rm -rf *
-rm -rf .doctrees/
 
 #Move documentation from temporary folder to branch root
 mv $TEMPDIR/* .

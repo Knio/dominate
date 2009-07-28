@@ -21,7 +21,7 @@
 
 echo "WARNING: This script must be run from the root folder of the project!"
 echo "         You must also already be tracking the gh-pages branch. Run"
-echo "           git checkout -t origin/gh-pages"
+echo "           git checkout -t -b gh-pages origin/gh-pages"
 echo "         if you are not."
 echo ""
 echo "Press [ENTER] if both of these conditions have been satisfied. Otherwise"

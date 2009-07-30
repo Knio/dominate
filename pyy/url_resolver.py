@@ -23,8 +23,6 @@ def resolve(urls, request):
     for regex, pageclass in urls:
         match = re.match(regex, uri)
         if match:
-            page = pageclass()
             request.get.update(match.groupdict())
-            page.request = request
-            return page
+            return pageclass(request=request)
     raise ValueError("URI did not resolve to a class.")

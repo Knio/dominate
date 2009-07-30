@@ -17,10 +17,10 @@ Public License along with pyy.  If not, see
 '''
 
 class response(object):
-    def __init__(self, title='HTML Page'):
+    def __init__(self, title='HTML Page', request=None):
         self.title   = title
         
-        self.request = None
+        self.request = request
         self.headers = {
             'Content-Type' : 'text/html',
             'Cache-Control': 'no-cache',

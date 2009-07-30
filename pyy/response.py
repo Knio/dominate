@@ -41,10 +41,15 @@ class response(object):
         return bodys[0]
 
     def add(self, obj):
-        return self.getbody().add(obj)
+        if not self._entry:
+            self._entry = self.getbody()
+        return self._entry.add(obj)
 
     def __iadd__(self, obj):
-        self.getbody().__iadd__(obj)
+        if not self._entry:
+            self._entry = self.getbody()
+        
+        self._entry += obj
         return self
     
     def set_cookie(self, cookie):

@@ -201,8 +201,8 @@ class html_tag(object):
         inline = self.do_inline or inline
         
         #Workaround for python keywords
-        if type(self).__name__[0] == "_":
-            name = type(self).__name__[1:]
+        if type(self).__name__[-1] == "_":
+            name = type(self).__name__[:-1]
         else:
             name = type(self).__name__
         rendered = '<' + name

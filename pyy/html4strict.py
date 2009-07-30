@@ -19,11 +19,21 @@ Public License along with pyy.  If not, see
 from html     import html_tag, single, ugly
 from response import response
 
+__all__ = ['html', 'head', 'title', 'meta', 'body', 'bdo', 'div', 'span', 'h1',
+           'h2', 'h3', 'h4', 'h5', 'h6', 'address', 'em', 'strong', 'dfn', 'code',
+           'samp', 'kbd', 'var', 'cite', 'abbr', 'acronym', 'blockquote', 'q',
+           'sub', 'sup', 'p', 'br', 'pre', 'ins', '_del', 'ul', 'ol', 'li', 'dl',
+           'dt', 'dd', 'table', 'caption', 'thead', 'tbody', 'tfoot', 'colgroup',
+           'col', 'tr', 'td', 'th', 'a', 'link', 'base', 'img', '_object', 'param',
+           '_map', 'area', 'style', 'tt', 'i', 'b', 'big', 'small', 'strike', 's',
+           'u', 'hr', 'form', '_input', 'button', 'select', 'optgroup', 'option',
+           'textarea', 'label', 'fieldset', 'legend', 'script', 'noscript',
+           'htmlpage', 'COMMON_CORE', 'COMMON_I18N', 'COMMON_EVENT', 'COMMON']
+
 COMMON_CORE  = ['class', 'id', 'style', 'title']
 COMMON_I18N  = ['lang', 'dir']
 COMMON_EVENT = ['onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'onmouseover', 'onmousemove', 'onmouseout', 'onkeypress', 'onkeydown', 'onkeyup']
 COMMON       = COMMON_CORE + COMMON_I18N + COMMON_EVENT
-
 
 class html(html_tag): valid = COMMON_I18N
 class head(html_tag): valid = ['profile'] + COMMON_I18N

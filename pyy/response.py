@@ -44,7 +44,7 @@ class response(object):
         return self.getbody().add(obj)
 
     def __iadd__(self, obj):
-        self.getbody() += obj
+        self.getbody().__iadd__(obj)
         return self
     
     def set_cookie(self, cookie):

@@ -152,8 +152,8 @@ class noscript(html_tag): valid = COMMON
 ###############################################################################
 
 class htmlpage(response):
-    def __init__(self, title='HTML 4.01 Strict Page'):
-        response.__init__(self, title)
+    def __init__(self, title='HTML 4.01 Strict Page', request=None):
+        response.__init__(self, title, request)
         
         self.doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'
         self.html    = html()

@@ -16,9 +16,13 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
+from request import request as req
 import re
 
-def resolve(urls, request):
+def resolve(urls, request=None):
+    if not request:
+        request = req.read()
+    
     uri = request.env['SCRIPT_URL']
     for regex, pageclass in urls:
         match = re.match(regex, uri)

@@ -151,8 +151,8 @@ class rtc(html_tag): valid = COMMON
 ###############################################################################
 
 class htmlpage(response):
-    def __init__(self, title='XHTML 1.1 Page'):
-        response.__init__(self, title)
+    def __init__(self, title='XHTML 1.1 Page', request=None):
+        response.__init__(self, title, request)
         
         self.headers['Content-Type'] = 'application/xhtml+xml'
         self.doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'

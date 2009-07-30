@@ -205,8 +205,8 @@ class div(html_tag): valid = COMMON
 ###############################################################################
 
 class htmlpage(response):
-    def __init__(self, title='HTML 5 Page'):
-        response.__init__(self, title)
+    def __init__(self, title='HTML 5 Page', request=None):
+        response.__init__(self, title, request)
         
         self.doctype = '<!DOCTYPE html>'
         self.html    = html()

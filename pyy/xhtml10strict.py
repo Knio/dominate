@@ -23,8 +23,8 @@ from html4strict import *
 ###############################################################################
 
 class htmlpage(response):
-    def __init__(self, title='XHTML 1.0 Strict Page'):
-        response.__init__(self, title)
+    def __init__(self, title='XHTML 1.0 Strict Page', request=None):
+        response.__init__(self, title, request)
         
         self.headers['Content-Type'] = 'application/xhtml+xml'
         self.doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'

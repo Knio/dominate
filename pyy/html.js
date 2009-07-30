@@ -56,7 +56,13 @@ Public License along with pyy.  If not, see
                 }
                 return dom;
             }
+<<<<<<< HEAD:pyy/html.js
             window[tag] = func;
+=======
+            return dom;
+        }
+        $[tag] = func;
+>>>>>>> e6bfd3f... fixed setup script, htmlpage entry point:pyy/html.js
         }());
     }    
 }());

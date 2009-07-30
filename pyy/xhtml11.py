@@ -51,7 +51,7 @@ class title(html_tag): valid = COMMON_I18N
 #Block elements
 class address   (html_tag): valid = COMMON
 class blockquote(html_tag): valid = ['cite'] + COMMON
-class del_      (html_tag): valid = ['cite', 'datetime'] + COMMON
+class _del      (html_tag): valid = ['cite', 'datetime'] + COMMON
 class div       (html_tag): valid = COMMON
 class dl        (html_tag): valid = COMMON
 class fieldset  (html_tag): valid = COMMON
@@ -89,11 +89,11 @@ class img     (single):
     valid    = ['alt', 'height', 'src', 'width', 'ismap', 'longdesc', 'usemap'] + COMMON
     required = ['alt', 'src']
     default  = {'alt': ''}
-class input_  (single):   valid = ['alt', 'checked', 'maxlength', 'name', 'size', 'type', 'value', 'accept', 'accesskey', 'disabled', 'ismap', 'onblur', 'onchange', 'onfocus', 'onselect', 'readonly', 'src', 'tabindex', 'usemap'] + COMMON
+class _input  (single):   valid = ['alt', 'checked', 'maxlength', 'name', 'size', 'type', 'value', 'accept', 'accesskey', 'disabled', 'ismap', 'onblur', 'onchange', 'onfocus', 'onselect', 'readonly', 'src', 'tabindex', 'usemap'] + COMMON
 class kbd     (html_tag): valid = COMMON
 class label   (html_tag): valid = ['for', 'accesskey', 'onblur', 'onfocus'] + COMMON
-class map_    (html_tag): valid = COMMON
-class object_ (html_tag): valid = ['classid', 'codebase', 'height', 'name', 'type', 'width', 'archive', 'codetype', 'data', 'declare', 'standby', 'tabindex', 'usemap'] + COMMON
+class _map    (html_tag): valid = COMMON
+class _object (html_tag): valid = ['classid', 'codebase', 'height', 'name', 'type', 'width', 'archive', 'codetype', 'data', 'declare', 'standby', 'tabindex', 'usemap'] + COMMON
 class q       (html_tag): valid = ['cite'] + COMMON
 class ruby    (html_tag): valid = COMMON
 class samp    (html_tag): valid = COMMON

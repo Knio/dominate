@@ -118,7 +118,7 @@ class rp(html_tag): valid = COMMON
 #Edits
 class ins(html_tag):
     valid = COMMON + ['cite', 'datetime']
-class _del(html_tag):
+class del_(html_tag):
     valid = COMMON + ['cite', 'datetime']
 
 #Embedded content
@@ -130,7 +130,7 @@ class iframe(html_tag):
     valid = COMMON + ['src', 'name', 'sandbox', 'seamless', 'width', 'height']
 class embed(html_tag):
     valid = COMMON + ['src', 'type', 'width', 'height']
-class _object(html_tag):
+class object_(html_tag):
     valid = COMMON + ['data', 'type', 'name', 'usemap', 'form', 'width', 'height']
 class param(html_tag):
     valid = COMMON + ['name', 'value']
@@ -142,7 +142,7 @@ class source(html_tag):
     valid = COMMON + ['src', 'type', 'media']
 class canvas(html_tag):
     valid = COMMON + ['width', 'height']
-class _map(html_tag):
+class map_(html_tag):
     valid = COMMON + ['name']
 class area(single):
     valid = COMMON + ['alt', 'coords', 'shape', 'href', 'target', 'ping', 'rel', 'media', 'hreflang', 'type']
@@ -168,7 +168,7 @@ class fieldset(html_tag):
     valid = COMMON + ['disabled', 'form', 'name']
 class label(html_tag):
     valid = COMMON + ['form', 'for']
-class _input(single):
+class input_(single):
     valid = COMMON + ['accept', 'alt', 'autocomplete', 'autofocus', 'checked', 'disabled', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'height', 'list', 'max', 'maxlength', 'min', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'src', 'step', 'type', 'value', 'width']
 class button(html_tag):
     valid = COMMON + ['autofocus', 'disabled', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'name', 'type', 'value']

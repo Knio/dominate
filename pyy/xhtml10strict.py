@@ -19,6 +19,7 @@ Public License along with pyy.  If not, see
 from response    import response
 from request     import BROWSER_IE
 from html4strict import *
+from html4strict import __all__
 
 ###############################################################################
 

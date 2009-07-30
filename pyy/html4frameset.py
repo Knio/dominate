@@ -20,6 +20,8 @@ from html        import html_tag, single
 from html4strict import *
 from html4strict import htmlpage as strictpage
 
+from html4strict import __all__
+__all__.extend(['frameset', 'frame', 'noframes', 'iframe'])
 
 class frameset(html_tag): valid = ['rows', 'cols', 'onload', 'onunload'] + COMMON_CORE
 class frame   (single):   valid = ['longdesc', 'name', 'src', 'frameborder', 'marginwidth', 'marginheight', 'noresize', 'scrolling'] + COMMON_CORE

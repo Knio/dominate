@@ -41,14 +41,11 @@ Public License along with pyy.  If not, see
                             var value = argument[key];
                             if (key == 'class')
                                 dom.className += dom.className ? ' ' + value : value;
-                                //YAHOO.util.Dom.addClass(tag, value);
                             else if (key == 'style') // style: {background:'#000'}
                                 for (style in value)
                                     dom.style[style] = value[style]
-                                    //YAHOO.util.Dom.setStyle(dom, style, value[style]);
                             else if (k.slice(0, 2) == 'on') // an event handler
                                 dom.addEventListener(key.slice(2), value, false)
-                                //YAHOO.util.Event.addListener(dom, key.slice(2), value);
                             else // otherwise a regular attribute
                                 dom.setAttribute(key, value);
                         }
@@ -56,13 +53,7 @@ Public License along with pyy.  If not, see
                 }
                 return dom;
             }
-<<<<<<< HEAD:pyy/html.js
-            window[tag] = func;
-=======
-            return dom;
-        }
-        $[tag] = func;
->>>>>>> e6bfd3f... fixed setup script, htmlpage entry point:pyy/html.js
+            $[tag] = func;
         }());
-    }    
+    }
 }());

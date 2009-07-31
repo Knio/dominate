@@ -42,9 +42,9 @@ class html_tag(pyy_tag, dom1core):
 
 
     def set_attribute(self, attr, value):
-        if attribute not in self.valid and not self.allow_invalid:
-            raise AttributeError("Invalid attribute '%s'." % attribute)
-        return pyy_tag.set_attribute(attr, value)
+        if attr not in self.valid and not self.allow_invalid:
+            raise AttributeError("Invalid attribute '%s'." % attr)
+        return pyy_tag.set_attribute(self, attr, value)
     
 
 

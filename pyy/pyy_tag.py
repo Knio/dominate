@@ -192,4 +192,6 @@ class pyy_tag(object):
         #Workaround for inability to use colon in python keywords
         return attribute.replace('_', ':').lower()
 
+# escape() is used in render
+from pyy.utils import *
 

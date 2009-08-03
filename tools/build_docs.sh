@@ -32,7 +32,7 @@ read
 TEMP_DIR=$(mktemp -d)
 
 #Build all documentation into temporary folder
-sphinx-build -a docs/ $TEMP_DIR
+sphinx-build -b html -a docs/ $TEMP_DIR
 
 #Switch to gh-pages
 git checkout gh-pages
@@ -42,6 +42,10 @@ rm -rf *
 
 #Move documentation from temporary folder to branch root
 mv $TEMP_DIR/* .
+
+#HACK: Rename _static/ to static/ and update all reference to it.
+mv _static/ static/
+perl -pi -e 's/_static/static/g' *.html
 
 #Show changed files and prompt for action
 git status

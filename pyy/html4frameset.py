@@ -19,7 +19,9 @@ Public License along with pyy.  If not, see
 from html        import html_tag, single
 from html4strict import *
 from html4strict import htmlpage as strictpage
+from html4strict import __all__ as __html4strict_all__
 
+__all__ = __html4strict_all__ + ['frameset', 'frame', 'noframes', 'iframe']
 
 class frameset(html_tag): valid = ['rows', 'cols', 'onload', 'onunload'] + COMMON_CORE
 class frame   (single):   valid = ['longdesc', 'name', 'src', 'frameborder', 'marginwidth', 'marginheight', 'noresize', 'scrolling'] + COMMON_CORE

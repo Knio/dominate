@@ -20,6 +20,17 @@ from html     import html_tag, single, ugly
 from response import response
 from request  import BROWSER_IE
 
+__all__ = ['base', 'body', 'head', 'html', 'link', 'meta', 'script', 'style', 'title',
+           'address', 'blockquote', '_del', 'div', 'dl', 'fieldset', 'form', 'h1', 'h2',
+           'h3', 'h4', 'h5', 'h6', 'hr', 'ins', 'noscript', 'ol', 'p', 'pre', 'table',
+           'ul', 'a', 'abbr', 'acronym', 'b', 'bdo', 'big', 'br', 'button', 'cite',
+           'code', 'dfn', 'em', 'i', 'img', '_input', 'kbd', 'label', '_map', '_object',
+           'q', 'ruby', 'samp', 'select', 'small', 'span', 'strong', 'sub', 'sup',
+           'textarea', 'tt', 'var', 'dd', 'dt', 'li', 'caption', 'col', 'colgroup',
+           'tbody', 'td', 'tfoot', 'th', 'thead', 'tr', 'legend', 'optgroup', 'option',
+           'area', 'param', 'rb', 'rbc', 'rp', 'rt', 'rtc', 'htmlpage',
+           'COMMON_CORE', 'COMMON_I18N', 'COMMON_EVENT', 'COMMON_STYLE', 'COMMON']
+
 COMMON_CORE  = ['class', 'id', 'title']
 COMMON_I18N  = ['xml:lang', 'dir']
 COMMON_EVENT = ['onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'onmouseover', 'onmousemove', 'onmouseout', 'onkeypress', 'onkeydown', 'onkeyup']
@@ -151,8 +162,8 @@ class rtc(html_tag): valid = COMMON
 ###############################################################################
 
 class htmlpage(response):
-    def __init__(self, title='XHTML 1.1 Page'):
-        response.__init__(self, title)
+    def __init__(self, title='XHTML 1.1 Page', request=None):
+        response.__init__(self, title, request)
         
         self.headers['Content-Type'] = 'application/xhtml+xml'
         self.doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'

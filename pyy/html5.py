@@ -19,6 +19,19 @@ Public License along with pyy.  If not, see
 from html     import html_tag, ugly, single
 from response import response
 
+__all__ = ['html', 'head', 'title', 'base', 'link', 'meta', 'style', 'script', 'noscript',
+           'body', 'section', 'nav', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+           'hgroup', 'header', 'footer', 'address', 'p', 'hr', 'br', 'pre', 'dialog',
+           'blockquote', 'ol', 'ul', 'li', 'dl', 'dt', 'dd', 'a', 'q', 'cite', 'em', 'strong',
+           'small', 'mark', 'dfn', 'abbr', 'time', 'progress', 'meter', 'code', 'var', 'samp',
+           'kbd', 'sub', 'sup', 'span', 'i', 'b', 'bdo', 'ruby', 'rt', 'rp', 'ins', '_del',
+           'figure', 'img', 'iframe', 'embed', '_object', 'param', 'video', 'audio', 'source',
+           'canvas', '_map', 'area', 'table', 'caption', 'colgroup', 'tbody', 'thead', 'tfoot',
+           'tr', 'td', 'th', 'form', 'fieldset', 'label', '_input', 'button', 'select',
+           'datalist', 'optgroup', 'option', 'textarea', 'keygen', 'output', 'details',
+           'datagrid', 'command', 'bb', 'menu', 'legend', 'div', 'htmlpage',
+           'COMMON_MAIN', 'COMMON_EVENTS', 'COMMON']
+
 COMMON_MAIN   = ['class', 'contenteditable', 'contextmenu', 'dir', 'draggable', 'id', 'hidden', 'lang', 'spellcheck', 'style', 'tabindex', 'title']
 COMMON_EVENTS = ['onabort', 'onblur', 'onchange', 'onclick', 'oncontextmenu', 'ondblclick', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onfocus', 'onkeydown', 'onkeypress', 'onkeyup', 'onload', 'onmousedown', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onscroll', 'onselect', 'onsubmit']
 COMMON        = COMMON_MAIN + COMMON_EVENTS
@@ -205,8 +218,8 @@ class div(html_tag): valid = COMMON
 ###############################################################################
 
 class htmlpage(response):
-    def __init__(self, title='HTML 5 Page'):
-        response.__init__(self, title)
+    def __init__(self, title='HTML 5 Page', request=None):
+        response.__init__(self, title, request)
         
         self.doctype = '<!DOCTYPE html>'
         self.html    = html()

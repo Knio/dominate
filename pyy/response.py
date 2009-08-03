@@ -17,10 +17,10 @@ Public License along with pyy.  If not, see
 '''
 
 class response(object):
-    def __init__(self, title='HTML Page'):
+    def __init__(self, title='HTML Page', request=None):
         self.title   = title
         
-        self.request = None
+        self.request = request
         self.headers = {
             'Content-Type' : 'text/html',
             'Cache-Control': 'no-cache',
@@ -28,8 +28,8 @@ class response(object):
         self.cookies = {}
         self.doctype = None
         self.html    = None
-    
-    def __iadd__(self, obj):
+
+    def getbody(self):
         if not self.html:
             raise ValueError('No html tag found.') #Likely not instantiated from a child class
 
@@ -37,11 +37,20 @@ class response(object):
         
         if not bodys:
             raise ValueError('No body tag found.')
+        
+        return bodys[0]
 
-        body = bodys[0]
-        body += obj
+    def add(self, obj):
+        if not self._entry:
+            self._entry = self.getbody()
+        return self._entry.add(obj)
+
+    def __iadd__(self, obj):
+        if not self._entry:
+            self._entry = self.getbody()
+        
+        self._entry += obj
         return self
-
     
     def set_cookie(self, cookie):
         self.cookies[cookie.name] = cookie

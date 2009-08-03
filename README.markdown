@@ -46,7 +46,7 @@ create more advanced structures.
 Create a simple list:
     >>> list = ul()
     >>> for item in range(4):
-    >>>   list += li("Item #", item)
+    >>>   list += li('Item #', item)
     >>> print list
     <ul>
       <li>Item #0</li>
@@ -55,14 +55,13 @@ Create a simple list:
       <li>Item #3</li>
     </ul>
 
-If you are using a database or other backend to fetch data, `pyy` supports
-iterables to help streamline your code:
-    >>> print ul(li(a(name, href=link), __inline=True) for name, link in menu_items)
+You can also use list comprehension to help streamline your code:
+    >>> print ul(li('Item #', n) for n in range(4))
     <ul>
-      <li><a href="/home/">Home</a></li>
-      <li><a href="/about/">About</a></li>
-      <li><a href="/downloads/">Downloads</a></li>
-      <li><a href="/links/">Links</a></li>
+      <li>Item #0</li>
+      <li>Item #1</li>
+      <li>Item #2</li>
+      <li>Item #3</li>
     </ul>
 
 A simple document tree:
@@ -105,10 +104,12 @@ You can modify the attributes of tags through a dictionary-like interface:
     <div id='header'></div>
 
 Comments can be created using objects too!
-    >>> print comment("BEGIN HEADER")
+    >>> print comment('BEGIN HEADER')
     <!--BEGIN HEADER-->
-    >>> print comment(p("Stop using IE5!"), condition='lt IE6')
-    <!--[if lt IE6]><p>Stop using IE5!</p><![endif]-->
+    >>> print comment(p('Stop using IE6!'), condition='lt IE7')
+    <!--[if lt IE7]>
+      <p>Stop using IE6!</p>
+    <![endif]-->
 
 More usage examples to come. Check out the files in the `examples` folder too.
 

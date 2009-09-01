@@ -1,0 +1,26 @@
+#!python pyy_cgi/cgi.py
+
+def main(handler, req, res):
+  res.body = 'omg i work!\n\n'
+   
+  # trigger parsers
+  req.get
+  req.post
+  req.body
+  req.ua
+  req.cookie
+
+  for i in req.__dict__.iteritems():
+    res.body += '%s = \t%r\n' % i
+
+  res.body += '%r\n' % req.ua.__dict__
+  res.body += '\n'
+  
+  for i in req.headers.iteritems():
+    res.body += '%s:\t\t%s\n' % i
+  
+  
+  res.body += '\ndone!'
+  
+  
+  

@@ -8,7 +8,7 @@ def parse_query(string):
     is_array = False
     try:
       key, value = map(unquote_plus, pair.split('=', 1))
-      if key.endswith('[]'):
+      if key.endswith('[]'): # TODO: why the hell is this a magic string? wtf?
         key   = key[:-2]
         is_array = True
     except ValueError:
@@ -57,9 +57,9 @@ def parse_user_agent(user_agent):
         if value:
           setattr(b, name, value)
       
-      setattr(b, name, float(b.major + '.' + b.minor))
+      setattr(b, browser, float(b.major + '.' + b.minor))
     else:
-      setattr(b, name, None)
+      setattr(b, browser, None)
   
   return b 
 

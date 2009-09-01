@@ -20,12 +20,9 @@ class pyyserver(object):
       raise HTTPError(401)
     
     f = open(fname, 'U')
+    m = imp.load_module(mname, f, fname, ('.py', 'U', 1))
     
-    try:
-      m = imp.load_module(mname, f, fname, ('.py', 'U', 1))
-      m.main(handler, req, res)
-    except Exception, e:
-      raise HTTPError(500, e)
-    finally:
-      sys.path.remove(dname)
+    m.main(handler, req, res)
+    
+    sys.path.remove(dname)
 

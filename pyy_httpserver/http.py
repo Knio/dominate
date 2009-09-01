@@ -88,6 +88,14 @@ class httphandler(object):
     reads one request from the client and returns it
     '''
     req = httprequest()
+
+    def read(bytes=None):
+      cl = int(req.headers.get('Content-Type','0'))
+      if not cl: return ''
+      return self.conn.read(cl)
+        
+    req.read = read
+    
     self.readline = self.readrequest
     self._lines = ['']
     while hasattr(self, 'readline'):
@@ -217,9 +225,7 @@ class httphandler(object):
     if res.body is None:
       res.body = ''
     
-    cl = res.headers.get('Content-Length')
-    if cl is None:
-      res.headers['Content-Length'] = len(res.body)
+    res.headers.setdefault('Content-Length', len(res.body))
    
     return res   
     

@@ -17,13 +17,15 @@ class httprequest(httpmessage):
     raise NotImplementedError
 
   def _get(self):
-    return parsers.parse_query(self.uri)
+    try:    get = self.uri.split('?',1)[1]
+    except: get = ''
+    return parsers.parse_query(get)
 
-  def _cookies(self):
+  def _cookie(self):
     return parsers.parse_semi(self.headers.get('Cookie',''))
 
   def _post(self):
-    ct = self.headers.get('Content-Type')
+    ct = self.headers.get('Content-Type','')
     if ct.startswith('multipart/form-data'):
       return parsers.parse_multipart(ct, self.body)
       
@@ -44,7 +46,7 @@ class httprequest(httpmessage):
       raise AttributeError
 
     val = getattr(self, '_'+attr)()
-    setattr(attr, val)
+    setattr(self, attr, val)
     return val
 
 class httpresponse(httpmessage):
@@ -52,6 +54,9 @@ class httpresponse(httpmessage):
     httpmessage.__init__(self)
     self.statusnum = None
     self.statusmsg = None
+
+  def write(self, data):
+    raise NotImplementedError
 
   def set_status(self, x):
     self.statusnum = x

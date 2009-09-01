@@ -1,4 +1,4 @@
-# cgi.py - pyy GCI gateway
+# cgi.py - pyy CGI gateway
 #
 # WARNING: Edit this file very carefully, a bug will crash your site!
 

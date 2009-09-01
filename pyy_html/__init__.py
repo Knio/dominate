@@ -18,4 +18,4 @@ Public License along with pyy.  If not, see
 
 #Importing * normally would be bad due to class conflicts in the different
 #specification files. Only import XHTML 1.1 classes instead.
-__all__ = ['cgi', 'parser', 'web', 'html', 'xhtml11']
+__all__ = ['parser', 'html', 'xhtml11']

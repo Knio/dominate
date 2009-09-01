@@ -54,6 +54,11 @@ class httpresponse(httpmessage):
     httpmessage.__init__(self)
     self.statusnum = None
     self.statusmsg = None
+    self.cookies = {}
+
+  def set_cookie(self, cookie):
+    self.cookies[cookie.name] = cookie
+    self.headers['Cookie'] = ' '.join(c.render() for c in self.cookies.values())
 
   def write(self, data):
     raise NotImplementedError

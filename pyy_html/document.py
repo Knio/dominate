@@ -16,15 +16,9 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-class response(object):
-    def __init__(self, title='HTML Page', request=None):
-        self.title   = title
-        
-        self.request = request
-        self.headers = {
-            'Content-Type' : 'text/html',
-            'Cache-Control': 'no-cache',
-        }
+class document(object):
+    def __init__(self, title='HTML Page'):
+        self.title   = title      
         self.cookies = {}
         self.doctype = None
         self.html    = None
@@ -52,20 +46,8 @@ class response(object):
         self._entry += obj
         return self
     
-    def set_cookie(self, cookie):
-        self.cookies[cookie.name] = cookie
-    
-    def render_headers(self, as_list=False):
-        list = self.headers.items()
-        list += [('Set-Cookie', cookie.render()) for cookie in self.cookies.values()]
-        return list if as_list else '\n'.join("%s: %s" % item for item in list)
-
-    def render(self, just_html=False):
+    def render(self):
         r = []
-        if not just_html:
-            r.append(self.render_headers())
-            r.append('\n'.join(cookie.render() for cookie in self.cookies.values()))
-            r.append('\n\n')
         
         if self.doctype:
             r.append(self.doctype)
@@ -76,7 +58,7 @@ class response(object):
             head = self.html.get('head')
             if head:
                 import sys
-                for spec in ['pyy.xhtml11', 'pyy.html5', 'pyy.xhtml10strict', 'pyy.html4strict', 'pyy.xhtml10frameset', 'pyy.html4frameset']:
+                for spec in ['pyy_html.xhtml11', 'pyy_html.html5', 'pyy_html.xhtml10strict', 'pyy_html.html4strict', 'pyy_html.xhtml10frameset', 'pyy_html.html4frameset']:
                     if spec in sys.modules:
                         head[0] += sys.modules[spec].title(self.title)
         

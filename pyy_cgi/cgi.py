@@ -67,7 +67,8 @@ def get_request():
 def make_response(res):
   if res.body is None: res.body = ''
   res.headers.setdefault('Content-Type', 'text/plain; charset=ISO-8859-4')
-  #res.headers.setdefault('Content-Length', len(res.body))
+  res.headers.setdefault('Cache-Control': 'no-cache')
+#res.headers.setdefault('Content-Length', len(res.body))
 
 def write_response(res):
   # can we return status codes?

@@ -71,8 +71,8 @@ def make_response(res):
 #res.headers.setdefault('Content-Length', len(res.body))
 
 def write_response(res):
-  # can we return status codes?
-
+  print 'Status: %d %s' % (res.statusnum, res.statusmsg)
+  
   for k,v in res.headers.iteritems():
     print '%s: %s' % (k,v)
 

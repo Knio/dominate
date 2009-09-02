@@ -19,7 +19,7 @@
 #    Public License along with pyy. If not, see
 #    <http://www.gnu.org/licenses/>.
 
-echo "WARNING: This script must be run from the docs folder of the project!"
+echo "WARNING: This script must be run from the root folder of the project!"
 echo "         You must also already be tracking the gh-pages branch. Run"
 echo "           git branch --track gh-pages origin/gh-pages"
 echo "         if you are not."
@@ -32,7 +32,7 @@ read
 TEMP_DIR=$(mktemp -d)
 
 #Build all documentation into temporary folder
-sphinx-build -a -E -b html . $TEMP_DIR
+sphinx-build -a -E -b html docs/ $TEMP_DIR
 
 #Switch to gh-pages
 git checkout gh-pages

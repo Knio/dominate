@@ -19,9 +19,9 @@
 #    Public License along with pyy. If not, see
 #    <http://www.gnu.org/licenses/>.
 
-echo "WARNING: This script must be run from the root folder of the project!"
+echo "WARNING: This script must be run from the docs folder of the project!"
 echo "         You must also already be tracking the gh-pages branch. Run"
-echo "           git checkout -t -b gh-pages origin/gh-pages"
+echo "           git branch --track gh-pages origin/gh-pages"
 echo "         if you are not."
 echo ""
 echo "Press [ENTER] if both of these conditions have been satisfied. Otherwise"
@@ -32,7 +32,7 @@ read
 TEMP_DIR=$(mktemp -d)
 
 #Build all documentation into temporary folder
-sphinx-build -b html -a docs/ $TEMP_DIR
+sphinx-build -a -E -b html . $TEMP_DIR
 
 #Switch to gh-pages
 git checkout gh-pages
@@ -44,8 +44,12 @@ rm -rf *
 mv $TEMP_DIR/* .
 
 #HACK: Rename _static/ to static/ and update all reference to it.
-mv _static/ static/
+mv _static static
 perl -pi -e 's/_static/static/g' *.html
+
+#HACK: Rename _sources/ to sources/ and update all references to it.
+mv _sources sources
+perl -pi -e 's/_sources/sources/g' *.html
 
 #Show changed files and prompt for action
 git status

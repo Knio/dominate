@@ -16,6 +16,3 @@ class AttributeTests(unittest.TestCase):
             h = html(src='', __invalid=True)
         except AttributeError:
             self.fail()
-
-if __name__ == "__main__":
-    unittest.main()

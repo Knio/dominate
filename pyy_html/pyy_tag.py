@@ -158,7 +158,9 @@ class pyy_tag(object):
         return rendered
     
     #String and unicode representations are the same as render()
-    __str__ = __unicode__ = render
+    def __unicode__(self):
+        return self.render()
+    __str__ = __unicode__
     
     def render_children(self, indent=1, inline=False):
         children = ''

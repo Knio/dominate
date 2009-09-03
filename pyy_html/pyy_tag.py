@@ -36,19 +36,18 @@ class pyy_tag(object):
         #Add child elements
         self.add(*args)
         
-        for attr, value in kwargs.items():
-            attr = self.clean_attribute(attr)
+        for attr, value in map(pyy_tag.clean_attribute, kwargs.items()):
             self.set_attribute(attr, value)
-
-
+    
+    
     def set_attribute(self, attr, value):
         '''
         Add or update the value of an attribute.
         '''
         self.attributes[attr] = value
     __setitem__ = set_attribute
-
-
+    
+    
     def add(self, *args):
         if self.is_single and args:
             raise ValueError("<%s> tag can not have child elements." % type(self).__name__)
@@ -188,11 +187,18 @@ class pyy_tag(object):
         return '<%s: %s, %s>' % (name, attributes, children)
     
     @staticmethod
-    def clean_attribute(attribute):
+    def clean_attribute(attribute, value=None):
+        if isinstance(attribute, tuple):
+            attribute, value = attribute
+        
         #Workaround for python's reserved words
         if attribute[0] == '_': attribute = attribute[1:]
         #Workaround for inability to use colon in python keywords
-        return attribute.replace('_', ':').lower()
+        attribute = attribute.replace('_', ':').lower()
+        #Used to change selected=True to selected=selected
+        if value is True: value = attribute
+        
+        return (attribute, value) if value else attribute
 
 # escape() is used in render
 from pyy_html.utils import *

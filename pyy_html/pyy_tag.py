@@ -16,7 +16,7 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-class pyy_tag(object):   
+class pyy_tag(object):
     TAB = '  '#'\t'
     
     is_single     = False #Tag does not require matching end tag (ex. <hr/>)
@@ -44,7 +44,7 @@ class pyy_tag(object):
     def set_attribute(self, attr, value):
         '''
         Add or update the value of an attribute.
-        '''        
+        '''
         self.attributes[attr] = value
     __setitem__ = set_attribute
 
@@ -58,7 +58,7 @@ class pyy_tag(object):
                 self.children.append(obj)
             elif isinstance(obj, pyy_tag):
                 self.children.append(obj)
-                obj.parent = self                
+                obj.parent = self
             elif hasattr(obj, '__iter__'):
                 for subobj in obj:
                     self.add(subobj)
@@ -193,5 +193,5 @@ class pyy_tag(object):
         return attribute.replace('_', ':').lower()
 
 # escape() is used in render
-from pyy.utils import *
+from pyy_html.utils import *
 

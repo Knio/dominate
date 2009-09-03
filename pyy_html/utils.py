@@ -16,7 +16,7 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from pyy.pyy_tag    import pyy_tag
+from pyy_html.pyy_tag import pyy_tag
 
 class include(pyy_tag):
     '''
@@ -28,7 +28,7 @@ class include(pyy_tag):
         self.data = fl.read()
         fl.close()
     
-    def render(self, n=1, inline=False):
+    def render(self, indent=1, inline=False):
         return self.data
 
 class pipe(pyy_tag):

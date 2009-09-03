@@ -18,27 +18,27 @@ Public License along with pyy.  If not, see
 
 class document(object):
     def __init__(self, title='HTML Page'):
-        self.title   = title      
+        self.title   = title
         self.cookies = {}
         self.doctype = None
         self.html    = None
-
+    
     def getbody(self):
         if not self.html:
             raise ValueError('No html tag found.') #Likely not instantiated from a child class
-
+        
         bodys = self.html.getElementsByTagName('body')
         
         if not bodys:
             raise ValueError('No body tag found.')
         
         return bodys[0]
-
+    
     def add(self, obj):
         if not self._entry:
             self._entry = self.getbody()
         return self._entry.add(obj)
-
+    
     def __iadd__(self, obj):
         if not self._entry:
             self._entry = self.getbody()
@@ -54,7 +54,7 @@ class document(object):
             r.append('\n')
         
         if not 'title' in self.html:
-            #Semi-dirty hack to add a title element from whatever spec was imported
+            #FILTHY hack to add a title element from whatever spec was imported
             head = self.html.get('head')
             if head:
                 import sys

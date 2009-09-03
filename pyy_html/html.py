@@ -16,8 +16,8 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from pyy.pyy_tag    import pyy_tag
-from pyy.dom1core   import dom1core
+from pyy_html.pyy_tag  import pyy_tag
+from pyy_html.dom1core import dom1core
 
 class html_tag(pyy_tag, dom1core):
     
@@ -31,13 +31,13 @@ class html_tag(pyy_tag, dom1core):
         self.allow_invalid = kwargs.pop('__invalid', False)
         pyy_tag.__init__(self, *args, **kwargs)
         
-        for attr, val in self.default.iteritems():
+        for attr, value in self.default.iteritems():
             if attr in self.attributes: continue
             self.set_attribute(attr, value)
 
         #Check for missing required attributes
         missing = [i for i in self.required if i not in self.attributes]
-        if missing: 
+        if missing:
             raise AttributeError("Missing required attribute(s): '%s'" % ','.join(missing))
 
 

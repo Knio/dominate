@@ -17,8 +17,7 @@ Public License along with pyy.  If not, see
 '''
 
 from html     import html_tag, single, ugly
-from response import response
-from request  import BROWSER_IE
+from document import document
 
 __all__ = ['base', 'body', 'head', 'html', 'link', 'meta', 'script', 'style', 'title',
            'address', 'blockquote', '_del', 'div', 'dl', 'fieldset', 'form', 'h1', 'h2',
@@ -161,16 +160,11 @@ class rtc(html_tag): valid = COMMON
 
 ###############################################################################
 
-class htmlpage(response):
-    def __init__(self, title='XHTML 1.1 Page', request=None):
-        response.__init__(self, title, request)
+class htmlpage(document):
+    def __init__(self, title='XHTML 1.1 Page'):
+        document.__init__(self, title)
         
-        self.headers['Content-Type'] = 'application/xhtml+xml'
+        #self.headers['Content-Type'] = 'application/xhtml+xml'
         self.doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'
         self.html    = html()
         self.html.head, self.html.body = self.html.add(head(), body())
-    
-    def render(self, just_html=False):
-        if not just_html and self.request.browser == BROWSER_IE:
-            self.headers['Content-Type'] = 'text/html'
-        return response.render(self, just_html)

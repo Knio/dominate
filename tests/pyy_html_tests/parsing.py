@@ -4,7 +4,7 @@ from pyy_html.html    import comment
 from pyy_html.parser  import parse
 
 
-class RenderingTests(unittest.TestCase):
+class ParsingTests(unittest.TestCase):
   def testBasic(self):
     h = div()
     s = '<div></div>'

@@ -17,7 +17,7 @@ Public License along with pyy.  If not, see
 '''
 
 from html     import html_tag, ugly, single
-from response import response
+from document import document
 
 __all__ = ['html', 'head', 'title', 'base', 'link', 'meta', 'style', 'script', 'noscript',
            'body', 'section', 'nav', 'article', 'aside', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -217,9 +217,9 @@ class div(html_tag): valid = COMMON
 
 ###############################################################################
 
-class htmlpage(response):
-    def __init__(self, title='HTML 5 Page', request=None):
-        response.__init__(self, title, request)
+class htmlpage(document):
+    def __init__(self, title='HTML 5 Page'):
+        document.__init__(self, title, request)
         
         self.doctype = '<!DOCTYPE html>'
         self.html    = html()

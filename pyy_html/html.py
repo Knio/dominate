@@ -38,7 +38,7 @@ class html_tag(pyy_tag, dom1core):
         #Check for missing required attributes
         missing = [i for i in self.required if i not in self.attributes]
         if missing:
-            raise AttributeError("Missing required attribute(s): '%s'" % ','.join(missing))
+            raise AttributeError("<%s> missing required attribute(s): '%s'" % (type(self).__name__, ','.join(missing)))
 
 
     def set_attribute(self, attr, value):
@@ -73,15 +73,8 @@ class comment(html_tag):
     For more on conditional comments see:
       http://msdn.microsoft.com/en-us/library/ms537512(VS.85).aspx
     '''
-    import re
-    
     ATTRIBUTE_CONDITION = 'condition'
     ATTRIBUTE_DOWNLEVEL = 'downlevel' #Valid values are 'hidden' or 'revealed'
-    REPLACE = [
-        (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S), r'<comment condition="\1">\2</comment>'),
-        (re.compile(r'<!--(.*?)-->', re.S)                        , r'<comment>\1</comment>'),
-        (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif]>', re.S)     , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
-    ]
     
     valid = [ATTRIBUTE_CONDITION, ATTRIBUTE_DOWNLEVEL]
     
@@ -92,7 +85,7 @@ class comment(html_tag):
     
     def render(self, indent=1, inline=False):
         has_condition = comment.ATTRIBUTE_CONDITION in self.attributes
-        is_revealed = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
+        is_revealed   = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
         
         rendered = '<!'
         if not is_revealed:
@@ -100,10 +93,10 @@ class comment(html_tag):
         if has_condition:
             rendered += '[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION]
         
-        rendered += self.render_children(indent-1, inline)
+        rendered += self.render_children(indent - 1, inline)
         
         #XXX: This might be able to be changed to if len(self.children) > 1 since adjacent strings should always be joined
-        if any(isinstance(child, html_tag) for child in self.children):
+        if any(isinstance(child, pyy_tag) for child in self.children):
             rendered += '\n'
             rendered += html_tag.TAB * (indent - 1)
         
@@ -119,7 +112,15 @@ class comment(html_tag):
         '''
         Changes <!--comments--> to <comment>tags</comment> for easy parsing.
         '''
-        for search, replace in comment.REPLACE:
+        import re
+        
+        REPLACE = [
+            (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S), r'<comment condition="\1">\2</comment>'),
+            (re.compile(r'<!--(.*?)-->', re.S)                        , r'<comment>\1</comment>'),
+            (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif]>', re.S)     , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
+        ]
+        
+        for search, replace in REPLACE:
             data = search.sub(replace, data)
         return data
 

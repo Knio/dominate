@@ -36,8 +36,8 @@ class pyy_tag(object):
         #Add child elements
         self.add(*args)
         
-        for attr, value in map(pyy_tag.clean_attribute, kwargs.items()):
-            self.set_attribute(attr, value)
+        for attr, value in kwargs.items():
+            self.set_attribute(*pyy_tag.clean_pair(attr, value))
     
     
     def set_attribute(self, attr, value):
@@ -110,7 +110,7 @@ class pyy_tag(object):
     
     def __contains__(self, item):
         '''
-        Checks recursively if item is in children tree. Accepts both a string and class.
+        Checks recursively if item is in children tree. Accepts both a string and a class.
         '''
         return bool(self.get(item))
     
@@ -187,19 +187,19 @@ class pyy_tag(object):
         return '<%s: %s, %s>' % (name, attributes, children)
     
     @staticmethod
-    def clean_attribute(attribute, value=None):
-        if isinstance(attribute, tuple):
-            attribute, value = attribute
-        
+    def clean_attribute(attribute):
         #Workaround for python's reserved words
         if attribute[0] == '_': attribute = attribute[1:]
         #Workaround for inability to use colon in python keywords
-        attribute = attribute.replace('_', ':').lower()
-        #Used to change selected=True to selected=selected
-        if value is True: value = attribute
-        
-        return (attribute, value) if value else attribute
+        return attribute.replace('_', ':').lower()
+    
+    @staticmethod
+    def clean_pair(attribute, value):
+        attribute = pyy_tag.clean_attribute(attribute)
+        if value is True:
+            value = attribute
+        return (attribute, value)
 
 # escape() is used in render
-from pyy_html.utils import *
+from pyy_html.utils import escape
 

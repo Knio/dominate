@@ -16,16 +16,20 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
+from html import html, body, head, title
+
 class document(object):
     def __init__(self, title='HTML Page'):
         self.title   = title
         self.cookies = {}
         self.doctype = None
-        self.html    = None
+        self.html    = html()
+        self.head    = self.html.add(head())
+        self.body    = self.html.add(body())
     
     def getbody(self):
         if not self.html:
-            raise ValueError('No html tag found.') #Likely not instantiated from a child class
+            raise ValueError('No html tag found.')
         
         bodys = self.html.getElementsByTagName('body')
         
@@ -46,6 +50,15 @@ class document(object):
         self._entry += obj
         return self
     
+    def validate(self, root=None):
+        if root is None:
+            root = self.html
+        for child in root.children:
+            if child in self.doctype.valid[root]['children']:
+                self.validate(child)
+            else:
+                raise ValueError('%s element cannot contain %s element as child.' % (type(root).__name__, type(child).__name__))
+    
     def render(self):
         r = []
         
@@ -53,14 +66,8 @@ class document(object):
             r.append(self.doctype)
             r.append('\n')
         
-        if not 'title' in self.html:
-            #FILTHY hack to add a title element from whatever spec was imported
-            head = self.html.get('head')
-            if head:
-                import sys
-                for spec in ['pyy_html.xhtml11', 'pyy_html.html5', 'pyy_html.xhtml10strict', 'pyy_html.html4strict', 'pyy_html.xhtml10frameset', 'pyy_html.html4frameset']:
-                    if spec in sys.modules:
-                        head[0] += sys.modules[spec].title(self.title)
+        if title not in self.html:
+            self.head += title(self.title)
         
         r.append(self.html)
         return ''.join(map(str, r))

@@ -55,7 +55,7 @@ def parse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, allow_i
                 if '\n' in text and not preserve_whitespace:
                     text = text.strip()
                 
-                stack[-1].append(text)
+                stack[-1] += text
                 
                 if debug: print "  ADDED TEXT: %s" % text
         
@@ -94,7 +94,7 @@ def parse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, allow_i
             
             #Create new object and push onto the stack
             new = getattr(spec, name)(__invalid=allow_invalid_attributes, **kwargs)
-            stack[-1].append(new)
+            stack[-1] += new
             
             #Update value of preserve_whitespace
             if not new.is_pretty:
@@ -195,6 +195,6 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
         page.doctype = doctype_text
     
     #Parse main XHTML data
-    page.html = XHTMLParse(data, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup, debug=debug, start=start)
+    page.html = parse(data, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup, debug=debug, start=start)
     
     return page

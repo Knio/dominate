@@ -56,6 +56,129 @@ class html_tag(pyy_tag, dom1core):
 class single(html_tag): is_single = True
 class ugly  (html_tag): is_pretty = False
 
+class a(html_tag): pass
+class abbr(html_tag): pass
+class acronym(html_tag): pass
+class address(html_tag): pass
+class applet(html_tag): pass
+class area(single): pass
+class article(html_tag): pass
+class aside(html_tag): pass
+class audio(html_tag): pass
+class b(html_tag): pass
+class base(single): pass
+class basefont(single): pass
+class bdo(html_tag): pass
+class big(html_tag): pass
+class blockquote(html_tag): pass
+class body(html_tag): pass
+class br(single): pass
+class button(html_tag): pass
+class canvas(html_tag): pass
+class caption(html_tag): pass
+class center(html_tag): pass
+class cite(html_tag): pass
+class code(html_tag): pass
+class col(single): pass
+class colgroup(html_tag): pass
+class command(html_tag): pass
+class datagrid(html_tag): pass
+class datalist(html_tag): pass
+class datatemplate(html_tag): pass
+class dd(html_tag): pass
+class del_(html_tag): pass
+class details(html_tag): pass
+class dialog(html_tag): pass
+class dir(html_tag): pass
+class div(html_tag): pass
+class dfn(html_tag): pass
+class dl(html_tag): pass
+class dt(html_tag): pass
+class em(html_tag): pass
+class embed(html_tag): pass
+class eventsource(html_tag): pass
+class fieldset(html_tag): pass
+class figure(html_tag): pass
+class font(html_tag): pass
+class footer(html_tag): pass
+class form(html_tag): pass
+class frame(single): pass
+class frameset(html_tag): pass
+class h1(html_tag): pass
+class h2(html_tag): pass
+class h3(html_tag): pass
+class h4(html_tag): pass
+class h5(html_tag): pass
+class h6(html_tag): pass
+class head(html_tag): pass
+class header(html_tag): pass
+class hr(single): pass
+class html(html_tag): pass
+class i(html_tag): pass
+class iframe(html_tag): pass
+class img(single): pass
+class input_(single): pass
+class ins(html_tag): pass
+class isindex(html_tag): pass
+class kbd(html_tag): pass
+class label(html_tag): pass
+class legend(html_tag): pass
+class li(html_tag): pass
+class link(single): pass
+class mark(html_tag): pass
+class map_(html_tag): pass
+class menu(html_tag): pass
+class meter(html_tag): pass
+class meta(single): pass
+class nav(html_tag): pass
+class nest(html_tag): pass
+class noframes(html_tag): pass
+class noscript(html_tag): pass
+class object_(html_tag): pass
+class ol(html_tag): pass
+class optgroup(html_tag): pass
+class option(html_tag): pass
+class p(html_tag): pass
+class param(single): pass
+class pre(ugly): pass
+class progress(html_tag): pass
+class q(html_tag): pass
+class rb(html_tag): pass
+class rbc(html_tag): pass
+class rt(html_tag): pass
+class rtc(html_tag): pass
+class rp(html_tag): pass
+class ruby(html_tag): pass
+class rule(html_tag): pass
+class s(html_tag): pass
+class samp(html_tag): pass
+class script(ugly): pass
+class section(html_tag): pass
+class select(html_tag): pass
+class small(html_tag): pass
+class source(html_tag): pass
+class span(html_tag): pass
+class strike(html_tag): pass
+class strong(html_tag): pass
+class style(html_tag): pass
+class sub(html_tag): pass
+class sup(html_tag): pass
+class table(html_tag): pass
+class tbody(html_tag): pass
+class td(html_tag): pass
+class textarea(html_tag): pass
+class tfoot(html_tag): pass
+class th(html_tag): pass
+class thead(html_tag): pass
+class title(html_tag): pass
+class tr(html_tag): pass
+class tt(html_tag): pass
+class u(html_tag): pass
+class ul(html_tag): pass
+class var(html_tag): pass
+class video(html_tag): pass
+class xmp(html_tag): pass
+
 class comment(html_tag):
     '''
     Normal, one-line comment:
@@ -117,7 +240,7 @@ class comment(html_tag):
         REPLACE = [
             (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S), r'<comment condition="\1">\2</comment>'),
             (re.compile(r'<!--(.*?)-->', re.S)                        , r'<comment>\1</comment>'),
-            (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif]>', re.S)     , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
+            (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif\]>', re.S)     , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
         ]
         
         for search, replace in REPLACE:

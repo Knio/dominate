@@ -29,11 +29,14 @@ valid = {
     #Structure & Header
     base:   {'valid'   : ['href'],
              'required': ['href']},
-    body:   {'valid'   : COMMON + ['onload', 'onunload']},
-    head:   {'valid'   : COMMON_I18N + ['profile']},
+    body:   {'valid'   : COMMON + ['onload', 'onunload']
+             'children': [address, blockquote, del_, div, fieldset, form, hr, ins, noscript, p, pre, script, table, h1, h2, h3, h4, h5, h6, dl, ol, ul]},
+    head:   {'valid'   : COMMON_I18N + ['profile']
+             'children': [base, link, meta, object_, script, style, title]},
     html:   {'valid'   : COMMON_I18N + ['xmlns', 'xml:lang', 'xmlns:xsi', 'xsi:schemaLocation', 'version'],
              'required': ['xmlns'],
-             'default' : {'xmlns': 'http://www.w3.org/1999/xhtml'}},
+             'default' : {'xmlns': 'http://www.w3.org/1999/xhtml'}
+             'children': [head, body]},
     link:   {'valid'   : COMMON + ['href', 'media', 'type', 'charset', 'hreflang', 'rel', 'rev']},
     meta:   {'valid'   : COMMON_I18N + ['content', 'name', 'http-equiv', 'scheme'],
              'required': ['name']},
@@ -44,85 +47,146 @@ valid = {
     title:  {'valid'   : COMMON_I18N},
 
     #Block elements
-    address   : {'valid': COMMON},
-    blockquote: {'valid': COMMON + ['cite']},
-    _del      : {'valid': COMMON + ['cite', 'datetime']},
-    div       : {'valid': COMMON},
-    dl        : {'valid': COMMON},
-    fieldset  : {'valid': COMMON},
-    form      : {'valid': COMMON + ['action', 'method', 'accept', 'accept-charsets', 'enctype', 'onreset', 'onsubmit']},
-    h1        : {'valid': COMMON},
-    h2        : {'valid': COMMON},
-    h3        : {'valid': COMMON},
-    h4        : {'valid': COMMON},
-    h5        : {'valid': COMMON},
-    h6        : {'valid': COMMON},
-    hr        : {'valid': COMMON},
-    ins       : {'valid': COMMON + ['cite', 'datetime']},
-    noscript  : {'valid': COMMON},
-    ol        : {'valid': COMMON},
-    p         : {'valid': COMMON},
-    pre       : {'valid': COMMON + ['xml:space']},
-    table     : {'valid': COMMON + ['border', 'cellpadding', 'cellspacing', 'summary', 'width', 'frame', 'rules']},
-    ul        : {'valid': COMMON},
+    address   : {'valid'   : COMMON
+                 'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    blockquote: {'valid'   : COMMON + ['cite']
+                 'children': [address, blockquote, del_, div, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, script, table, ul]},
+    _del      : {'valid'   : COMMON + ['cite', 'datetime']
+                 'children': [a, abbr, acronym, b, bdo, big, blockquote, br, button, cite, code, del_, dfn, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, i, img, input_, ins, kbd, label, map_, noscript, object_, ol, p, pre, q, samp, script, select, small, span, strong, sub, sup, table, textarea, tt, ul, var]},
+    div       : {'valid'   : COMMON
+                 'children': [a, abbr, acronym, address, b, bdo, big, blockquote, br, button, cite, code, del_, dfn, div, dl, em, fieldset, form, h1, h2, h3, h4, h5, h6, hr, i, img, input_, ins, kbd, label, map_, noscript, object_, ol, p, pre, q, samp, script, select, small, span, strong, sub, sup, map, textarea, tt, ul, var]},
+    dl        : {'valid'   : COMMON
+                 'children': [dd, dt]},
+    fieldset  : {'valid'   : COMMON
+                 'children': [a, abbr, acronym, address, b, bdo, big, button, caption, cite, code, dd, del_, dfn, div, dt, em, fieldset, form, h1, h2, h3, h4, h5, h6, i, ins, kdb, label, legend, li, object_, p, pre, q, samp, small, span, strong, sub, sup, td, th, tt, var]},
+    form      : {'valid'   : COMMON + ['action', 'method', 'accept', 'accept-charsets', 'enctype', 'onreset', 'onsubmit']
+                 'children': [address, blockquote, del_, div, dl, fieldset, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, script, table, ul]},
+    h1        : {'valid'   : COMMON
+                 'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    h2        : {'valid'   : COMMON
+                 'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    h3        : {'valid'   : COMMON
+                 'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    h4        : {'valid'   : COMMON
+                 'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    h5        : {'valid'   : COMMON
+                 'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    h6        : {'valid'   : COMMON
+                 'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    hr        : {'valid'   : COMMON},
+    ins       : {'valid'   : COMMON + ['cite', 'datetime']
+                 'children': [a, abbr, acronym, address, b, bdo, big, blockquote, br, button, cite, code, del_, dfn, div, dl, em, i, img, input_, ins, kbd, label, map_, noscript, object_, ol, p, pre, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, ul, var]},
+    noscript  : {'valid'   : COMMON
+                 'children': [address, blockquote, del_, dfn, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, script, table, ul]},
+    ol        : {'valid'   : COMMON
+                 'children': [li]},
+    p         : {'valid'   : COMMON
+                 'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    pre       : {'valid'   : COMMON + ['xml:space']
+                 'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, input_, ins, kdb, label, map_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    table     : {'valid'   : COMMON + ['border', 'cellpadding', 'cellspacing', 'summary', 'width', 'frame', 'rules']
+                 'children': [caption, col, colgroup, tbody, tfoot, thead, tr]},
+    ul        : {'valid'   : COMMON
+                 'children': [li]},
     
     #Inline elements
-    a:        {'valid'   : COMMON + ['href', 'accesskey', 'charset', 'coords', 'hreflang', 'onblur', 'onfocus', 'rel', 'rev', 'shape', 'tabindex', 'type']},
-    abbr:     {'valid'   : COMMON},
-    acronym:  {'valid'   : COMMON},
-    b:        {'valid'   : COMMON},
-    bdo:      {'valid'   : COMMON + ['dir']},
-    big:      {'valid'   : COMMON},
+    a:        {'valid'   : COMMON + ['href', 'accesskey', 'charset', 'coords', 'hreflang', 'onblur', 'onfocus', 'rel', 'rev', 'shape', 'tabindex', 'type']
+               'children': [abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    abbr:     {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    acronym:  {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    b:        {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    bdo:      {'valid'   : COMMON + ['dir']
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    big:      {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
     br:       {'valid'   : COMMON},
-    button:   {'valid'   : COMMON + ['name', 'type', 'value', 'accesskey', 'disabled', 'onblur', 'onfocus', 'tabindex']},
-    cite:     {'valid'   : COMMON},
-    code:     {'valid'   : COMMON},
-    dfn:      {'valid'   : COMMON},
-    em:       {'valid'   : COMMON},
-    i:        {'valid'   : COMMON},
+    button:   {'valid'   : COMMON + ['name', 'type', 'value', 'accesskey', 'disabled', 'onblur', 'onfocus', 'tabindex']
+               'children': [abbr, acronym, address, b, bdo, big, blockquote, br, cite, code, dd, del_, dfn, div, dl, em, h1, h2, h3, h4, h5, h6, hr, i, img, ins, kbd, map_, noscript, object_, ol, p, pre, q, samp, script, small, span, strong, sub, sup, table, tt, ul, var]},
+    cite:     {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    code:     {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    dfn:      {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    em:       {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    i:        {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
     img:      {'valid'   : COMMON + ['alt', 'height', 'src', 'width', 'ismap', 'longdesc', 'usemap'],
                'required': ['alt', 'src'],
                'default' : {'alt': ''}},
     _input:   {'valid'   : COMMON + ['alt', 'checked', 'maxlength', 'name', 'size', 'type', 'value', 'accept', 'accesskey', 'disabled', 'ismap', 'onblur', 'onchange', 'onfocus', 'onselect', 'readonly', 'src', 'tabindex', 'usemap']},
-    kbd:      {'valid'   : COMMON},
-    label:    {'valid'   : COMMON + ['for', 'accesskey', 'onblur', 'onfocus']},
-    _map:     {'valid'   : COMMON},
-    _object:  {'valid'   : COMMON + ['classid', 'codebase', 'height', 'name', 'type', 'width', 'archive', 'codetype', 'data', 'declare', 'standby', 'tabindex', 'usemap']},
-    q:        {'valid'   : COMMON + ['cite']},
-    ruby:     {'valid'   : COMMON},
-    samp:     {'valid'   : COMMON},
-    select:   {'valid'   : COMMON + ['multiple', 'name', 'size', 'disabled', 'onblur', 'onchange', 'onfocus', 'tabindex']},
-    small:    {'valid'   : COMMON},
-    span:     {'valid'   : COMMON},
-    strong:   {'valid'   : COMMON},
-    sub:      {'valid'   : COMMON},
-    sup:      {'valid'   : COMMON},
-    textarea: {'valid'   : CPMMON + ['cols', 'name', 'rows', 'accesskey', 'disabled', 'onblur', 'onchange', 'onfocus', 'onselect', 'readonly', 'tabindex']},
-    tt:       {'valid'   : COMMON},
-    var:      {'valid'   : COMMON},
+    kbd:      {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    label:    {'valid'   : COMMON + ['for', 'accesskey', 'onblur', 'onfocus']
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    _map:     {'valid'   : COMMON
+               'children': [address, area, blockquote, del_, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, ins, noscript, ol, p, pre, script, table, ul]},
+    _object:  {'valid'   : COMMON + ['classid', 'codebase', 'height', 'name', 'type', 'width', 'archive', 'codetype', 'data', 'declare', 'standby', 'tabindex', 'usemap']
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, param, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    q:        {'valid'   : COMMON + ['cite']
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    ruby:     {'valid'   : COMMON
+               'children': [rbc, rtc, rb, rt, rp]},
+    samp:     {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    select:   {'valid'   : COMMON + ['multiple', 'name', 'size', 'disabled', 'onblur', 'onchange', 'onfocus', 'tabindex']
+               'children': [optgroup, option]},
+    small:    {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, noscript, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    span:     {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    strong:   {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    sub:      {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, noscript, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    sup:      {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, noscript, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    textarea: {'valid'   : CPMMON + ['cols', 'name', 'rows', 'accesskey', 'disabled', 'onblur', 'onchange', 'onfocus', 'onselect', 'readonly', 'tabindex']
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    tt:       {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, noscript, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    var:      {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
     
     #List item elements
-    dd: {'valid': COMMON},
-    dt: {'valid': COMMON},
-    li: {'valid': COMMON},
+    dd: {'valid'   : COMMON
+         'children': [a, abbr, acronym, b, bdo, big, blockquote, br, button, cite, code, del_, dfn, div, dl, fieldset, form, h1, h2, h3, h4, h5, h6, hr, i, img, input_, ins, kbd, label, map_, noscript, object_, ol, p, pre, q, samp, script, select, small, span, strong, sub, sup, table, textarea, tt, ul, var]},
+    dt: {'valid'   : COMMON
+         'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    li: {'valid'   : COMMON
+         'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, div, dl, em, fieldset, form, h1, h2, h3, h4, h5, h6, hr, i, img, input_, ins, kbd, label, map_, noscript, object_, ol, p, pre, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, map, noscript, ul, var]},
     
     #Table content elements
-    caption:  {'valid': COMMON},
-    col:      {'valid': COMMON + ['align', 'span', 'valign', 'width', 'char', 'charoff']},
-    colgroup: {'valid': COMMON + ['align', 'span', 'valign', 'width', 'char', 'charoff']},
-    tbody:    {'valid': COMMON + ['align', 'valign', 'char', 'charoff']},
-    td:       {'valid': COMMON + ['align', 'colspan', 'headers', 'rowspan', 'valign', 'axis', 'char', 'charoff']},
-    tfoot:    {'valid': COMMON + ['align', 'valign', 'char', 'charoff']},
-    th:       {'valid': COMMON + ['abbr', 'align', 'colspan', 'rowspan', 'valign', 'axis', 'char', 'charoff', 'scope']},
-    thead:    {'valid': COMMON + ['align', 'valign', 'char', 'charoff']},
-    tr:       {'valid': COMMON + ['align', 'valign', 'char', 'charoff']},
+    caption:  {'valid'   : COMMON
+               'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
+    col:      {'valid'   : COMMON + ['align', 'span', 'valign', 'width', 'char', 'charoff']},
+    colgroup: {'valid'   : COMMON + ['align', 'span', 'valign', 'width', 'char', 'charoff']
+               'children': [col]},
+    tbody:    {'valid'   : COMMON + ['align', 'valign', 'char', 'charoff']
+               'children': [tr]},
+    td:       {'valid'   : COMMON + ['align', 'colspan', 'headers', 'rowspan', 'valign', 'axis', 'char', 'charoff']
+               'children': [abbr, acronym, address, b, bdo, big, blockquote, br, button, cite, code, del_, dfn, div, dl, em, fieldset, form, h1, h2, h3, h4, h5, h6, hr, i, img, input_, ins, kdb, label, map_, object_, ol, p, pre, q, samp, script, select, small, span, strong, sub, sup, table, textarea, tt, ul, var]},
+    tfoot:    {'valid'   : COMMON + ['align', 'valign', 'char', 'charoff']
+               'children': [tr]},
+    th:       {'valid'   : COMMON + ['abbr', 'align', 'colspan', 'rowspan', 'valign', 'axis', 'char', 'charoff', 'scope']
+               'children': [abbr, acronym, address, b, bdo, big, blockquote, br, button, cite, code, del_, dfn, div, dl, em, fieldset, form, h1, h2, h3, h4, h5, h6, hr, i, img, input_, ins, kdb, label, map_, object_, ol, p, pre, q, samp, script, select, small, span, strong, sub, sup, table, textarea, tt, ul, var]},
+    thead:    {'valid'   : COMMON + ['align', 'valign', 'char', 'charoff']
+               'children': [tr]},
+    tr:       {'valid'   : COMMON + ['align', 'valign', 'char', 'charoff']
+               'children': [td, th]},
     
     #Form fieldset legends
-    legend: {'valid': ['accesskey'] + COMMON},
+    legend: {'valid'   : ['accesskey'] + COMMON
+             'children': [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kdb, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]},
     
     #Form menu options
-    optgroup: {'valid': ['label', 'disabled'] + COMMON},
-    option:   {'valid': ['selected', 'value', 'disabled', 'label'] + COMMON},
+    optgroup: {'valid'   : ['label', 'disabled'] + COMMON
+               'children': [option]},
+    option:   {'valid'   : ['selected', 'value', 'disabled', 'label'] + COMMON},
     
     #Map areas
     area: {'valid'   : COMMON + ['alt', 'coords', 'href', 'shape', 'accesskey', 'onblur', 'onfocus', 'nohref', 'tabindex'],
@@ -134,9 +198,14 @@ valid = {
             'required': ['name']},
     
     #Ruby annotations
-    rb : {'valid': COMMON},
-    rbc: {'valid': COMMON},
-    rp : {'valid': COMMON},
-    rt : {'valid': COMMON + ['rbspan']},
-    rtc: {'valid': COMMON},
+    rb : {'valid'   : COMMON
+          'children': [rt]},
+    rbc: {'valid'   : COMMON
+          'children': [rb]},
+    rp : {'valid'   : COMMON
+          'children': [rt]},
+    rt : {'valid'   : COMMON + ['rbspan']
+          'children': [rt]},
+    rtc: {'valid'   : COMMON
+          'children': [rt]},
 }

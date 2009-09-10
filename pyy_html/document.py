@@ -53,11 +53,36 @@ class document(object):
     def validate(self, root=None):
         if root is None:
             root = self.html
+        
+        #Add default attributes
+        if 'default' in self.doctype.valid[root.__class__]:
+            for attribute, value in self.doctype.valid[root.__class__]['default'].iteritems():
+                if attribute not in root.attributes:
+                    root[attribute] = value
+        if not root.allow_invalid:
+            #Check for invalid attributes
+            invalid_attributes = []
+            for attribute, value in root.attributes.iteritems():
+                if attribute not in self.doctype.valid[root.__class__]['valid']:
+                    invalid_attributes.append(attribute)
+            if invalid_attributes:
+                raise AttributeError('%s element has one or more invalid attributes: %s.' % (type(root).__name__, ', '.join(invalid_attributes)))
+            #Check for missing required attributes
+            if 'required' in self.doctype.valid[root.__class__]:
+                missing_attributes = [attribute for attribute in self.doctype.valid[root.__class__]['required'] if attribute not in root.attributes]
+                if missing_attributes:
+                    raise AttributeError('%s element has one or more missing attributes that are required: %s.' % (type(root).__name__, ', '.join(missing_attributes)))
+        
+        #Check children
         for child in root.children:
-            if child in self.doctype.valid[root]['children']:
-                self.validate(child)
-            else:
+            if child.is_single and child.children:
+                raise ValueError('%s element cannot contain any child elements. Currently has: %s.' % (type(root).__name__, ', '.join(type(c).__name__ for c in root.children)))
+            elif child.__class__ not in self.doctype.valid[root.__class__]['children']:
                 raise ValueError('%s element cannot contain %s element as child.' % (type(root).__name__, type(child).__name__))
+            else:
+                self.validate(child)
+        
+        return True
     
     def render(self):
         r = []

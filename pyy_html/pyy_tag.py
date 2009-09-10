@@ -21,7 +21,6 @@ class pyy_tag(object):
     
     is_single     = False #Tag does not require matching end tag (ex. <hr/>)
     is_pretty     = True  #Text inside the tag should be left as-is (ex. <pre>)
-    do_inline     = False #Does not insert newlines on all children if True (recursive attribute)
 
     
     def __init__(self, *args, **kwargs):
@@ -29,8 +28,7 @@ class pyy_tag(object):
         self.children   = []
         self.parent     = None
         
-
-        # special attributes
+        #Does not insert newlines on all children if True (recursive attribute)
         self.do_inline = kwargs.pop('__inline', False)
         
         #Add child elements
@@ -49,9 +47,6 @@ class pyy_tag(object):
     
     
     def add(self, *args):
-        if self.is_single and args:
-            raise ValueError("<%s> tag can not have child elements." % type(self).__name__)
-        
         for obj in args:
             if   isinstance(obj, basestring):
                 self.children.append(obj)
@@ -74,7 +69,7 @@ class pyy_tag(object):
         Recursively searches children for tags of a certain type with matching attributes.
         '''
         #Stupid workaround since we can not use pyy_tag in the method declaration
-        if not tag: tag = pyy_tag
+        if tag is None: tag = pyy_tag
         
         results = []
         for child in self.children:
@@ -128,9 +123,9 @@ class pyy_tag(object):
         '''
         inline = self.do_inline or inline
         
-        #Workaround for python keywords
-        if type(self).__name__[0] == "_":
-            name = type(self).__name__[1:]
+        #Workaround for python keywords and standard classes/methods (del, object, input)
+        if type(self).__name__[-1] == "_":
+            name = type(self).__name__[:-1]
         else:
             name = type(self).__name__
         rendered = '<' + name
@@ -201,5 +196,5 @@ class pyy_tag(object):
         return (attribute, value)
 
 # escape() is used in render
-from pyy_html.utils import escape
+from utils import escape
 

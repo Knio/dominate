@@ -16,45 +16,24 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from pyy_html.pyy_tag  import pyy_tag
-from pyy_html.dom1core import dom1core
+from pyy_tag  import pyy_tag
+from dom1core import dom1core
 
 class html_tag(pyy_tag, dom1core):
-    
-    valid         = []    #List of all attributes which are valid for a tag
-    required      = []    #List of all attributes which are required for a tag (must be in self.valid)
-    default       = {}    #Default values to be used for omitted required attributes
-    allow_invalid = False #Allows missing required attributes and invalid attributes if True
-    
-
     def __init__(self, *args, **kwargs):
+        #Allows missing required attributes and invalid attributes if True
         self.allow_invalid = kwargs.pop('__invalid', False)
-        pyy_tag.__init__(self, *args, **kwargs)
         
-        for attr, value in self.default.iteritems():
-            if attr in self.attributes: continue
-            self.set_attribute(attr, value)
+        pyy_tag.__init__(self, *args, **kwargs)
 
-        #Check for missing required attributes
-        missing = [i for i in self.required if i not in self.attributes]
-        if missing:
-            raise AttributeError("<%s> missing required attribute(s): '%s'" % (type(self).__name__, ','.join(missing)))
-
-
-    def set_attribute(self, attr, value):
-        if attr not in self.valid and not self.allow_invalid:
-            raise AttributeError("Invalid attribute '%s'." % attr)
-        return pyy_tag.set_attribute(self, attr, value)
-    
-
-
-
-################################################################################
-######################## Html_tag-based Utility Classes ########################
-################################################################################
 
 class single(html_tag): is_single = True
 class ugly  (html_tag): is_pretty = False
+
+
+################################################################################
+############################### Html Tag Classes ###############################
+################################################################################
 
 class a(html_tag): pass
 class abbr(html_tag): pass

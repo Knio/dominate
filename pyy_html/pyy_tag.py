@@ -27,6 +27,7 @@ class pyy_tag(object):
         self.attributes = {}
         self.children   = []
         self.parent     = None
+        self.document   = None
         
         #Does not insert newlines on all children if True (recursive attribute)
         self.do_inline = kwargs.pop('__inline', False)
@@ -45,14 +46,24 @@ class pyy_tag(object):
         self.attributes[attr] = value
     __setitem__ = set_attribute
     
-    
+    def setdocument(self, doc):
+        self.document = doc
+        for i in self.children:
+            if not isinstance(i, pyy_tag): return
+            i.setdocument(doc)    
+
     def add(self, *args):
         for obj in args:
             if   isinstance(obj, basestring):
+                if self.document and self.document.doctype:
+                    self.document.doctype.validate(self, obj)
                 self.children.append(obj)
             elif isinstance(obj, pyy_tag):
+                if self.document and self.document.doctype:
+                    self.document.doctype.validate(self, obj)
                 self.children.append(obj)
                 obj.parent = self
+                obj.setdocument(self.document)
             elif hasattr(obj, '__iter__'):
                 for subobj in obj:
                     self.add(subobj)

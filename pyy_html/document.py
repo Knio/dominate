@@ -24,6 +24,7 @@ class document(object):
     self.cookies  = {}
     self.doctype  = None
     self.html     = html()
+    self.html.document = self
     self.head     = self.html.add(head())
     self.body     = self.html.add(body())
     self._entry   = self.body

@@ -20,16 +20,17 @@ class dtd(object):
       for k in [VALID, REQUIRED, CHILDREN]:
         dict[k] = set(dict[k])
 
-  def validate(self, tag):   
+  def validate(self, tag, child=None):   
     cls = type(tag)
     valid = self.valid[cls]
     
     #Check children
-    if tag.is_single and tag.children:
+    children = child and [child] or tag.children
+    if tag.is_single and children:
       raise ValueError('%s element cannot contain any child elements. Currently has: %s.' \
-        % (cls.__name__, ', '.join(type(c).__name__ for c in tag.children)))
+        % (cls.__name__, ', '.join(type(c).__name__ for c in children)))
 
-    for child in tag.children:
+    for child in children:
       if type(child) not in valid[CHILDREN]:
         raise ValueError('%s element cannot contain %s element as child.' %  (cls.__name__, type(child).__name__))
       

@@ -15,7 +15,9 @@ You should have received a copy of the GNU Lesser General
 Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
+import html
 
-#Importing * normally would be bad due to class conflicts in the different
-#specification files. Only import XHTML 1.1 classes instead.
-__all__ = ['parser', 'html', 'xhtml11']
+from document import document
+from dtd      import *
+from parser   import parse
+

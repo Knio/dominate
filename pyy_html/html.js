@@ -30,7 +30,7 @@ Public License along with pyy.  If not, see
                 for (var j=0; j < arguments.length; j++)
                 {
                     var argument = arguments[j];
-                    if (argument instanceof Node)
+                    if (argument instanceof Node) // TODO IE has no Node object
                         dom.appendChild(argument)
                     else if (typeof argument == 'string')                
                         dom.appendChild(document.createTextNode(argument))
@@ -40,10 +40,10 @@ Public License along with pyy.  If not, see
                         {
                             var value = argument[key];
                             if (key == 'class')
-                                dom.className += dom.className ? ' ' + value : value;
+                                YAHOO.util.Dom.addClass(dom,value);
                             else if (key == 'style') // style: {background:'#000'}
                                 for (style in value)
-                                    dom.style[style] = value[style]
+                                    YAHOO.util.Dom.setStyle(dom, style[style], value[style]);
                             else if (k.slice(0, 2) == 'on') // an event handler
                                 dom.addEventListener(key.slice(2), value, false)
                             else // otherwise a regular attribute

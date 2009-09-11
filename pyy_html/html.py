@@ -23,7 +23,6 @@ class html_tag(pyy_tag, dom1core):
     def __init__(self, *args, **kwargs):
         #Allows missing required attributes and invalid attributes if True
         self.allow_invalid = kwargs.pop('__invalid', False)
-        
         pyy_tag.__init__(self, *args, **kwargs)
 
 
@@ -35,60 +34,60 @@ class ugly  (html_tag): is_pretty = False
 ############################### Html Tag Classes ###############################
 ################################################################################
 
-class a(html_tag): pass
-class abbr(html_tag): pass
-class acronym(html_tag): pass
-class address(html_tag): pass
-class applet(html_tag): pass
-class area(single): pass
-class article(html_tag): pass
-class aside(html_tag): pass
-class audio(html_tag): pass
-class b(html_tag): pass
-class base(single): pass
-class basefont(single): pass
-class bdo(html_tag): pass
-class big(html_tag): pass
-class blockquote(html_tag): pass
-class body(html_tag): pass
-class br(single): pass
-class button(html_tag): pass
-class canvas(html_tag): pass
-class caption(html_tag): pass
-class center(html_tag): pass
-class cite(html_tag): pass
-class code(html_tag): pass
-class col(single): pass
-class colgroup(html_tag): pass
-class command(html_tag): pass
-class datagrid(html_tag): pass
-class datalist(html_tag): pass
+class a           (html_tag): pass
+class abbr        (html_tag): pass
+class acronym     (html_tag): pass
+class address     (html_tag): pass
+class applet      (html_tag): pass
+class area        (single):   pass
+class article     (html_tag): pass
+class aside       (html_tag): pass
+class audio       (html_tag): pass
+class b           (html_tag): pass
+class base        (single):   pass
+class basefont    (single):   pass
+class bdo         (html_tag): pass
+class big         (html_tag): pass
+class blockquote  (html_tag): pass
+class body        (html_tag): pass
+class br          (single):   pass
+class button      (html_tag): pass
+class canvas      (html_tag): pass
+class caption     (html_tag): pass
+class center      (html_tag): pass
+class cite        (html_tag): pass
+class code        (html_tag): pass
+class col         (single):   pass
+class colgroup    (html_tag): pass
+class command     (html_tag): pass
+class datagrid    (html_tag): pass
+class datalist    (html_tag): pass
 class datatemplate(html_tag): pass
-class dd(html_tag): pass
-class del_(html_tag): pass
-class details(html_tag): pass
-class dialog(html_tag): pass
-class dir(html_tag): pass
-class div(html_tag): pass
-class dfn(html_tag): pass
-class dl(html_tag): pass
-class dt(html_tag): pass
-class em(html_tag): pass
-class embed(html_tag): pass
-class eventsource(html_tag): pass
-class fieldset(html_tag): pass
-class figure(html_tag): pass
-class font(html_tag): pass
-class footer(html_tag): pass
-class form(html_tag): pass
-class frame(single): pass
-class frameset(html_tag): pass
-class h1(html_tag): pass
-class h2(html_tag): pass
-class h3(html_tag): pass
-class h4(html_tag): pass
-class h5(html_tag): pass
-class h6(html_tag): pass
+class dd          (html_tag): pass
+class del_        (html_tag): pass
+class details     (html_tag): pass
+class dialog      (html_tag): pass
+class dir         (html_tag): pass
+class div         (html_tag): pass
+class dfn         (html_tag): pass
+class dl          (html_tag): pass
+class dt          (html_tag): pass
+class em          (html_tag): pass
+class embed       (html_tag): pass
+class eventsource (html_tag): pass
+class fieldset    (html_tag): pass
+class figure      (html_tag): pass
+class font        (html_tag): pass
+class footer      (html_tag): pass
+class form        (html_tag): pass
+class frame       (single):   pass
+class frameset    (html_tag): pass
+class h1          (html_tag): pass
+class h2          (html_tag): pass
+class h3          (html_tag): pass
+class h4          (html_tag): pass
+class h5          (html_tag): pass
+class h6          (html_tag): pass
 class head(html_tag): pass
 class header(html_tag): pass
 class hr(single): pass

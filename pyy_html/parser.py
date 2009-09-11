@@ -17,9 +17,11 @@ Public License along with pyy.  If not, see
 '''
 
 import re
-import html, xhtml11, xhtml10strict, xhtml10frameset, html5, html4strict, html4frameset
+import html
+import dtd
 
-def parse(data, spec=xhtml11, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
+# TODO this is broken
+def parse(data, spec=dtd.xhtml11, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
     if allow_invalid:
         allow_invalid_attributes = allow_invalid_markup = allow_invalid
     

@@ -21,7 +21,7 @@ import html
 import dtd
 
 # TODO this is broken
-def parse(data, spec=dtd.xhtml11, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
+def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
     if allow_invalid:
         allow_invalid_attributes = allow_invalid_markup = allow_invalid
     
@@ -95,7 +95,7 @@ def parse(data, spec=dtd.xhtml11, start=0, debug=False, allow_invalid=False, all
             kwargs = dict(r_att.findall(match.group('attributes') or ''))
             
             #Create new object and push onto the stack
-            new = getattr(spec, name)(__invalid=allow_invalid_attributes, **kwargs)
+            new = getattr(html, name)(__invalid=allow_invalid_attributes, **kwargs)
             stack[-1] += new
             
             #Update value of preserve_whitespace
@@ -141,6 +141,7 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
     
     #Locate possible DOCTYPE declaration and add it to page
     doctype = r_doc.search(data, start)
+    spec = None
     if doctype:
         start, end = doctype.span()
         doctype_text = remove_spaces(data[start:end])
@@ -155,15 +156,15 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
                 #XHTML 1.0
                 strength = doctype.group('strength')
                 if strength == 'Strict':
-                    spec = xhtml10strict
+                    spec = dtd.xhtml10strict
                 elif strength == 'Frameset':
-                    spec = xhtml10frameset
+                    spec = dtd.xhtml10frameset
                 elif strength == 'Transitional':
                     raise ValueError('No class set for XHTML 1.0 Transitional.')
                 else:
                     raise ValueError('Unknown XHTML 1.0 strength "%s".' % strength)
             elif version == '1.1':
-                spec = xhtml11
+                spec = dtd.xhtml11
             else:
                 raise ValueError('Unknown XHTML version "%s".' % version)
         elif doctype.group('html') == 'HTML':
@@ -172,9 +173,9 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
             if version == '4.01':
                 strength = doctype.group('strength')
                 if not strength or strength == 'Strict':
-                    spec = html4strict
+                    spec = dtd.html4strict
                 elif strength == 'Frameset':
-                    spec = html4frameset
+                    spec = dtd.html4frameset
                 elif strength == 'Transitional':
                     raise ValueError('No class set for HTML 4.01 Transitional')
                 else:
@@ -185,18 +186,16 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
                 raise ValueError('Unknown HTML version "%s".' % version)
         elif not doctype.group('html') and doctype.group('topelement') == 'html':
             #HTML 5
-            spec = html5
+            spec = dtd.html5
         else:
             raise ValueError('Unknown doctype "%s".' % doctype_text)
     
     #Create spec's htmlpage
-    page = spec.htmlpage()
-    
-    #Add DOCTYPE if found
-    if doctype:
-        page.doctype = doctype_text
-    
+    page = document()
+    page.setdoctype(spec)
+       
     #Parse main XHTML data
     page.html = parse(data, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup, debug=debug, start=start)
-    
+    page.validate()
+
     return page

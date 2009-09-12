@@ -19,5 +19,5 @@ import html
 
 from document import document
 from dtd      import *
-from parser   import parse
+from parser   import parse, pageparse
 

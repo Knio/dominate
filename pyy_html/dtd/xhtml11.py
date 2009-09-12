@@ -30,9 +30,8 @@ COMMON_CHILDREN = [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, 
 # TODO: is there any way to check if a tag is only allowed 1 child? ie <html> <body></body> <body></body> </html>. does the spec say anything about this?
 
 class xhtml11(dtd):
-  def render(self):
-    return '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN' \
-           '    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'
+  docstring =  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"' \
+               '    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'
 
 
   valid = {

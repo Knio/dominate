@@ -20,7 +20,7 @@ class dtd(object):
       for k in [VALID, REQUIRED, CHILDREN]:
         dict[k] = set(dict[k])
 
-  def validate(self, tag, child=None):   
+  def validate(self, tag, child=None):
     cls = type(tag)
     valid = self.valid[cls]
     
@@ -32,7 +32,8 @@ class dtd(object):
 
     for child in children:
       if type(child) not in valid[CHILDREN]:
-        raise ValueError('%s element cannot contain %s element as child.' %  (cls.__name__, type(child).__name__))
+        raise ValueError('%s element cannot contain %s element as child.' % \
+            (cls.__name__, type(child).__name__))
       
       if isinstance(child, html_tag): self.validate(child)
 
@@ -60,7 +61,7 @@ class dtd(object):
     return True
   
   def render(self):
-    raise NotImplementedError  
+    return self.docstring
 
 import xhtml11 as _xhtml11
 

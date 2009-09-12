@@ -67,7 +67,8 @@ class pyy_tag(object):
             elif hasattr(obj, '__iter__'):
                 for subobj in obj:
                     self.add(subobj)
-            else:
+            else: # wtf is it?
+                raise ValueError('%r not a tag or string' % obj)
                 self.children.append(obj)
         
         if len(args) > 1:
@@ -107,7 +108,11 @@ class pyy_tag(object):
         Number of child elements.
         '''
         return len(self.children)
-    
+
+    def __nonzero__(self):
+        'Hack for "if x" and __len__'
+        return True
+      
     def __iter__(self):
         '''
         Iterates over child elements.

@@ -1,16 +1,11 @@
 About
 =====
-`pyy` is a python library for creating and serving of (X)HTML pages.
-
-(more to come...)
+About `pyy_cgi`.
 
 
-Modules
-=======
-*   `pyy_cgi` - CGI gateway.
-*   `pyy_html` - Markup and document creation, validation, and rendering.
-*   `pyy_httpserver` - An extremely light web server.
-*   `pyy_web` - HTTP helper classes and functions.
+Usage
+=====
+`pyy_cgi` usage.
 
 
 Developed By

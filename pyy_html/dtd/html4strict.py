@@ -29,131 +29,116 @@ class html4strict(dtd):
   docstring = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'
   
   valid = {
-  
-  
-class html(html_tag): valid = COMMON_I18N
-class head(html_tag): valid = ['profile'] + COMMON_I18N
-class title(html_tag): valid = COMMON_I18N
-class meta(single):
-    valid    = ['http-equiv', 'name', 'content', 'scheme'] + COMMON_I18N
-    required = ['content']
-class body(html_tag): valid = ['onload', 'onunload'] + COMMON
+    html : {'valid'   : COMMON_I18N},
+    head : {'valid'   : ['profile'] + COMMON_I18N},
+    title: {'valid'   : COMMON_I18N},
+    meta : {'valid'   : ['http-equiv', 'name', 'content', 'scheme'] + COMMON_I18N,
+            'required': ['content']},
+    body : {'valid'   : ['onload', 'onunload'] + COMMON},
 
-class bdo(html_tag):
-    valid    = ['lang', 'dir'] + COMMON_CORE
-    required = ['dir']
+    bdo: {'valid'   : ['lang', 'dir'] + COMMON_CORE,
+          'required': ['dir']},
 
-class div(html_tag): valid = COMMON
-class span(html_tag): valid = COMMON
+    div : {'valid': COMMON},
+    span: {'valid': COMMON},
 
-class h1(html_tag): valid = COMMON
-class h2(html_tag): valid = COMMON
-class h3(html_tag): valid = COMMON
-class h4(html_tag): valid = COMMON
-class h5(html_tag): valid = COMMON
-class h6(html_tag): valid = COMMON
+    h1: {'valid': COMMON},
+    h2: {'valid': COMMON},
+    h3: {'valid': COMMON},
+    h4: {'valid': COMMON},
+    h5: {'valid': COMMON},
+    h6: {'valid': COMMON},
 
-class address(html_tag): valid = COMMON
+    address: {'valid': COMMON},
 
-class em(html_tag): valid = COMMON
-class strong(html_tag): valid = COMMON
-class dfn(html_tag): valid = COMMON
-class code(html_tag): valid = COMMON
-class samp(html_tag): valid = COMMON
-class kbd(html_tag): valid = COMMON
-class var(html_tag): valid = COMMON
-class cite(html_tag): valid = COMMON
-class abbr(html_tag): valid = COMMON
-class acronym(html_tag): valid = COMMON
+    em     : {'valid': COMMON},
+    strong : {'valid': COMMON},
+    dfn    : {'valid': COMMON},
+    code   : {'valid': COMMON},
+    samp   : {'valid': COMMON},
+    kbd    : {'valid': COMMON},
+    var    : {'valid': COMMON},
+    cite   : {'valid': COMMON},
+    abbr   : {'valid': COMMON},
+    acronym: {'valid': COMMON},
 
-class blockquote(html_tag): valid = ['cite'] + COMMON
-class q(html_tag): valid = ['cite'] + COMMON
+    blockquote: {'valid': ['cite'] + COMMON},
+    q         : {'valid': ['cite'] + COMMON},
 
-class sub(html_tag): valid = COMMON
-class sup(html_tag): valid = COMMON
+    sub: {'valid': COMMON},
+    sup: {'valid': COMMON},
 
-class p(html_tag): valid = COMMON
+    p: {'valid': COMMON},
 
-class br(single): valid = COMMON_CORE
+    br: {'valid': COMMON_CORE},
 
-class pre(ugly): valid = COMMON
+    pre: {'valid': COMMON},
 
-class ins(html_tag): valid = ['cite', 'datetime'] + COMMON
-class _del(html_tag): valid = ['cite', 'datetime'] + COMMON
+    ins : {'valid': ['cite', 'datetime'] + COMMON},
+    del_: {'valid': ['cite', 'datetime'] + COMMON},
 
-class ul(html_tag): valid = COMMON
-class ol(html_tag): valid = COMMON
-class li(html_tag): valid = COMMON
-class dl(html_tag): valid = COMMON
-class dt(html_tag): valid = COMMON
-class dd(html_tag): valid = COMMON
+    ul: {'valid': COMMON},
+    ol: {'valid': COMMON},
+    li: {'valid': COMMON},
+    dl: {'valid': COMMON},
+    dt: {'valid': COMMON},
+    dd: {'valid': COMMON},
 
-class table(html_tag): valid = ['summary', 'width', 'border', 'frame', 'rules', 'cellspacing', 'cellpadding'] + COMMON
-class caption(html_tag): valid = COMMON
-class thead(html_tag): valid = ['align', 'char', 'charoff', 'valign'] + COMMON
-class tbody(html_tag): valid = ['align', 'char', 'charoff', 'valign'] + COMMON
-class tfoot(html_tag): valid = ['align', 'char', 'charoff', 'valign'] + COMMON
-class colgroup(html_tag): valid = ['span', 'width', 'align', 'char', 'charoff', 'valign'] + COMMON
-class col(html_tag): valid = ['span', 'width', 'align', 'char', 'charoff', 'valign'] + COMMON
-class tr(html_tag): valid = ['align', 'char', 'charoff', 'valign'] + COMMON
-class td(html_tag): valid = ['abbr', 'axis', 'headers', 'scope', 'rowspan', 'colspan', 'align', 'char', 'charoff', 'valign'] + COMMON
-class th(html_tag): valid = ['abbr', 'axis', 'headers', 'scope', 'rowspan', 'colspan', 'align', 'char', 'charoff', 'valign'] + COMMON
+    table   : {'valid': ['summary', 'width', 'border', 'frame', 'rules', 'cellspacing', 'cellpadding'] + COMMON},
+    caption : {'valid': COMMON},
+    thead   : {'valid': ['align', 'char', 'charoff', 'valign'] + COMMON},
+    tbody   : {'valid': ['align', 'char', 'charoff', 'valign'] + COMMON},
+    tfoot   : {'valid': ['align', 'char', 'charoff', 'valign'] + COMMON},
+    colgroup: {'valid': ['span', 'width', 'align', 'char', 'charoff', 'valign'] + COMMON},
+    col     : {'valid': ['span', 'width', 'align', 'char', 'charoff', 'valign'] + COMMON},
+    tr      : {'valid': ['align', 'char', 'charoff', 'valign'] + COMMON},
+    td      : {'valid': ['abbr', 'axis', 'headers', 'scope', 'rowspan', 'colspan', 'align', 'char', 'charoff', 'valign'] + COMMON},
+    th      : {'valid': ['abbr', 'axis', 'headers', 'scope', 'rowspan', 'colspan', 'align', 'char', 'charoff', 'valign'] + COMMON},
 
-class a(html_tag): valid = ['charset', 'type', 'name', 'href', 'hreflang', 'rel', 'rev', 'accesskey', 'shape', 'coords', 'tabindex', 'onfocus', 'onblur'] + COMMON
-class link(single): valid = ['charset', 'href', 'hreflang', 'type', 'rel', 'rev', 'media'] + COMMON
-class base(single):
-    valid    = ['href']
-    required = ['href']
+    a   : {'valid'   : ['charset', 'type', 'name', 'href', 'hreflang', 'rel', 'rev', 'accesskey', 'shape', 'coords', 'tabindex', 'onfocus', 'onblur'] + COMMON},
+    link: {'valid'   : ['charset', 'href', 'hreflang', 'type', 'rel', 'rev', 'media'] + COMMON},
+    base: {'valid'   : ['href'],
+           'required': ['href']},
 
-class img(single):
-    valid    = ['src', 'alt', 'longdesc', 'name', 'height', 'width', 'usemap', 'ismap'] + COMMON
-    required = ['src', 'alt']
-    default  = {'alt': ''}
-class _object(html_tag): valid = ['declare', 'classid', 'codebase', 'data', 'type', 'codetype', 'archive', 'standby', 'height', 'width', 'usemap', 'name', 'tabindex'] + COMMON
-class param(single):
-    valid    = ['id', 'name', 'value', 'valuetype', 'type']
-    required = ['name']
-class _map(html_tag):
-    valid    = ['name'] + COMMON
-    required = ['name']
-class area(single):
-    valid    = ['shape', 'coords', 'href', 'nohref', 'alt', 'tabindex', 'accesskey', 'onfocus', 'onblur'] + COMMON
-    required = ['alt']
-    default  = {'alt': ''}
+    img    : {'valid'   : ['src', 'alt', 'longdesc', 'name', 'height', 'width', 'usemap', 'ismap'] + COMMON,
+              'required': ['src', 'alt'],
+              'default' : {'alt': ''}},
+    object_: {'valid'   : ['declare', 'classid', 'codebase', 'data', 'type', 'codetype', 'archive', 'standby', 'height', 'width', 'usemap', 'name', 'tabindex'] + COMMON},
+    param  : {'valid'   : ['id', 'name', 'value', 'valuetype', 'type'],
+              'required': ['name']},
+    map_   : {'valid'   : ['name'] + COMMON,
+              'required': ['name']},
+    area   : {'valid'   : ['shape', 'coords', 'href', 'nohref', 'alt', 'tabindex', 'accesskey', 'onfocus', 'onblur'] + COMMON,
+              'required': ['alt'],
+              'default' : {'alt': ''}},
 
-class style(html_tag):
-    valid    = ['type', 'media', 'title'] + COMMON
-    required = ['type']
+    style: {'valid'   : ['type', 'media', 'title'] + COMMON,
+            'required': ['type']},
 
-class tt(html_tag): valid = COMMON
-class i(html_tag): valid = COMMON
-class b(html_tag): valid = COMMON
-class big(html_tag): valid = COMMON
-class small(html_tag): valid = COMMON
-class strike(html_tag): valid = COMMON
-class s(html_tag): valid = COMMON
-class u(html_tag): valid = COMMON
-class hr(single): valid = COMMON
+    tt    : {'valid': COMMON},
+    i     : {'valid': COMMON},
+    b     : {'valid': COMMON},
+    big   : {'valid': COMMON},
+    small : {'valid': COMMON},
+    strike: {'valid': COMMON},
+    s     : {'valid': COMMON},
+    u     : {'valid': COMMON},
+    hr    : {'valid': COMMON},
 
-class form(html_tag):
-    valid    = ['action', 'method', 'enctype', 'accept', 'name', 'onsubmit', 'onreset', 'accept-charset'] + COMMON
-    required = ['action']
-class _input(single): valid = ['type', 'name', 'value', 'checked', 'disabled', 'readonly', 'size', 'maxlength', 'src', 'alt', 'usemap', 'ismap', 'tabindex', 'accesskey', 'onfocus', 'onblur', 'onselect', 'onchange', 'accept'] + COMMON
-class button(single): valid = ['name', 'value', 'type', 'disabled', 'tabindex', 'accesskey', 'onfocus', 'onblur'] + COMMON
-class select(html_tag): valid = ['name', 'size', 'multiple', 'disabled', 'tabindex', 'onfocus', 'onblur', 'onchange'] + COMMON
-class optgroup(html_tag): valid = ['disabled', 'label'] + COMMON
-class option(single): valid = ['selected', 'disabled', 'label', 'value'] + COMMON
-class textarea(html_tag):
-    valid    = ['name', 'rows', 'cols', 'disabled', 'readonly', 'tabindex', 'accesskey', 'onfocus', 'onblur', 'onselect', 'onchange'] + COMMON
-    required = ['rows', 'cols']
-class label(html_tag): valid = ['for', 'accesskey', 'onfocus', 'onblur'] + COMMON
-class fieldset(html_tag): valid = COMMON
-class legend(html_tag): valid = ['accesskey'] + COMMON
+    form    : {'valid'   : ['action', 'method', 'enctype', 'accept', 'name', 'onsubmit', 'onreset', 'accept-charset'] + COMMON,
+               'required': ['action']},
+    _input  : {'valid'   : ['type', 'name', 'value', 'checked', 'disabled', 'readonly', 'size', 'maxlength', 'src', 'alt', 'usemap', 'ismap', 'tabindex', 'accesskey', 'onfocus', 'onblur', 'onselect', 'onchange', 'accept'] + COMMON},
+    button  : {'valid'   : ['name', 'value', 'type', 'disabled', 'tabindex', 'accesskey', 'onfocus', 'onblur'] + COMMON},
+    select  : {'valid'   : ['name', 'size', 'multiple', 'disabled', 'tabindex', 'onfocus', 'onblur', 'onchange'] + COMMON},
+    optgroup: {'valid'   : ['disabled', 'label'] + COMMON},
+    option  : {'valid'   : ['selected', 'disabled', 'label', 'value'] + COMMON},
+    textarea: {'valid'   : ['name', 'rows', 'cols', 'disabled', 'readonly', 'tabindex', 'accesskey', 'onfocus', 'onblur', 'onselect', 'onchange'] + COMMON,
+               'required': ['rows', 'cols']},
+    label   : {'valid'   : ['for', 'accesskey', 'onfocus', 'onblur'] + COMMON},
+    fieldset: {'valid'   : COMMON},
+    legend  : {'valid'   : ['accesskey'] + COMMON},
 
-class script(ugly):
-    valid    = ['charset', 'type', 'src', 'defer']
-    required = ['type']
-class noscript(html_tag): valid = COMMON
-
-
+    script  : {'valid'   : ['charset', 'type', 'src', 'defer'],
+               'required': ['type']},
+    noscript: {'valid': COMMON},
 }

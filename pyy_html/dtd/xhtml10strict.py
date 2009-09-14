@@ -16,17 +16,7 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from document    import document
-from html4strict import *
-from html4strict import __all__
+from html4strict import html4strict
 
-###############################################################################
-
-class htmlpage(document):
-    def __init__(self, title='XHTML 1.0 Strict Page'):
-        document.__init__(self, title, request)
-        
-        self.doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
-        self.html    = html()
-        self.html.head, self.html.body = self.html.add(head(), body())
-
+class xhtml10strict(html4strict):
+    doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'

@@ -16,11 +16,7 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from xhtml10strict import *
-from xhtml10strict import htmlpage as strictpage
-from html4frameset import __all__, frameset, frame, noframes, iframe
+from html4frameset import html4frameset
 
-class htmlpage(strictpage):
-    def __init__(self, title='XHTML 1.0 Frameset Page'):
-        strictpage.__init__(self, title)
-        self.doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">'
+class xhtml10frameset(html4frameset):
+  docstring = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">'

@@ -31,7 +31,7 @@ class dtd(object):
         % (cls.__name__, ', '.join(type(c).__name__ for c in children)))
 
     for child in children:
-      if type(child) not in valid[CHILDREN]:
+      if type(child) not in valid[CHILDREN] and not isinstance(child, basestring):
         raise ValueError('%s element cannot contain %s element as child.' % \
             (cls.__name__, type(child).__name__))
       

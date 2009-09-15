@@ -17,7 +17,7 @@ Public License along with pyy.  If not, see
 '''
 
 from pyy_html.html import *
-from pyy_html.dtd  import *
+from pyy_html.dtd  import dtd
 
 COMMON_MAIN   = ['class', 'contenteditable', 'contextmenu', 'dir', 'draggable', 'id', 'hidden', 'lang', 'spellcheck', 'style', 'tabindex', 'title']
 COMMON_EVENTS = ['onabort', 'onblur', 'onchange', 'onclick', 'oncontextmenu', 'ondblclick', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onfocus', 'onkeydown', 'onkeypress', 'onkeyup', 'onload', 'onmousedown', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onscroll', 'onselect', 'onsubmit']
@@ -33,14 +33,12 @@ class html5(dtd):
     #Document metadata
     head : {'valid'   : COMMON},
     title: {'valid'   : COMMON},
-    
-    ''' Must contain href, target, or both '''
-    base : {'valid'   : COMMON + ['href', 'target']},
+    base : {'valid'   : COMMON + ['href', 'target'],
+            'custom'  : lambda x: 'href' in x or 'target' in x},
     link : {'valid'   : COMMON + ['href', 'rel', 'media', 'hreflang', 'type', 'sizes'],
             'required': ['href', 'rel']},
-    
-    ''' Must contain one of: name, http-equiv, content, or charset '''
-    meta : {'valid'   : COMMON + ['name', 'http-equiv', 'content', 'charset']},
+    meta : {'valid'   : COMMON + ['name', 'http-equiv', 'content', 'charset'],
+            'custom'  : lambda x: 'name' in x or 'http-equiv' in x or 'content' in x or 'charset' in x},
     style: {'valid'   : COMMON + ['media', 'type', 'scoped']},
     
     #Scripting

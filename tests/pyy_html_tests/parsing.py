@@ -1,7 +1,6 @@
 import unittest
-from pyy_html.xhtml11 import div, htmlpage, hr
-from pyy_html.html    import comment
-from pyy_html.parser  import parse, pageparse
+from pyy_html.html   import div, htmlpage, hr, comment
+from pyy_html.parser import parse, pageparse
 
 
 class ParsingTests(unittest.TestCase):

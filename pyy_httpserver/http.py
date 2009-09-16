@@ -1,7 +1,23 @@
+__license__ = '''
+This file is part of pyy.
+
+pyy is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
+
+pyy is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General
+Public License along with pyy.  If not, see
+<http://www.gnu.org/licenses/>.
+'''
+
 # http://www.w3.org/Protocols/rfc2616/rfc2616.html
-
-
-import warnings 
+import warnings
 import time
 import datetime
 
@@ -144,7 +160,7 @@ class httphandler(object):
   def end_headers(self, request):
     # we are done. clean up
     del self.readline
-    # if we got extra data, push it back to the front of 
+    # if we got extra data, push it back to the front of
     # the connection's read buffer, so someone can read() later
     self.conn.readbuffer[0:0] = self._lines
     del self._lines
@@ -180,7 +196,7 @@ class httphandler(object):
         elif k == 'Accept-Encoding':
           if not res.body: continue
           tokens = v.lower().split(',')
-          len1 = len(res.body)                   
+          len1 = len(res.body)
           if 'deflate' in tokens: # zlib is better
             if len1 < 32: continue
             import zlib
@@ -227,7 +243,7 @@ class httphandler(object):
     
     res.headers.setdefault('Content-Length', len(res.body))
    
-    return res   
+    return res
     
   def write_response(self, res):
     '''

@@ -1,3 +1,21 @@
+__license__ = '''
+This file is part of pyy.
+
+pyy is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
+
+pyy is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General
+Public License along with pyy.  If not, see
+<http://www.gnu.org/licenses/>.
+'''
+
 import stackless
 import os
 import os.path
@@ -5,8 +23,8 @@ import sys
 import threadio
 import http
 import time
-from http import HTTPError
 import warnings
+from http import HTTPError
 
 class fileserver(object):
   def __init__(self, root='.'):
@@ -22,11 +40,11 @@ class fileserver(object):
   
     # don't let them go outside root
     if not path.startswith(root):
-      raise HTTPError(403) 
+      raise HTTPError(403)
     
     # does it exist?
     if not os.path.exists(path):
-      raise HTTPError(404) 
+      raise HTTPError(404)
 
     # dir listing
     if os.path.isdir(path):

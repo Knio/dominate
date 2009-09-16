@@ -1,17 +1,33 @@
+__license__ = '''
+This file is part of pyy.
+
+pyy is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
+
+pyy is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General
+Public License along with pyy.  If not, see
+<http://www.gnu.org/licenses/>.
+'''
+
 import os
 import sys
 import imp
 from http import HTTPError
 
 class pyyserver(object):
-  def __init__(self):
-    pass
+  def __init__(self, root='.'):
+    self.root = root
 
   def handle(self, handler, req, res, fname):
-    
-    mname = os.path.basename(fname).split('.')[0]
-    dname = os.path.dirname(fname)
-    sys.path.append(dname)
+    mname = os.path.basename(fname).rpartition('.')[0]
+    sys.path.append(self.root)
 
     if not os.path.exists(fname):
       raise HTTPError(404)
@@ -24,5 +40,5 @@ class pyyserver(object):
     
     m.main(handler, req, res)
     
-    sys.path.remove(dname)
+    sys.path.remove(self.root)
 

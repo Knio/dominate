@@ -19,42 +19,40 @@ Public License along with pyy.  If not, see
 from pyy_html.dtd  import *
 from pyy_html.html import *
 
-COMMON_CORE  = ['class', 'id', 'title']
-COMMON_I18N  = ['xml:lang', 'dir']
-COMMON_EVENT = ['onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'onmouseover', 'onmousemove', 'onmouseout', 'onkeypress', 'onkeydown', 'onkeyup']
-COMMON_STYLE = ['style']
-COMMON       = COMMON_CORE + COMMON_I18N + COMMON_EVENT + COMMON_STYLE
+CORE   = set(['class', 'id', 'title'])
+I18N   = set(['xml:lang', 'dir'])
+EVENT  = set(['onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'onmouseover', 'onmousemove', 'onmouseout', 'onkeypress', 'onkeydown', 'onkeyup'])
+STYLE  = set(['style'])
+COMMON = CORE | I18N | EVENT | STYLE
 
-COMMON_CHILDREN = [a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var]
-
-# TODO: is there any way to check if a tag is only allowed 1 child? ie <html> <body></body> <body></body> </html>. does the spec say anything about this?
+#TODO: rename this, get real children sets from DTD
+GLOBAL = set([a, abbr, acronym, b, bdo, big, br, button, cite, code, del_, dfn, em, i, img, input_, ins, kbd, label, map_, object_, q, samp, script, select, small, span, strong, sub, sup, textarea, tt, var])
 
 class xhtml11(dtd):
   docstring =  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"' \
                '    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'
-
-
+  
   valid = {
     #Structure & Header
-    base:   {VALID   : ['href'],
-             REQUIRED: ['href']},
-    body:   {VALID   : COMMON + ['onload', 'onunload'],
-             CHILDREN: [address, blockquote, del_, div, fieldset, form, hr, ins, noscript, p, pre, script, table, h1, h2, h3, h4, h5, h6, dl, ol, ul]},
-    head:   {VALID   : COMMON_I18N + ['profile'],
-             CHILDREN: [base, link, meta, object_, script, style, title]},
-    html:   {VALID   : COMMON_I18N + ['xmlns', 'xml:lang', 'xmlns:xsi', 'xsi:schemaLocation', 'version'],
-             REQUIRED: ['xmlns'],
+    base:   {VALID   : set(['href']),
+             REQUIRED: set(['href'])},
+    body:   {VALID   : COMMON | set(['onload', 'onunload']),
+             CHILDREN: set([address, blockquote, del_, div, fieldset, form, hr, ins, noscript, p, pre, script, table, h1, h2, h3, h4, h5, h6, dl, ol, ul])},
+    head:   {VALID   : I18N | set(['profile']),
+             CHILDREN: set([base, link, meta, object_, script, style, title])},
+    html:   {VALID   : I18N | set(['xmlns', 'xml:lang', 'xmlns:xsi', 'xsi:schemaLocation', 'version']),
+             REQUIRED: set(['xmlns']),
              DEFAULT : {'xmlns': 'http://www.w3.org/1999/xhtml'},
-             CHILDREN: [head, body]},
-    link:   {VALID   : COMMON + ['href', 'media', 'type', 'charset', 'hreflang', 'rel', 'rev']},
-    meta:   {VALID   : COMMON_I18N + ['content', 'name', 'http-equiv', 'scheme'],
-             REQUIRED: ['name']},
-    script: {VALID   : COMMON + ['src', 'type', 'charset', 'defer', 'xml:space'],
-             REQUIRED: ['type']},
+             CHILDREN: set([head, body])},
+    link:   {VALID   : COMMON | set(['href', 'media', 'type', 'charset', 'hreflang', 'rel', 'rev'])},
+    meta:   {VALID   : I18N | set(['content', 'name', 'http-equiv', 'scheme']),
+             REQUIRED: set(['name'])},
+    script: {VALID   : COMMON | set(['src', 'type', 'charset', 'defer', 'xml:space']),
+             REQUIRED: set(['type'])},
     style:  {VALID   : COMMON_I18N + ['media', 'title', 'type', 'xml:space'],
-             REQUIRED: ['type']},
-    title:  {VALID   : COMMON_I18N,
-             CHILDREN: [str]},
+             REQUIRED: set(['type'])},
+    title:  {VALID   : I18N,
+             CHILDREN: set([str])},
 
     #Block elements
     address   : {VALID   : COMMON,
@@ -209,14 +207,14 @@ class xhtml11(dtd):
     
     #Ruby annotations
     rb : {VALID   : COMMON,
-          CHILDREN: [rt]},
+          CHILDREN: set([rt])},
     rbc: {VALID   : COMMON,
-          CHILDREN: [rb]},
+          CHILDREN: set([rb])},
     rp : {VALID   : COMMON,
-          CHILDREN: [rt]},
-    rt : {VALID   : COMMON + ['rbspan'],
-          CHILDREN: [rt]},
+          CHILDREN: set([rt])},
+    rt : {VALID   : COMMON | set(['rbspan']),
+          CHILDREN: set([rt])},
     rtc: {VALID   : COMMON,
-          CHILDREN: [rt]},
+          CHILDREN: set([rt])},
   }
 

@@ -56,8 +56,8 @@ class dtd(object):
       raise AttributeError('%s element has one or more missing attributes that are required: %s.' \
         % (cls.__name__, ', '.join(missing_attributes)))
     
-    #Check if there is a custom requirement function
-    if CUSTOM in valid and not valid[CUSTOM](tag.attributes.keys()):
+    #Check if there is a custom validation function and pass the tag to it
+    if CUSTOM in valid and not valid[CUSTOM](tag):
       raise AttributeError('%s element failed custom attribute check.' % (cls.__name__))
     
     return True

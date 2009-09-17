@@ -19,142 +19,159 @@ Public License along with pyy.  If not, see
 from pyy_html.html import *
 from pyy_html.dtd  import dtd
 
-COMMON_MAIN   = ['class', 'contenteditable', 'contextmenu', 'dir', 'draggable', 'id', 'hidden', 'lang', 'spellcheck', 'style', 'tabindex', 'title']
-COMMON_EVENTS = ['onabort', 'onblur', 'onchange', 'onclick', 'oncontextmenu', 'ondblclick', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onfocus', 'onkeydown', 'onkeypress', 'onkeyup', 'onload', 'onmousedown', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onscroll', 'onselect', 'onsubmit']
-COMMON        = COMMON_MAIN + COMMON_EVENTS
+#Attributes
+GLOBAL = set(['accesskey', 'class', 'class', 'contenteditable', 'contextmenu', 'dir', 'draggable', 'id', 'item', 'hidden', 'lang', 'itemprop', 'spellcheck', 'style', 'subject', 'tabindex', 'title']
+EVENTS = set(['onabort', 'onblur', 'oncanplay', 'oncanplaythrough', 'onchange', 'onclick', 'oncontextmenu', 'ondblclick', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'ondurationchange', 'onemptied', 'onended', 'onerror', 'onfocus', 'onformchange', 'onforminput', 'oninput', 'oninvalid', 'onkeydown', 'onkeypress', 'onkeyup', 'onload', 'onloadeddata', 'onloadedmetadata', 'onloadstart', 'onmousedown', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onpause', 'onplay', 'onplaying', 'onprogress', 'onratechange', 'onreadystatechange', 'onscroll', 'onseeked', 'onseeking', 'onselect', 'onshow', 'onstalled', 'onsubmit', 'onsuspend', 'ontimeupdate', 'onvolumechange', 'onwaiting'])
+
+#Elements
+METADATA    = set([base, command, link, meta, noscript, script, style, title])
+FLOW        = set([a, abbr, address, area, article, aside, audio, b, bdo, blockquote, br, button, canvas, cite, code, command, datalist, del_, details, dfn, dialog, div, dl, em, embed, fieldset, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, hr, i, iframe, img, input, ins, kbd, keygen, label, link, map, mark, math, menu, meta, meter, nav, noscript, object, ol, output, p, pre, progress, q, ruby, samp, script, section, select, small, span, strong, style, sub, sup, svg, table, textarea, time, ul, var, video, str])
+SECTION     = set([article, aside, nav, section])
+HEADING     = set([h1, h2, h3, h4, h5, h6, hgroup])
+PHRASING    = set([a, abbr, area, audio, b, bdo, br, button, canvas, cite, code, command, datalist, del_, dfn, em, embed, i, iframe, img, input, ins, kbd, keygen, label, link, map, mark, math, meta, meter, noscript, object, output, progress, q, ruby, samp, script, select, small, span, strong, sub, sup, svg, textarea, time, var, video, str])
+TRANSPARENT = set([]) #I don't know...ask html5
+
 
 class html5(dtd):
   docstring = '<!DOCTYPE html>'
   
   valid = {
-    #Root element
-    html: {'valid': COMMON + ['manifest']},
+    #ROOT: http://www.w3.org/TR/html5/semantics.html#the-root-element
+    html: {VALID: GLOBAL | set(['manifest']), CHILDREN: set([head, body])},
     
-    #Document metadata
-    head : {'valid'   : COMMON},
-    title: {'valid'   : COMMON},
-    base : {'valid'   : COMMON + ['href', 'target'],
-            'custom'  : lambda x: 'href' in x or 'target' in x},
-    link : {'valid'   : COMMON + ['href', 'rel', 'media', 'hreflang', 'type', 'sizes'],
-            'required': ['href', 'rel']},
-    meta : {'valid'   : COMMON + ['name', 'http-equiv', 'content', 'charset'],
-            'custom'  : lambda x: 'name' in x or 'http-equiv' in x or 'content' in x or 'charset' in x},
-    style: {'valid'   : COMMON + ['media', 'type', 'scoped']},
+    #METADATA: http://www.w3.org/TR/html5/semantics.html#document-metadata
+    head : {VALID   : GLOBAL,
+            CHILDREN: METADATA},
+    title: {VALID   : GLOBAL,
+            CHILDREN: set([str])},
+    base : {VALID   : GLOBAL | set(['href', 'target']),
+            CUSTOM  : lambda self: 'href' in self.attributes or 'target' in self.attributes},
+    link : {VALID   : GLOBAL | set(['href', 'rel', 'media', 'hreflang', 'type', 'sizes']),
+            REQUIRED: set(['href'])},
     
-    #Scripting
-    script  : {'valid': COMMON + ['src', 'async', 'defer', 'type', 'charset']},
-    noscript: {'valid': COMMON},
-
-    #Sections
-    body   : {'valid': COMMON + ['onafterprint', 'onbeforeprint', 'onbeforeunload', 'onhashchange', 'onmessage', 'ononline', 'onoffline', 'onpopstate', 'onredo', 'onresize', 'onstorage', 'onundo', 'onunload']},
-    section: {'valid': COMMON + ['cite']},
-    nav    : {'valid': COMMON},
-    article: {'valid': COMMON + ['cite', 'pubdate']},
-    aside  : {'valid': COMMON},
-    h1     : {'valid': COMMON},
-    h2     : {'valid': COMMON},
-    h3     : {'valid': COMMON},
-    h4     : {'valid': COMMON},
-    h5     : {'valid': COMMON},
-    h6     : {'valid': COMMON},
-    hgroup : {'valid': COMMON},
-    header : {'valid': COMMON},
-    footer : {'valid': COMMON},
-    address: {'valid': COMMON},
-
-    #Grouping content
-    p         : {'valid': COMMON},
-    hr        : {'valid': COMMON},
-    br        : {'valid': COMMON},
-    pre       : {'valid': COMMON},
-    dialog    : {'valid': COMMON},
-    blockquote: {'valid': COMMON + ['cite']},
-    ol        : {'valid': COMMON + ['reversed', 'start']},
-    ul        : {'valid': COMMON},
-    li        : {'valid': COMMON},
-    dl        : {'valid': COMMON},
-    dt        : {'valid': COMMON},
-    dd        : {'valid': COMMON},
-
-    #Text-level semantics
-    a       : {'valid': COMMON + ['href', 'target', 'ping', 'rel', 'media', 'hreflang', 'type']},
-    q       : {'valid': COMMON + ['cite']},
-    cite    : {'valid': COMMON},
-    em      : {'valid': COMMON},
-    strong  : {'valid': COMMON},
-    small   : {'valid': COMMON},
-    mark    : {'valid': COMMON},
-    dfn     : {'valid': COMMON},
-    abbr    : {'valid': COMMON},
-    time    : {'valid': COMMON + ['datetime']},
-    progress: {'valid': COMMON + ['value', 'max']},
-    meter   : {'valid': COMMON + ['value', 'min', 'low', 'high', 'max', 'optimum']},
-    code    : {'valid': COMMON},
-    var     : {'valid': COMMON},
-    samp    : {'valid': COMMON},
-    kbd     : {'valid': COMMON},
-    sub     : {'valid': COMMON},
-    sup     : {'valid': COMMON},
-    span    : {'valid': COMMON},
-    i       : {'valid': COMMON},
-    b       : {'valid': COMMON},
-    bdo     : {'valid': COMMON},
-    ruby    : {'valid': COMMON},
-    rt      : {'valid': COMMON},
-    rp      : {'valid': COMMON},
-
-    #Edits
-    ins : {'valid': COMMON + ['cite', 'datetime']},
-    del_: {'valid': COMMON + ['cite', 'datetime']},
-
-    #Embedded content
-    figure : {'valid'   : COMMON},
-    img    : {'valid'   : COMMON + ['alt', 'src', 'usemap', 'ismap', 'width', 'height'],
-              'required': ['src']},
-    iframe : {'valid'   : COMMON + ['src', 'name', 'sandbox', 'seamless', 'width', 'height']},
-    embed  : {'valid'   : COMMON + ['src', 'type', 'width', 'height']},
-    object_: {'valid'   : COMMON + ['data', 'type', 'name', 'usemap', 'form', 'width', 'height']},
-    param  : {'valid'   : COMMON + ['name', 'value']},
-    video  : {'valid'   : COMMON + ['src', 'poster', 'autobuffer', 'autoplay', 'loop', 'controls', 'width', 'height']},
-    audio  : {'valid'   : COMMON + ['src', 'autobuffer', 'autoplay', 'loop', 'controls']},
-    source : {'valid'   : COMMON + ['src', 'type', 'media']},
-    canvas : {'valid'   : COMMON + ['width', 'height']},
-    map_   : {'valid'   : COMMON + ['name']},
-    area   : {'valid'   : COMMON + ['alt', 'coords', 'shape', 'href', 'target', 'ping', 'rel', 'media', 'hreflang', 'type']},
-
-    #Tabular data
-    table   : {'valid': COMMON},
-    caption : {'valid': COMMON},
-    colgroup: {'valid': COMMON + ['span']},
-    tbody   : {'valid': COMMON},
-    thead   : {'valid': COMMON},
-    tfoot   : {'valid': COMMON},
-    tr      : {'valid': COMMON},
-    td      : {'valid': COMMON + ['colspan', 'rowspan', 'headers']},
-    th      : {'valid': COMMON + ['colspan', 'rowspan', 'headers', 'scope']},
-
-    #Forms
-    form    : {'valid': COMMON + ['accept-charset', 'action', 'autocomplete', 'enctype', 'method', 'name', 'novalidate', 'target']},
-    fieldset: {'valid': COMMON + ['disabled', 'form', 'name']},
-    label   : {'valid': COMMON + ['form', 'for']},
-    input_  : {'valid': COMMON + ['accept', 'alt', 'autocomplete', 'autofocus', 'checked', 'disabled', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'height', 'list', 'max', 'maxlength', 'min', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'src', 'step', 'type', 'value', 'width']},
-    button  : {'valid': COMMON + ['autofocus', 'disabled', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'name', 'type', 'value']},
-    select  : {'valid': COMMON + ['autofocus', 'disabled', 'form', 'multiple', 'name', 'size']},
-    datalist: {'valid': COMMON},
-    optgroup: {'valid': COMMON + ['disabled', 'label']},
-    option  : {'valid': COMMON + ['disabled', 'label', 'selected', 'value']},
-    textarea: {'valid': COMMON + ['autofocus', 'cols', 'disabled', 'form', 'maxlength', 'name', 'placeholder', 'readonly', 'required', 'rows', 'wrap']},
-    keygen  : {'valid': COMMON + ['autofocus', 'challenge', 'disabled', 'form', 'keytype', 'name']},
-    output  : {'valid': COMMON + ['for', 'form', 'name']},
-
-    #Interactive elements
-    details : {'valid': COMMON + ['open']},
-    datagrid: {'valid': COMMON + ['disabled']},
-    command : {'valid': COMMON + ['type', 'label', 'icon', 'disabled', 'checked', 'radiogroup']},
-    bb      : {'valid': COMMON + ['type']},
-    menu    : {'valid': COMMON + ['type', 'label']},
-
-    #Miscellaneous elements
-    legend: {'valid': COMMON},
-    div   : {'valid': COMMON},
+    #TODO: "If either name, http-equiv, or itemprop is specified, then the content attribute must also be specified. Otherwise, it must be omitted."
+    meta : {VALID   : GLOBAL | set(['name', 'http-equiv', 'content', 'charset']),
+            CUSTOM  : lambda self: 'name' in self.attributes ^ 'http-equiv' in self.attributes ^ \
+                                   'content' in self.attributes ^ 'charset' in self.attributes},
+    style: {VALID   : GLOBAL | set(['media', 'type', 'scoped']),
+            CHILDREN: set([str])},
+    
+    #SCRIPTING: http://www.w3.org/TR/html5/semantics.html#scripting-1
+    script  : {VALID   : GLOBAL | set(['src', 'async', 'defer', 'type', 'charset']),
+               #Empty if src defined, str otherwise
+               CUSTOM  : lambda self: ('src' in self.attributes and not self.children) or \
+                                      ('src' not in self.attributes and all(isinstance(child, str) for child in self.children))},
+    noscript: {VALID   : GLOBAL,
+               CHILDREN: set([])}, # <--TODO http://www.w3.org/TR/html5/semantics.html#the-noscript-element
+    
+    #SECTIONS: http://www.w3.org/TR/html5/semantics.html#sections
+    body   : {},
+    section: {},
+    nav    : {},
+    article: {},
+    aside  : {},
+    h1     : {},
+    h2     : {},
+    h3     : {},
+    h4     : {},
+    h5     : {},
+    h6     : {},
+    hgroup : {},
+    header : {},
+    footer : {},
+    address: {},
+    
+    #GROUPING: http://www.w3.org/TR/html5/semantics.html#grouping-content
+    p         : {},
+    hr        : {},
+    br        : {},
+    pre       : {},
+    dialog    : {},
+    blockquote: {},
+    ol        : {},
+    ul        : {},
+    li        : {},
+    dl        : {},
+    dt        : {},
+    dd        : {},
+    
+    #TEXT: http://www.w3.org/TR/html5/text-level-semantics.html#text-level-semantics
+    a       : {},
+    em      : {},
+    strong  : {},
+    small   : {},
+    cite    : {},
+    q       : {},
+    dfn     : {},
+    abbr    : {},
+    code    : {},
+    var     : {},
+    samp    : {},
+    kbd     : {},
+    sub     : {},
+    sup     : {},
+    i       : {},
+    b       : {},
+    mark    : {},
+    progress: {},
+    meter   : {},
+    time    : {},
+    ruby    : {},
+    rt      : {},
+    rp      : {},
+    bdo     : {},
+    span    : {},
+    
+    #EDITS: http://www.w3.org/TR/html5/text-level-semantics.html#edits
+    ins : {VALID: GLOBAL | set(['cite', 'datetime']), CHILDREN: TRANSPARENT},
+    del_: {VALID: GLOBAL | set(['cite', 'datetime']), CHILDREN: TRANSPARENT},
+    
+    #EMBEDDED: http://www.w3.org/TR/html5/text-level-semantics.html#embedded-content-1
+    figure: {},
+    img   : {},
+    iframe: {},
+    embed : {},
+    object: {},
+    param : {},
+    video : {},
+    audio : {},
+    source: {},
+    canvas: {},
+    map   : {},
+    area  : {},
+    
+    #TABULAR: http://www.w3.org/TR/html5/tabular-data.html#tabular-data
+    table   : {},
+    caption : {},
+    colgroup: {},
+    col     : {},
+    tbody   : {},
+    thead   : {},
+    tfoot   : {},
+    tr      : {},
+    td      : {},
+    th      : {},
+    
+    #FORMS: http://www.w3.org/TR/html5/forms.html#forms
+    form    : {},
+    fieldset: {},
+    label   : {},
+    input   : {},
+    button  : {},
+    select  : {},
+    datalist: {},
+    optgroup: {},
+    option  : {},
+    textarea: {},
+    keygen  : {},
+    output  : {},
+    
+    #INTERACTIVE: http://www.w3.org/TR/html5/interactive-elements.html#interactive-elements
+    details: {VALID: GLOBAL | set(['open']), CHILDREN: FLOW | set([legend])},
+    command: {VALID: GLOBAL | set(['type', 'label', 'icon', 'disabled', 'checked', 'radiogroup'])},
+    menu   : {VALID: GLOBAL | set(['type', 'label']), CHILDREN: FLOW | set([li])},
+    
+    #MISC: http://www.w3.org/TR/html5/interactive-elements.html#miscellaneous-elements
+    legend: {VALID: GLOBAL, CHILDREN: FLOW | PHRASING},
+    div   : {VALID: GLOBAL, CHILDREN: FLOW},
 }

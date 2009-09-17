@@ -16,17 +16,19 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from html4strict   import html4strict
-from pyy_html.html import frameset, frame, noframes, iframe
+from html4strict   import html4strict, CORE, ATTRS, FLOW
+from pyy_html.html import frameset, frame, noframes, iframe, VALID, CHILDREN
 
 class html4frameset(html4strict):
   docstring = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">'
   
-  #Will this work?
   valid = dict(html4strict.valid)
   valid.update({
-    frameset: {'valid': ['rows', 'cols', 'onload', 'onunload'] + COMMON_CORE}
-    frame   : {'valid': ['longdesc', 'name', 'src', 'frameborder', 'marginwidth', 'marginheight', 'noresize', 'scrolling'] + COMMON_CORE}
-    noframes: {'valid': COMMON}
-    iframe  : {'valid': ['longdesc', 'name', 'src', 'frameborder', 'marginwidth', 'marginheight', 'scrolling', 'align', 'height', 'width'] + COMMON_CORE}
+    frameset: {VALID   : ATTRS | set(['rows', 'cols', 'onload', 'onunload']),
+               CHILDREN: set([frameset, frame, noframes])},
+    frame   : {VALID   : CORE | set(['longdesc', 'name', 'src', 'frameborder', 'marginwidth', 'marginheight', 'noresize', 'scrolling'])},
+    iframe  : {VALID   : CORE | set(['longdesc', 'name', 'src', 'frameborder', 'marginwidth', 'marginheight', 'scrolling', 'align', 'height', 'width']),
+               CHILDREN: FLOW},
+    noframes: {VALID   : ATTRS,
+               CHILDREN: FLOW},
   })

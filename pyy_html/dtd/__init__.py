@@ -4,25 +4,20 @@ CHILDREN  = 'children'
 DEFAULT   = 'default'
 CUSTOM    = 'custom'
 
-from pyy_html.html import html_tag
+from pyy_html.html import html_tag, comment
 
 class dtd(object):
   valid = {}
 
   def __init__(self):
-
-    # convert lists to sets so "in" operator is faster
     for tag, dict in self.valid.iteritems():
       dict.setdefault(VALID,    [])
       dict.setdefault(REQUIRED, [])
       dict.setdefault(CHILDREN, [])
       dict.setdefault(DEFAULT,  {})
-      
-      for k in [VALID, REQUIRED, CHILDREN]:
-        dict[k] = set(dict[k])
 
   def validate(self, tag, child=None):
-    cls = type(tag)
+    cls   = type(tag)
     valid = self.valid[cls]
     
     #Check children

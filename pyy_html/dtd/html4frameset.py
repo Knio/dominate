@@ -23,6 +23,7 @@ class html4frameset(html4strict):
   docstring = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">'
   
   #Will this work?
+  valid = dict(html4strict.valid)
   valid.update({
     frameset: {'valid': ['rows', 'cols', 'onload', 'onunload'] + COMMON_CORE}
     frame   : {'valid': ['longdesc', 'name', 'src', 'frameborder', 'marginwidth', 'marginheight', 'noresize', 'scrolling'] + COMMON_CORE}

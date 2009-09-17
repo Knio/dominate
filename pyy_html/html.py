@@ -44,6 +44,7 @@ class article     (html_tag): pass
 class aside       (html_tag): pass
 class audio       (html_tag): pass
 class b           (html_tag): pass
+class bb          (html_tag): pass
 class base        (single):   pass
 class basefont    (single):   pass
 class bdo         (html_tag): pass
@@ -90,6 +91,7 @@ class h5          (html_tag): pass
 class h6          (html_tag): pass
 class head(html_tag): pass
 class header(html_tag): pass
+class hgroup(html_tag): pass
 class hr(single): pass
 class html(html_tag): pass
 class i(html_tag): pass
@@ -99,6 +101,7 @@ class input_(single): pass
 class ins(html_tag): pass
 class isindex(html_tag): pass
 class kbd(html_tag): pass
+class keygen(html_tag): pass
 class label(html_tag): pass
 class legend(html_tag): pass
 class li(html_tag): pass
@@ -116,6 +119,7 @@ class object_(html_tag): pass
 class ol(html_tag): pass
 class optgroup(html_tag): pass
 class option(html_tag): pass
+class output(html_tag): pass
 class p(html_tag): pass
 class param(single): pass
 class pre(ugly): pass
@@ -148,6 +152,7 @@ class textarea(html_tag): pass
 class tfoot(html_tag): pass
 class th(html_tag): pass
 class thead(html_tag): pass
+class time(html_tag): pass
 class title(html_tag): pass
 class tr(html_tag): pass
 class tt(html_tag): pass
@@ -218,7 +223,7 @@ class comment(html_tag):
         REPLACE = [
             (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S), r'<comment condition="\1">\2</comment>'),
             (re.compile(r'<!--(.*?)-->', re.S)                        , r'<comment>\1</comment>'),
-            (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif\]>', re.S)     , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
+            (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif\]>', re.S)    , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
         ]
         
         for search, replace in REPLACE:

@@ -1,3 +1,20 @@
+__license__ = '''
+This file is part of pyy.
+
+pyy is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as
+published by the Free Software Foundation, either version 3 of
+the License, or (at your option) any later version.
+
+pyy is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General
+Public License along with pyy.  If not, see
+<http://www.gnu.org/licenses/>.
+'''
 
 import stackless
 import socket
@@ -9,23 +26,24 @@ class connection(object):
   READABLE = 1
   WRITABLE = 2
   OPEN = 1
+  
   def __init__(self, server, sock, addr):
     self.server   = server
     self.addr     = addr
     self.sock     = sock
-    self.handler = None
+    self.handler  = None
     
     self.readbuffer  = []
     self.writebuffer = []
     
     self.readchannel  = stackless.channel()
     self.writechannel = stackless.channel()
-        
+    
     self.status = connection.OPEN
-
+  
   def fileno(self):
     return self.sock.fileno()
-
+  
   def onreadable(self):
     if not self.status: return
     try:
@@ -41,14 +59,14 @@ class connection(object):
         return
       else: raise
 
-    if data == '': 
-      # TODO      
+    if data == '':
+      # TODO
       # This happens when the client sent a FIN.
       # It might still be listening for data, however!
       #print 'Client %s closed the connection' % (self.addr,)
       self.onclose()
       return
-
+    
     #print '%s GOT DATA: %r' % (self.addr, data[:80])
     self.readbuffer.append(data)
     if self.handler and self.handler.hasattr('ondata'):
@@ -57,21 +75,21 @@ class connection(object):
     # is someone waiting on read?
     if self.readchannel.balance < 0:
       self.readchannel.send(None)
-    
+  
   def onwritable(self):
     if not self.status: return
     while self.writebuffer:
       d = self.writebuffer[0]
       o = d
       #print '%s SENDING: %r' % (self.addr, d[:80])
-
+      
       try:
         while d:
           d = d[self.sock.send(d):]
           self.writebuffer[0] = d
         self.writebuffer.pop(0)
         self.writechannel.send(o)
-
+      
       except socket.error, e:
         if e.args[0] == 10053: # closed the connection
           self.onclose(e)
@@ -81,7 +99,7 @@ class connection(object):
         else: raise
     
     self.server.set_writable(self, False)
-
+  
   def onclose(self, e=None):
     if not self.status: return # we closed already
     while self.readchannel.balance < 0:
@@ -93,7 +111,7 @@ class connection(object):
     self.status = 0
     if self.handler and self.handler.hasattr('onclose'):
       self.handler.onclose()
-
+  
   def write(self, data):
     if not self.status:
       raise EOFError('write on closed connection')
@@ -104,7 +122,7 @@ class connection(object):
     r = self.writechannel.receive()
     assert data == r, (data[:80], r[:80])
     return r
-
+  
   def read(self, x=None):
     if not self.status:
       raise EOFError('read on closed connection')
@@ -115,7 +133,7 @@ class connection(object):
     data = ''.join(self.readbuffer)
     self.readbuffer = x and [data[x:]] or []
     return data[:x]
-
+  
   def close(self, how=socket.SHUT_RDWR):
     #print 'CLOSING: %s' % (self.addr,)
     if self.writebuffer:
@@ -132,7 +150,7 @@ class listener(connection):
     self.handler  = handler
     self.args     = args
     self.server.set_readable(self)
-
+  
   def onreadable(self):
     try:
       sock, addr = self.sock.accept()
@@ -140,7 +158,7 @@ class listener(connection):
       if e.args[0] == 10035: # would have blocked
         return
       else: raise
-
+    
     sock.setblocking(0)
     conn = connection(self.server, sock, addr)
     self.server.requests.add(conn)
@@ -157,13 +175,13 @@ class handler(object):
 
 class server(object):
   def __init__(self):
-    self.listeners  = []
-    self.requests   = set()
-    self.readable = set()
-    self.writable = set()
-    self.selectch = stackless.channel()
-    self.done = False
-
+    self.listeners = []
+    self.requests  = set()
+    self.readable  = set()
+    self.writable  = set()
+    self.selectch  = stackless.channel()
+    self.done      = False
+  
   def listen(self, addr, handler, *args):
     sock = socket.socket()
     sock.setblocking(0)
@@ -172,27 +190,27 @@ class server(object):
     self.listeners.append(listener(
       self, sock, addr, handler, *args))
     print 'Listening on %s' % (addr,)
-
+  
   def set_readable(self, req, x=True):
     if x: self.readable.add(req)
     else: self.readable.discard(req)
     if x: self.interrupt()
-
+  
   def set_writable(self, req, x=True):
     if x: self.writable.add(req)
     else: self.writable.discard(req)
     if x: self.interrupt()
-
+  
   def close(self, req):
     self.readable.discard(req)
     self.writable.discard(req)
     self.requests.discard(req)
-
+  
   def interrupt(self):
     if self.selectch.balance < 0:
       self.selectch.send(([],[],[]))
-
-  def select(self, timeout):     
+  
+  def select(self, timeout):
     def thread():
       r = select.select(
         self.readable, self.writable, [], timeout)
@@ -206,16 +224,16 @@ class server(object):
       r2 = self.selectch.receive()
       map(lambda x:reduce(list.extend,x) ,zip(r,r2))
     return r
-    
+  
   def tick(self, timeout=None):
     readable, writable, _e = self.select(timeout)
     
     for i in readable:
       i.onreadable()
-
+    
     for i in writable:
       i.onwritable()
-
+  
   def run(self, timeout=None):
     def mainloop():
       try:
@@ -224,10 +242,10 @@ class server(object):
           stackless.schedule()
       finally:
         self.quit(timeout)
-
+    
     stackless.tasklet(mainloop)()
     stackless.run(threadblock=True)
-
+  
   def quit(self, timeout):
     self.done = True
     print 'Quiting'

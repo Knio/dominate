@@ -1,6 +1,5 @@
 import unittest
-from pyy_html.html import html, head, body, h1, p
-from pyy_html.html import comment
+from pyy_html.html import html, head, body, h1, p, comment
 
 class RenderingTests(unittest.TestCase):
     def testInline(self):

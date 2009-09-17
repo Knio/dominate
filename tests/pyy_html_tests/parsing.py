@@ -1,5 +1,6 @@
 import unittest
-from pyy_html.xhtml11 import div, htmlpage, hr
+from pyy_html         import *
+from pyy_html.html    import div, hr
 from pyy_html.html    import comment
 from pyy_html.parser  import parse, pageparse
 
@@ -16,7 +17,7 @@ class ParsingTests(unittest.TestCase):
     self.assertEquals(h.render(), parse(s).render())
 
   def testDoctype(self):
-    h = htmlpage()
+    h = document()
     s = h.render()
     self.assertEquals(h.render(), pageparse(s).render())
 

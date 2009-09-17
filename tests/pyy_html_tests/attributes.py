@@ -1,5 +1,5 @@
 import unittest
-from pyy_html.xhtml11 import html, img
+from pyy_html.html import html, img
 
 class AttributeTests(unittest.TestCase):
     def testDefaultBlank(self):

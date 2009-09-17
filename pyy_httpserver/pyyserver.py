@@ -4,11 +4,11 @@ import imp
 from http import HTTPError
 
 class pyyserver(object):
-  def __init__(self):
-    pass
+  def __init__(self, root='.'):
+    self.root = root
 
   def handle(self, handler, req, res, fname):
-    
+    fname = os.path.join(self.root, fname)
     mname = os.path.basename(fname).split('.')[0]
     dname = os.path.dirname(fname)
     sys.path.append(dname)

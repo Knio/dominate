@@ -168,7 +168,11 @@ class httphandler(object):
     # http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html#sec8.1.2
     # default should be to keep the connection open, but this is easier for testing
     res.headers.setdefault('Connection', 'close')
-     
+    
+    if res.body is not None:
+      res.body = str(res.body)
+
+    
     if req:
       for k, v in req.headers.iteritems():
         if   k == 'User-Agent': pass
@@ -224,7 +228,7 @@ class httphandler(object):
     
     if res.body is None:
       res.body = ''
-    
+
     res.headers.setdefault('Content-Length', len(res.body))
    
     return res   

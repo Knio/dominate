@@ -19,10 +19,10 @@ Public License along with pyy.  If not, see
 from html import html, body, head, title
 
 class document(object):
-  def __init__(self, title='PYY Page'):
+  def __init__(self, title='PYY Page', doctype=None):
     self.title    = title
     self.cookies  = {}
-    self.doctype  = None
+    self.doctype  = doctype
     self.html     = html()
     self.html.document = self
     self.head     = self.html.add(head())

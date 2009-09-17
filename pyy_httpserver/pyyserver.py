@@ -26,8 +26,10 @@ class pyyserver(object):
     self.root = root
 
   def handle(self, handler, req, res, fname):
-    mname = os.path.basename(fname).rpartition('.')[0]
-    sys.path.append(self.root)
+    fname = os.path.join(self.root, fname)
+    mname = os.path.basename(fname).split('.')[0]
+    dname = os.path.dirname(fname)
+    sys.path.append(dname)
 
     if not os.path.exists(fname):
       raise HTTPError(404)

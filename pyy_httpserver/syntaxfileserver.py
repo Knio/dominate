@@ -17,8 +17,9 @@ Public License along with pyy.  If not, see
 '''
 
 import os
+from pyy_httpserver import fileserver
 
-class syntaxfileserver(fileserver.fileserver):
+class syntaxfileserver(fileserver):
   def write_file(self, conn, req, res, path, type):
     try:
       from pygments            import highlight
@@ -27,16 +28,15 @@ class syntaxfileserver(fileserver.fileserver):
       import threadio
       
       #TODO: use threadio?
-      code = open.popen4(path, 't').read()
+      code = file(path).read()
       name = os.path.basename(path)
       
-      ret = highlight(code, get_lexer_for_filename(name), HtmlFormatter())
-    except ImportError:
-      import fileserver
-      ret = fileserver.fileserver.write_file(self, conn, req, res, path)
-    
-    res.headers['Content-Length'] = os.path.getsize(ret)
-    res.headers['Content-Type']   = 'text/html'
-    return ret
+      ret = highlight(code, get_lexer_for_filename(name), HtmlFormatter(full=True))
+      res.headers['Content-Type']   = 'text/html'
+      res.body = ret
 
+    except ImportError:
+      import warnings
+      warnings.warn('pygments not found, serving files as plain-text')
+      ret = fileserver.fileserver.write_file(self, conn, req, res, path)
 

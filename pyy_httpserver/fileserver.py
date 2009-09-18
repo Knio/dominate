@@ -24,7 +24,9 @@ import threadio
 import http
 import time
 import warnings
+from urllib import unquote_plus
 from http import HTTPError
+
 
 class fileserver(object):
   def __init__(self, root='.'):
@@ -34,7 +36,7 @@ class fileserver(object):
     if not req.method in ['GET', 'HEAD']:
       raise HTTPError(405)
     
-    path = os.path.join(self.root, path)
+    path = os.path.join(self.root, unquote_plus(path))
     path = os.path.realpath(os.path.abspath(path))
     root = os.path.realpath(os.path.abspath(self.root))
   
@@ -82,8 +84,8 @@ class fileserver(object):
       elif k == 'Range':    raise HTTPError(501)
 
 
-      else:
-        warnings.warn('unhandled request header: %s: %s' % (k,v))
+      #else:
+      #  warnings.warn('unhandled request header: %s: %s' % (k,v))
 
     
     try:

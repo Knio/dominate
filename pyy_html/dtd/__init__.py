@@ -11,9 +11,9 @@ class dtd(object):
 
   def __init__(self):
     for tag, dict in self.valid.iteritems():
-      dict.setdefault(VALID,    [])
-      dict.setdefault(REQUIRED, [])
-      dict.setdefault(CHILDREN, [])
+      dict.setdefault(VALID,    set([]))
+      dict.setdefault(REQUIRED, set([]))
+      dict.setdefault(CHILDREN, set([]))
       dict.setdefault(DEFAULT,  {})
 
   def validate(self, tag, child=None):
@@ -58,7 +58,7 @@ class dtd(object):
     
     #Check if there is a custom validation function and pass the tag to it
     if CUSTOM in valid and not valid[CUSTOM](tag):
-      raise AttributeError('%s element failed custom attribute check.' % (cls.__name__))
+      raise AttributeError('%s element failed custom validation check.' % (cls.__name__))
     
     return True
   

@@ -190,12 +190,8 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
         else:
             raise ValueError('Unknown doctype "%s".' % doctype_text)
     
-    #Create spec's htmlpage
     page = document()
-    page.setdoctype(spec)
-       
-    #Parse main XHTML data
     page.html = parse(data, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup, debug=debug, start=start)
-    page.validate()
+    page.setdoctype(spec)
 
     return page

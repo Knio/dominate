@@ -19,9 +19,8 @@ Public License along with pyy.  If not, see
 class pyy_tag(object):
     TAB = '  '#'\t'
     
-    is_single     = False #Tag does not require matching end tag (ex. <hr/>)
-    is_pretty     = True  #Text inside the tag should be left as-is (ex. <pre>)
-
+    is_single = False #Tag does not require matching end tag (ex. <hr/>)
+    is_pretty = True  #Text inside the tag should be left as-is (ex. <pre>)
     
     def __init__(self, *args, **kwargs):
         self.attributes = {}
@@ -50,7 +49,7 @@ class pyy_tag(object):
         self.document = doc
         for i in self.children:
             if not isinstance(i, pyy_tag): return
-            i.setdocument(doc)    
+            i.setdocument(doc)
 
     def add(self, *args):
         for obj in args:

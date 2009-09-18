@@ -16,9 +16,9 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-class dom1core(object):   
+class dom1core(object):
     '''
-    Implements the Document Object Model (Core) Level 1 
+    Implements the Document Object Model (Core) Level 1
 
     http://www.w3.org/TR/1998/REC-DOM-Level-1-19981001/
     http://www.w3.org/TR/1998/REC-DOM-Level-1-19981001/level-one-core.html
@@ -37,7 +37,7 @@ class dom1core(object):
         elif results:
             return results[0]
         else:
-            return None 
+            return None
 
     def getElementsByTagName(self, name):
         '''
@@ -53,6 +53,6 @@ class dom1core(object):
         DOM API: Add an item to the end of the children list.
         '''
         self.add(obj)
-        return self 
+        return self
 
 

@@ -89,78 +89,78 @@ class h3          (html_tag): pass
 class h4          (html_tag): pass
 class h5          (html_tag): pass
 class h6          (html_tag): pass
-class head(html_tag): pass
-class header(html_tag): pass
-class hgroup(html_tag): pass
-class hr(single): pass
-class html(html_tag): pass
-class i(html_tag): pass
-class iframe(html_tag): pass
-class img(single): pass
-class input_(single): pass
-class ins(html_tag): pass
-class isindex(html_tag): pass
-class kbd(html_tag): pass
-class keygen(html_tag): pass
-class label(html_tag): pass
-class legend(html_tag): pass
-class li(html_tag): pass
-class link(single): pass
-class mark(html_tag): pass
-class map_(html_tag): pass
-class menu(html_tag): pass
-class meter(html_tag): pass
-class meta(single): pass
-class nav(html_tag): pass
-class nest(html_tag): pass
-class noframes(html_tag): pass
-class noscript(html_tag): pass
-class object_(html_tag): pass
-class ol(html_tag): pass
-class optgroup(html_tag): pass
-class option(html_tag): pass
-class output(html_tag): pass
-class p(html_tag): pass
-class param(single): pass
-class pre(ugly): pass
-class progress(html_tag): pass
-class q(html_tag): pass
-class rb(html_tag): pass
-class rbc(html_tag): pass
-class rt(html_tag): pass
-class rtc(html_tag): pass
-class rp(html_tag): pass
-class ruby(html_tag): pass
-class rule(html_tag): pass
-class s(html_tag): pass
-class samp(html_tag): pass
-class script(ugly): pass
-class section(html_tag): pass
-class select(html_tag): pass
-class small(html_tag): pass
-class source(html_tag): pass
-class span(html_tag): pass
-class strike(html_tag): pass
-class strong(html_tag): pass
-class style(html_tag): pass
-class sub(html_tag): pass
-class sup(html_tag): pass
-class table(html_tag): pass
-class tbody(html_tag): pass
-class td(html_tag): pass
-class textarea(html_tag): pass
-class tfoot(html_tag): pass
-class th(html_tag): pass
-class thead(html_tag): pass
-class time(html_tag): pass
-class title(html_tag): pass
-class tr(html_tag): pass
-class tt(html_tag): pass
-class u(html_tag): pass
-class ul(html_tag): pass
-class var(html_tag): pass
-class video(html_tag): pass
-class xmp(html_tag): pass
+class head        (html_tag): pass
+class header      (html_tag): pass
+class hgroup      (html_tag): pass
+class hr          (single):   pass
+class html        (html_tag): pass
+class i           (html_tag): pass
+class iframe      (html_tag): pass
+class img         (single):   pass
+class input_      (single):   pass
+class ins         (html_tag): pass
+class isindex     (html_tag): pass
+class kbd         (html_tag): pass
+class keygen      (html_tag): pass
+class label       (html_tag): pass
+class legend      (html_tag): pass
+class li          (html_tag): pass
+class link        (single):   pass
+class mark        (html_tag): pass
+class map_        (html_tag): pass
+class menu        (html_tag): pass
+class meter       (html_tag): pass
+class meta        (single):   pass
+class nav         (html_tag): pass
+class nest        (html_tag): pass
+class noframes    (html_tag): pass
+class noscript    (html_tag): pass
+class object_     (html_tag): pass
+class ol          (html_tag): pass
+class optgroup    (html_tag): pass
+class option      (html_tag): pass
+class output      (html_tag): pass
+class p           (html_tag): pass
+class param       (single):   pass
+class pre         (ugly):     pass
+class progress    (html_tag): pass
+class q           (html_tag): pass
+class rb          (html_tag): pass
+class rbc         (html_tag): pass
+class rt          (html_tag): pass
+class rtc         (html_tag): pass
+class rp          (html_tag): pass
+class ruby        (html_tag): pass
+class rule        (html_tag): pass
+class s           (html_tag): pass
+class samp        (html_tag): pass
+class script      (ugly):     pass
+class section     (html_tag): pass
+class select      (html_tag): pass
+class small       (html_tag): pass
+class source      (html_tag): pass
+class span        (html_tag): pass
+class strike      (html_tag): pass
+class strong      (html_tag): pass
+class style       (html_tag): pass
+class sub         (html_tag): pass
+class sup         (html_tag): pass
+class table       (html_tag): pass
+class tbody       (html_tag): pass
+class td          (html_tag): pass
+class textarea    (html_tag): pass
+class tfoot       (html_tag): pass
+class th          (html_tag): pass
+class thead       (html_tag): pass
+class time        (html_tag): pass
+class title       (html_tag): pass
+class tr          (html_tag): pass
+class tt          (html_tag): pass
+class u           (html_tag): pass
+class ul          (html_tag): pass
+class var         (html_tag): pass
+class video       (html_tag): pass
+class xmp         (html_tag): pass
 
 class comment(html_tag):
     '''

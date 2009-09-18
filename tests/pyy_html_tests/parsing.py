@@ -1,6 +1,7 @@
 import unittest
-from pyy_html.html   import div, htmlpage, hr, comment
-from pyy_html.parser import parse, pageparse
+from pyy_html.html     import div, hr, comment
+from pyy_html.document import document
+from pyy_html.parser   import parse, pageparse
 
 class ParsingTests(unittest.TestCase):
   def testBasic(self):

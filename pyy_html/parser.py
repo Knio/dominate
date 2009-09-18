@@ -19,6 +19,7 @@ Public License along with pyy.  If not, see
 import re
 import html
 import dtd
+from document import document
 
 # TODO this is broken
 def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):

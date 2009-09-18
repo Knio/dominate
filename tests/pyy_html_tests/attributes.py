@@ -1,6 +1,9 @@
 import unittest
 from pyy_html.html import html, img
 
+#TODO: These no longer work since stuff like this is only checked when
+#      a doctype is assigned to a document. Update them to reflect.
+
 class AttributeTests(unittest.TestCase):
     def testDefaultBlank(self):
         self.assertEqual(str(img(src='test.png')), '<img src="test.png" alt="" />')

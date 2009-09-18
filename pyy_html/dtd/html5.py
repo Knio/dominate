@@ -29,7 +29,7 @@ FLOW        = set([a, abbr, address, area, article, aside, audio, b, bdo, blockq
 SECTION     = set([article, aside, nav, section])
 HEADING     = set([h1, h2, h3, h4, h5, h6, hgroup])
 PHRASING    = set([a, abbr, area, audio, b, bdo, br, button, canvas, cite, code, command, datalist, del_, dfn, em, embed, i, iframe, img, input, ins, kbd, keygen, label, link, map, mark, math, meta, meter, noscript, object, output, progress, q, ruby, samp, script, select, small, span, strong, sub, sup, svg, textarea, time, var, video, str])
-TRANSPARENT = set([]) #I don't know...ask html5
+TRANSPARENT = set([a, del_, ins, noscript, object_]) #TODO: verify this
 
 
 class html5(dtd):

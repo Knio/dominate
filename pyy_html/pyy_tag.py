@@ -188,11 +188,11 @@ class pyy_tag(object):
         
         attributes_len = len(self.attributes)
         attributes = '%s attribute' % attributes_len
-        if attributes_len > 1: attributes += 's'
+        if attributes_len != 1: attributes += 's'
         
         children_len = len(self.children)
         children = '%s child' % children_len
-        if children_len > 1: children += 'ren'
+        if children_len != 1: children += 'ren'
         
         return '<%s: %s, %s>' % (name, attributes, children)
     

@@ -23,9 +23,11 @@ from pyy_html.dtd  import *
 CORE     = set(['class', 'id', 'style', 'title'])
 I18N     = set(['lang', 'dir'])
 EVENT    = set(['onclick', 'ondblclick', 'onmousedown', 'onmouseup', 'onmouseover', 'onmousemove', 'onmouseout', 'onkeypress', 'onkeydown', 'onkeyup'])
-ATTRS    = CORE | I18N | EVENT
+
 COLORS   = set(['bgcolor', 'text', 'link', 'vlink', 'alink'])
 RESERVED = set(['datasrc', 'datafld', 'dataformatas'])
+
+ATTRS    = CORE | I18N | EVENT
 
 #Children
 FONT    = set([tt, i, b, u, s, strike, big, small])

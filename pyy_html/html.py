@@ -106,6 +106,7 @@ class label       (html_tag): pass
 class legend      (html_tag): pass
 class li          (html_tag): pass
 class link        (single):   pass
+class math        (html_tag): pass
 class mark        (html_tag): pass
 class map_        (html_tag): pass
 class menu        (html_tag): pass
@@ -145,6 +146,7 @@ class strong      (html_tag): pass
 class style       (html_tag): pass
 class sub         (html_tag): pass
 class sup         (html_tag): pass
+class svg         (html_tag): pass
 class table       (html_tag): pass
 class tbody       (html_tag): pass
 class td          (html_tag): pass

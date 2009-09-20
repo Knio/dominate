@@ -17,7 +17,8 @@ Public License along with pyy.  If not, see
 '''
 
 from html4strict   import html4strict, CORE, ATTRS, FLOW
-from pyy_html.html import frameset, frame, noframes, iframe, VALID, CHILDREN
+from pyy_html.html import frameset, frame, noframes, iframe
+from pyy_html.dtd  import VALID, CHILDREN
 
 class html4frameset(html4strict):
   docstring = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">'

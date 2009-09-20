@@ -90,10 +90,8 @@ def parse_multipart(content_type, data):
   '''
   multipart = {}
 
-  content_type = _parse_semi(content_type)
+  content_type = parse_semi(content_type)
   boundary     = '--' + content_type['boundary']
-  
-  print 'BOUNDARY =', boundary
   
   string = data
   if not string.startswith(boundary):
@@ -128,7 +126,6 @@ def parse_multipart(content_type, data):
   string = data[len(boundary + '\r\n'):]
   
   while True:
-    print '<pre>' + string + '</pre>'
     n = string.find(boundary)
     if n == -1:
       raise ValueError('unexpected EOF while parsing form-data (ATTN: make sure this script is running with unbuffered stdin, as the default (text-mode on windows) will fail when reading certain non-text characters) (#python -u for unbuffered stdin/out)')

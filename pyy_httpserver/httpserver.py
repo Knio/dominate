@@ -21,14 +21,19 @@ import http
 import server
 
 class httpserver(object):
-  uri = []
-
+  rewrite = []
+  uri     = []
+  port    = 8080
   def __init__(self):
     pass
 
   def handle(self, conn, req, res):
     handler = None
     args = ()
+    
+    for r,s in self.rewrite:
+      req.uri = re.sub(r, s, req.uri)
+
     for r, h in reversed(self.uri):
       m = re.match(r, req.uri)
       if m:
@@ -48,7 +53,7 @@ class httpserver(object):
 
   def run(self, *args):
     s = server.server()
-    s.listen(('',54321), http.httphandler, self)
+    s.listen(('',self.port), http.httphandler, self)
     s.run(*args)
 
 

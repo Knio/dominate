@@ -126,7 +126,7 @@ class connection(object):
   def read(self, x=None):
     if not self.status:
       raise EOFError('read on closed connection')
-    if not self.readbuffer:
+    if not any(self.readbuffer):
       self.server.set_readable(self)
       # block until data availible
       self.readchannel.receive()

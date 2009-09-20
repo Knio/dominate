@@ -106,9 +106,15 @@ class httphandler(object):
     req = httprequest()
 
     def read(bytes=None):
-      cl = int(req.headers.get('Content-Type','0'))
+      l = cl = int(req.headers.get('Content-Length','0'))
       if not cl: return ''
-      return self.conn.read(cl)
+      data = []
+      while l:
+        data.append(self.conn.read(l))
+        l -= len(data[-1])
+      data = ''.join(data)
+      assert len(data) == cl, (len(data), cl)
+      return data
         
     req.read = read
     
@@ -201,7 +207,7 @@ class httphandler(object):
           if not res.body: continue
           tokens = v.lower().split(',')
           len1 = len(res.body)
-          if 'deflate' in tokens: # zlib is better
+          if 'deflate' in tokens: # zlib is better, try it first
             if len1 < 32: continue
             import zlib
             res.body = zlib.compress(res.body, 9)
@@ -221,7 +227,6 @@ class httphandler(object):
             res.body = ss.getvalue()
             len2 = len(res.body)
             res.headers['Content-Encoding'] = 'gzip'
-
 
           else: # unsupported encoding
             res.headers.setdefault('Content-Encoding', 'identity')

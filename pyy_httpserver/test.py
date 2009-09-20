@@ -19,6 +19,7 @@ Public License along with pyy.  If not, see
 from pyy_httpserver import *
 
 class myserver(httpserver):
+  port = 54321
   uri = [
     ('^/(.*)$',         fileserver('.')),
     ('^/(.*\.(py|c))$', syntaxfileserver('.')),

@@ -20,7 +20,7 @@ import os
 from pyy_httpserver import fileserver
 
 class syntaxfileserver(fileserver):
-  def write_file(self, conn, req, res, path, type):
+  def write_file(self, conn, req, res, path):
     try:
       from pygments            import highlight
       from pygments.lexers     import get_lexer_for_filename

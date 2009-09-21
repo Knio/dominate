@@ -1,8 +1,8 @@
-VALID     = 'valid'
-REQUIRED  = 'required'
-CHILDREN  = 'children'
-DEFAULT   = 'default'
-CUSTOM    = 'custom'
+VALID    = 'valid'
+REQUIRED = 'required'
+CHILDREN = 'children'
+DEFAULT  = 'default'
+CUSTOM   = 'custom'
 
 from pyy_html.html import html_tag, comment
 
@@ -65,6 +65,8 @@ class dtd(object):
   def render(self):
     return self.docstring
   __str__ = __unicode__ = render
+
+
 
 import xhtml11 as _xhtml11
 

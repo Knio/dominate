@@ -15,18 +15,31 @@ You should have received a copy of the GNU Lesser General
 Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
-
+import sys
 from pyy_httpserver import *
-
-class myserver(httpserver):
-  port = 54321
-  uri = [
-    ('^/(.*)$',         fileserver('.')),
-    ('^/(.*\.(py|c))$', syntaxfileserver('.')),
-    ('^/(.*\.pyy)$',    pyyserver('.')),
-  ]
+from pyy_httpserver.gvimfileserver import gvimfileserver
 
 if __name__ == '__main__':
-  myserver().run(0.1)
+  args = list(sys.argv[1:])
 
+  port  = 8080
+  dir   = '.'
+  while args:
+    c = args.pop(0)
+    if c == '-p':
+      port = int(args.pop(0))
+    if c == '-d':
+      dir = args.pop(0)
+  
+
+  class myserver(httpserver):
+    port = port
+    uri = [
+      ('^/(.*)$',                   fileserver(dir)),
+      ('^/(.*\.(py|c|h|js|java))$', syntaxfileserver(dir)),
+      ('^/(.*\.m)$',                gvimfileserver(dir)),
+      ('^/(.*\.pyy)$',              pyyserver(dir)),
+    ]
+
+  myserver().run(0.1)
 

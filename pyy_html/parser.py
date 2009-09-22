@@ -122,17 +122,11 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
         #Move to after current tag
         start = match_end
     
-    #Return the top of the stack
-    if isinstance(result, dummy):
-        if len(result.children) != 1:
-            return result.children
-        else:
-            return result.children[0]
+    #Return the only child or top-level adjancent children
+    if len(stack[-1].children) != 1:
+        return stack[-1].children
     else:
-        if len(stack) > 1:
-            return stack[-1]
-        else:
-            return result
+        return stack[-1].children[0]
 
 
 def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False, debug=False):

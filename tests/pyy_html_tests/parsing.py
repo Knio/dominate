@@ -17,7 +17,7 @@ Public License along with pyy. If not, see
 '''
 
 import unittest
-from pyy_html.html     import a, br, div, hr, comment
+from pyy_html.html     import a, br, div, hr, p, comment
 from pyy_html.document import document
 from pyy_html.parser   import parse, pageparse
 

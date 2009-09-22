@@ -38,4 +38,4 @@ suite_pyy_web        = defaultTestLoader.loadTestsFromModule(pyy_web_tests)
 #Create entire package suite
 suite_pyy = TestSuite([suite_pyy_cgi, suite_pyy_html, suite_pyy_httpserver, suite_pyy_web])
 
-TextTestRunner().run(suite_pyy)
+TextTestRunner(verbosity=2).run(suite_pyy)

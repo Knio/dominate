@@ -184,13 +184,6 @@ class comment(html_tag):
     ATTRIBUTE_CONDITION = 'condition'
     ATTRIBUTE_DOWNLEVEL = 'downlevel' #Valid values are 'hidden' or 'revealed'
     
-    valid = [ATTRIBUTE_CONDITION, ATTRIBUTE_DOWNLEVEL]
-    
-    def __init__(self, *args, **kwargs):
-        html_tag.__init__(self, *args, **kwargs)
-        #Preserve whitespace if we are not a conditional comment
-        self.is_pretty = comment.ATTRIBUTE_CONDITION not in self.attributes
-    
     def render(self, indent=1, inline=False):
         has_condition = comment.ATTRIBUTE_CONDITION in self.attributes
         is_revealed   = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
@@ -203,7 +196,7 @@ class comment(html_tag):
         
         rendered += self.render_children(indent - 1, inline)
         
-        #XXX: This might be able to be changed to if len(self.children) > 1 since adjacent strings should always be joined
+        #TODO: This might be able to be changed to if len(self.children) > 1 since adjacent strings should always be joined
         if any(isinstance(child, pyy_tag) for child in self.children):
             rendered += '\n'
             rendered += html_tag.TAB * (indent - 1)
@@ -213,6 +206,7 @@ class comment(html_tag):
         if not is_revealed:
             rendered += '--'
         rendered += '>'
+        
         return rendered
     
     @staticmethod

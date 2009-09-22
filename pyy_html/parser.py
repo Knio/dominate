@@ -21,7 +21,7 @@ import html
 import dtd
 from document import document
 
-# TODO this is broken
+
 def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False):
     if allow_invalid:
         allow_invalid_attributes = allow_invalid_markup = allow_invalid
@@ -34,14 +34,17 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
     else:
         regex_attributes = {'name': 'a-z0-9'   , 'attribute_name': r'\-a-z0-9:'   , 'attribute_quote': '"' }
     
-    r_tag = re.compile(r'''<(?P<isEndTag>/)?(?P<name>[%(name)s]+)(?(isEndTag)|(?P<attributes>(\s+([%(attribute_name)s]+)\s?=\s?(%(attribute_quote)s.*?%(attribute_quote)s)\s*)*)(?P<isSingleTag>/)?)>''' % regex_attributes)
+    r_tag = re.compile(r'''<(?P<isEndTag>/)?(?P<name>[%(name)s]+)(?(isEndTag)|(?P<attributes>(\s+([%(attribute_name)s]+)\s?=\s?(%(attribute_quote)s.*?%(attribute_quote)s)\s*)*)[ ]*(?P<isSingleTag>/)?)>''' % regex_attributes)
     r_att = re.compile(r'''(?P<name>[%(attribute_name)s]+)\s?=\s?%(attribute_quote)s(?P<value>.*?)%(attribute_quote)s''' % regex_attributes)
     
+    #Used to group top-level adjacent elements
+    class dummy(html.html_tag): pass
+    
     #Initialize tag tree stack with dummy element
-    result = []
-    stack = [result]
+    result = dummy()
+    stack  = [result]
     preserve_whitespace = 0
-    in_normal_comment = False
+    in_normal_comment   = False
     
     data_length = len(data)
     while start < data_length:
@@ -95,7 +98,7 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
             #Assemble attributes (if exist) into a dictionary
             kwargs = dict(r_att.findall(match.group('attributes') or ''))
             
-            #Create new object and push onto the stack
+            #Create new object
             new = getattr(html, name)(__invalid=allow_invalid_attributes, **kwargs)
             stack[-1] += new
             
@@ -105,7 +108,8 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
             
             #If it is a single tag (or supposed to be) mark as such
             if match.group('isSingleTag') or (allow_invalid_markup and new.is_single):
-                stack[-1].is_single = True
+                new.is_single = True
+                
                 if debug: print "  IS SINGLE TAG\n  ADDED TO: %s (%s)" % (type(stack[-1]).__name__, ','.join(type(x).__name__ for x in stack[:-1]))
             else:
                 stack.append(new)
@@ -119,10 +123,16 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
         start = match_end
     
     #Return the top of the stack
-    if len(stack) > 1:
-        return stack[-1]
+    if isinstance(result, dummy):
+        if len(result.children) != 1:
+            return result.children
+        else:
+            return result.children[0]
     else:
-        return result
+        if len(stack) > 1:
+            return stack[-1]
+        else:
+            return result
 
 
 def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False, debug=False):
@@ -192,7 +202,7 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
             raise ValueError('Unknown doctype "%s".' % doctype_text)
     
     page = document()
-    page.html = parse(data, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup, debug=debug, start=start)
+    page.html = parse(data, start=start, debug=debug, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup)
     page.setdoctype(spec)
-
+    
     return page

@@ -17,25 +17,43 @@ Public License along with pyy. If not, see
 '''
 
 import unittest
-from pyy_html.html     import div, hr, comment
+from pyy_html.html     import a, br, div, hr, comment
 from pyy_html.document import document
 from pyy_html.parser   import parse, pageparse
 
 class ParsingTests(unittest.TestCase):
-  def testBasic(self):
+  def testTag(self):
     h = div()
     s = '<div></div>'
     self.assertEquals(h.render(), parse(s).render())
 
   def testSingle(self):
-    h = hr()
     s = '<hr />'
-    self.assertEquals(h.render(), parse(s).render())
+    self.assertTrue(isinstance(parse(s), hr))
+  
+  def testAdjacentSingle(self):
+    s = '<hr /><br />'
+    r = parse(s)
+    self.assertTrue(isinstance(r, list))
+    self.assertTrue(isinstance(r[0], hr))
+    self.assertTrue(isinstance(r[1], br))
+  
+  def testAdjancentMixed(self):
+    s = '<hr /><a></a>'
+    r = parse(s)
+    self.assertTrue(isinstance(r, list))
+    self.assertTrue(isinstance(r[0], hr))
+    self.assertTrue(isinstance(r[1], a))
+  
+  def testAdjacentTags(self):
+    s = '<a></a><p></p>'
+    r = parse(s)
+    self.assertTrue(isinstance(r, list))
+    self.assertTrue(isinstance(r[0], a))
+    self.assertTrue(isinstance(r[1], p))
 
   def testDoctype(self):
     h = document()
     s = h.render()
     self.assertEquals(h.render(), pageparse(s).render())
-
-
 

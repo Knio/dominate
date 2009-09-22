@@ -17,7 +17,7 @@ Public License along with pyy. If not, see
 '''
 
 import unittest
-from pyy_html.html import html, head, body, h1, p, comment
+from pyy_html.html import body, h1, p, comment
 
 class RenderingTests(unittest.TestCase):
     def testInline(self):

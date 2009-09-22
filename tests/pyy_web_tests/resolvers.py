@@ -33,7 +33,7 @@ class ResolverTests(unittest.TestCase):
     self.assertTrue(isinstance(FileHeirarchyResolver(path, Request('admin/a/'), None), test.admin.a.Index))
   
   def testSelectClassInFile(self):
-    self.assertTrue(isinstance(FileHeirarchyResolver(path, Request('admin/a/Test'), None), test.admin.a.Test))
+    self.assertTrue(isinstance(FileHeirarchyResolver(path, Request('admin/a/test'), None), test.admin.a.Test))
   
   def testErrorWhenNoIndex(self):
     try:

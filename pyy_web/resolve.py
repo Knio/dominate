@@ -19,6 +19,7 @@ Public License along with pyy. If not, see
 import imp
 import re
 import os
+import string
 
 def RegexResolver(mapping, request, response):
   for regex, pageclass in mapping:
@@ -40,7 +41,6 @@ def FileHeirarchyResolver(root, request, response):
       return False #too deep!
     
     dir = os.path.join(root, chunks[0])
-    #print 'Checking %s...' % dir
     
     #Check if the first chunk is a folder, if so, recursively continue searching inside
     if os.path.isdir(dir):
@@ -49,7 +49,6 @@ def FileHeirarchyResolver(root, request, response):
         return page
     
     file = os.path.join(root, '%s.py' % chunks[0])
-    #print 'Checking %s...' % file
     
     #Check if the first chunk is a file in the current directory
     if os.path.isfile(file):
@@ -58,13 +57,15 @@ def FileHeirarchyResolver(root, request, response):
       module = imp.load_module(chunks[0], f, file, ('.py', 'U', 1))
       f.close()
       
-      #TODO: convert lowercase_underscored_names to CamelCase for class names
-      if len(chunks) > 1 and hasattr(module, chunks[1]):
-        #TODO: add chunks[2:] to request.get
-        return getattr(module, chunks[1])(request, response)
+      #Convert to PascalCasing with hyphens going to underscores
+      classname = ''.join(map(string.capitalize, chunks[1].split('_'))).replace('-', '_')
+      
+      if len(chunks) > 1 and hasattr(module, classname):
+        request.uri = '/' + '/'.join(chunks[2:])
+        return getattr(module, classname)(request, response)
       
       elif hasattr(module, 'Index'):
-        #TODO: add chunks[1:] to request.get
+        request.uri = '/' + '/'.join(chunks[1:])
         return getattr(module, 'Index')(request, response)
       
     return False

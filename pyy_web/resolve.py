@@ -59,7 +59,7 @@ def FileHeirarchyResolver(root, request, response):
       
       #Convert to PascalCasing with hyphens going to underscores
       classname = ''.join(map(string.capitalize, chunks[1].split('_'))).replace('-', '_') if len(chunks) > 1 else 'Index'
-        
+      
       if hasattr(module, classname):
         request.uri = '/' + '/'.join(chunks[2:])
         return getattr(module, classname)(request, response)

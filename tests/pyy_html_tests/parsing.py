@@ -23,9 +23,8 @@ from pyy_html.parser   import parse, pageparse
 
 class ParsingTests(unittest.TestCase):
   def testTag(self):
-    h = div()
     s = '<div></div>'
-    self.assertEquals(h.render(), parse(s).render())
+    self.assertTrue(isinstance(parse(s), div))
 
   def testSingle(self):
     s = '<hr />'
@@ -55,5 +54,5 @@ class ParsingTests(unittest.TestCase):
   def testDoctype(self):
     h = document()
     s = h.render()
-    self.assertEquals(h.render(), pageparse(s).render())
+    self.assertEquals(s, pageparse(s).render())
 

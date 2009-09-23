@@ -19,8 +19,9 @@ Public License along with pyy. If not, see
 '''
 
 #Ensure we get the repository version and not an installed version
+import os
 import sys
-sys.path.insert(0, '..')
+sys.path.insert(0, os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
 
 from unittest import defaultTestLoader, TestSuite, TextTestRunner
 import pyy_cgi_tests, pyy_html_tests, pyy_httpserver_tests, pyy_web_tests

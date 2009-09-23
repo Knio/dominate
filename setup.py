@@ -61,8 +61,8 @@ setup(
         'Intended Audience :: Developers',
     ],
     
-    packages    = find_packages(),
-    py_modules  = ['ez_setup'],
+    packages   = find_packages(),
+    py_modules = ['ez_setup'],
     
     include_package_data = True,
 )

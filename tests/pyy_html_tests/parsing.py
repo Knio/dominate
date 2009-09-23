@@ -17,7 +17,7 @@ Public License along with pyy. If not, see
 '''
 
 import unittest
-from pyy_html           import *
+from pyy_html           import dtd
 from pyy_html.html      import a, b, br, div, hr, p, comment
 from pyy_html.document  import document
 from pyy_html.parser    import parse, pageparse
@@ -52,11 +52,11 @@ class ParsingTests(unittest.TestCase):
     self.assertTrue(isinstance(r[0], a))
     self.assertTrue(isinstance(r[1], p))
 
-  def testDoctype(self):
+  def testDoctypes(self):
     for i in (dtd.html4frameset, dtd.html4strict, dtd.html5, dtd.xhtml10frameset, dtd.xhtml10strict, dtd.xhtml11):
       h = document(doctype=i)
       s = h.render()
-      self.assertEquals(h.render(), pageparse(s).render())
+      self.assertEquals(s, pageparse(s).render())
 
   # malformed documents
   def testNoClose(self):

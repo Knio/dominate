@@ -60,8 +60,9 @@ def parse_user_agent(user_agent):
     ('chrome',    re.compile(r'Chrome/(?P<version>(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<release>\d+)(?:\.(?P<build>\d+))?)?)'), None),
     ('safari',    re.compile(r'Version/(?P<version>(?P<major>\d+)\.(?P<minor>\d+)(?:\.(?P<release>\d+))?)'), 'iPhone'),
     ('opera',     re.compile(r'Opera(?:/| )(?P<version>(?P<major>\d+)\.(?P<minor>\d+))'), 'Mini'),
-    ('googlebot', re.compile(r'Googlebot/(?P<version>(?P<major>\d+)\.(?P<minor>\d+))'), None),                                                                         #   # googlebot Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
+    ('googlebot', re.compile(r'Googlebot/(?P<version>(?P<major>\d+)\.(?P<minor>\d+))'), None), # googlebot Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
   )
+  
   class browser(object): pass
   b = browser()
   
@@ -118,7 +119,7 @@ def parse_multipart(content_type, data):
   
     data        = part(string)
     disposition = parse_semi(headers['Content-Disposition'])
-    name = disposition.pop('name')
+    name        = disposition.pop('name')
     for n, value in disposition.items():
         setattr(data, n, value)
     return name, data

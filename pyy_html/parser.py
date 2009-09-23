@@ -94,7 +94,7 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
             #Check if the tag we are popping off the stack is matching tag
             if type(result).__name__ != name:
                 if allow_invalid_markup:
-                    if debug: print "  BACK-CHECKING FOR %s IN (%s)" % (name, ','.join(type(x).__name__ for x in stack))
+                    if debug: print "  BACK-CHECKING FOR <%s> IN (%s)" % (name, ','.join(type(x).__name__ for x in stack))
                     
                     #Traverse down the stack looking for a match
                     resolved = False
@@ -106,10 +106,11 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
                             resolved = True
                             break
                     
-                    #If we found a match then restore the popped tag
+                    #If we did not find a match then restore the popped tag
                     if not resolved:
                         if debug: print "  RE-PUSHED: %s (%s)" % (type(result).__name__, ','.join(type(x).__name__ for x in stack))
                         stack.append(result)
+                    
                 else:
                     raise TypeError('Tag mismatch. %s != %s' % (type(result).__name__, name))
         else:
@@ -143,6 +144,11 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
     #Add any trailing text
     if start < data_length:
         stack[-1] += data[start:]
+        if debug: print "  ADDED TEXT: %s" % data[start:]
+    
+    #If dummy is not the only item on the stack then there are unclosed tags
+    if not allow_invalid_markup and len(stack) > 1:
+        raise ValueError('Unclosed tags: %s', ', '.join(type(x).__name__ for x in stack[1:]))
     
     #Return the only child or top-level adjancent children
     if len(stack[0].children) != 1:

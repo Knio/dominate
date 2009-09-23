@@ -30,10 +30,12 @@ path = os.path.join('pyy_web_tests', 'test')
 
 class ResolverTests(unittest.TestCase):
   def testSelectIndexInFile(self):
-    self.assertTrue(isinstance(FileHeirarchyResolver(path, Request('admin/a/'), None), test.admin.a.Index))
+    r = FileHeirarchyResolver(path, Request('admin/a/'), None)
+    self.assertTrue(isinstance(r, test.admin.a.Index), r)
   
   def testSelectClassInFile(self):
-    self.assertTrue(isinstance(FileHeirarchyResolver(path, Request('admin/a/test'), None), test.admin.a.Test))
+    r = FileHeirarchyResolver(path, Request('admin/a/test'), None)
+    self.assertTrue(isinstance(r, test.admin.a.Test), r)
   
   def testErrorWhenNoIndex(self):
     try:

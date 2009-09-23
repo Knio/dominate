@@ -20,39 +20,44 @@ from html import html, body, head, title
 
 class document(object):
   def __init__(self, title='PYY Page', doctype=None):
-    self.title    = title
-    self.cookies  = {}
-    self.doctype  = doctype
-    self.html     = html()
+    self.cookies       = {}
+    self.doctype       = doctype
+    self.html          = html()
     self.html.document = self
-    self.head     = self.html.add(head())
-    self.body     = self.html.add(body())
-    self._entry   = self.body
-    
+    self.head          = self.html.add(head())
+    self.body          = self.html.add(body())
+    self._entry        = self.body
+    self.title         = title
+  
   def setdoctype(self, doctype=None):
     if doctype: doctype.validate(self.html)
     self.doctype = doctype
-
+  
   def add(self, obj):
     return self._entry.add(obj)
   
   def __iadd__(self, obj):
     self._entry += obj
     return self
-     
+  
+  def __setattr__(self, attr, value):
+    if attr == 'title' and title in self.html:
+        self.html.get(title)[0].children = [value]
+    object.__setattr__(self, attr, value)
+  
   def render(self):
     r = ""
     
+    #Add a title tag if it does not exist
     if title not in self.html:
         self.head += title(self.title)
-
+    
+    #Add the doctype if one was set
     if self.doctype:
         r += self.doctype.render() + '\n'
-
+    
     r += self.html.render()
     return r
-  
-  def __str__(self):
-    return self.render()
+  __str__ = __unicode__ = render
 
 

@@ -17,7 +17,8 @@ Public License along with pyy. If not, see
 '''
 
 import unittest
-from pyy_html.html import body, h1, p, comment
+from pyy_html.document import document
+from pyy_html.html     import body, h1, p, comment
 
 class RenderingTests(unittest.TestCase):
     def testInline(self):
@@ -40,3 +41,12 @@ class RenderingTests(unittest.TestCase):
     
     def testIndentedConditionalComment(self):
         self.assertEqual(str(body(p(), comment(p(), condition='lt IE 7'))), '<body>\n\t<p></p>\n\t<!--[if lt IE 7]>\n\t<p></p>\n\t<![endif]-->\n</body>')
+    
+    def testDocumentTitleUpdate(self):
+        d1 = document()
+        rd1 = d1.render()
+        d1.title = "test"
+        rd1 = d1.render()
+        d2 = document(title="test")
+        rd2 = d2.render()
+        self.assertEqual(rd1, rd2)

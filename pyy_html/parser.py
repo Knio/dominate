@@ -93,7 +93,25 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
             
             #Check if the tag we are popping off the stack is matching tag
             if type(result).__name__ != name:
-                raise TypeError('Tag mismatch. %s != %s' % (type(result).__name__, name))
+                if allow_invalid_markup:
+                    if debug: print "  BACK-CHECKING FOR %s IN (%s)" % (name, ','.join(type(x).__name__ for x in stack))
+                    
+                    #Traverse down the stack looking for a match
+                    resolved = False
+                    for i in xrange(-1, -len(stack), -1):
+                        if type(stack[i]).__name__ == name:
+                            #Discard all tags above it
+                            del stack[i:]
+                            
+                            resolved = True
+                            break
+                    
+                    #If we found a match then restore the popped tag
+                    if not resolved:
+                        if debug: print "  RE-PUSHED: %s (%s)" % (type(result).__name__, ','.join(type(x).__name__ for x in stack))
+                        stack.append(result)
+                else:
+                    raise TypeError('Tag mismatch. %s != %s' % (type(result).__name__, name))
         else:
             #Assemble attributes (if exist) into a dictionary
             kwargs = dict(r_att.findall(match.group('attributes') or ''))
@@ -108,7 +126,7 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
             
             #If it is a single tag (or supposed to be) mark as such
             if match.group('isSingleTag') or (allow_invalid_markup and new.is_single):
-                new.is_single = True
+                stack[-1].children[-1].is_single = True
                 
                 if debug: print "  IS SINGLE TAG\n  ADDED TO: %s (%s)" % (type(stack[-1]).__name__, ','.join(type(x).__name__ for x in stack[:-1]))
             else:
@@ -122,11 +140,15 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
         #Move to after current tag
         start = match_end
     
+    #Add any trailing text
+    if start < data_length:
+        stack[-1] += data[start:]
+    
     #Return the only child or top-level adjancent children
-    if len(stack[-1].children) != 1:
-        return stack[-1].children
+    if len(stack[0].children) != 1:
+        return stack[0].children
     else:
-        return stack[-1].children[0]
+        return stack[0].children[0]
 
 
 def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False, allow_invalid_markup=False, debug=False):

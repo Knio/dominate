@@ -18,7 +18,7 @@ Public License along with pyy. If not, see
 
 import unittest
 from pyy_html           import *
-from pyy_html.html      import a, br, div, hr, p, comment
+from pyy_html.html      import a, b, br, div, hr, p, comment
 from pyy_html.document  import document
 from pyy_html.parser    import parse, pageparse
 
@@ -62,20 +62,30 @@ class ParsingTests(unittest.TestCase):
   def testNoClose(self):
     h = div('hi')
     s = '<div>hi'
-    p = parse(s)
-    self.assertEquals(h.render(), p.render())
+    self.assertEquals(parse(s, allow_invalid_markup=True).render(), h.render())
+  
+  def testNoCloseButError(self):
+    s = '<div>hi'
+    try:
+      parse(s)
+      self.fail('Should throw parsing error: "%s"' % s)
+    except ValueError:
+      pass
 
   def testOutOfOrder(self):
+    h = div('hi there ', b('im bold'))
     s = '<div>hi there <b>im bold</div></b>'
-    self.assertEquals(parse(s).render(), div('hi there ',b('im bold')))
+    self.assertEquals(parse(s, allow_invalid_markup=True).render(), h.render())
 
   def testNotXml(self):
     # some people don't write single tags as <br />
+    h = div('line', br(), 'new line', br(), 'new line')
     s = '<div>line<br>new line<BR>new line</div>'
-    self.assertEquals(parse(s).render(), div('line',br(),'new line',br(),'new line'))
+    self.assertEquals(parse(s, allow_invalid_markup=True).render(), h.render())
 
   def testNoClose2(self):
     # some people think <p> is a single
+    h = div('paragraph', p('new paragraph', p('new paragraph')))
     s = '<div>paragraph<p>new paragraph<P>new paragraph</div>'
-    self.assertEquals(parse(s).render(), div('paragraph',p('new paragraph',p('new paragraph'))))
-    
+    self.assertEquals(parse(s, allow_invalid_markup=True).render(), h.render())
+

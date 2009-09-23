@@ -16,8 +16,8 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 import html
+import dtd
 
 from document import document
-from dtd      import *
 from parser   import parse, pageparse
 

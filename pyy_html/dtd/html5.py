@@ -16,8 +16,8 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from pyy_html.html import *
-from pyy_html.dtd  import *
+from pyy_html.html  import *
+from dtd            import *
 
 #Attributes
 GLOBAL = set(['accesskey', 'class', 'class', 'contenteditable', 'contextmenu', 'dir', 'draggable', 'id', 'item', 'hidden', 'lang', 'itemprop', 'spellcheck', 'style', 'subject', 'tabindex', 'title'])

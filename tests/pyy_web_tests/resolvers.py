@@ -26,7 +26,7 @@ class Request:
     self.uri = uri
 
 
-path = os.path.join('pyy_web_tests', 'test')
+path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test')
 
 class ResolverTests(unittest.TestCase):
   def testSelectIndexInFile(self):

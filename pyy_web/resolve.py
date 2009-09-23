@@ -57,17 +57,12 @@ def FileHeirarchyResolver(root, request, response):
       module = imp.load_module(chunks[0], f, file, ('.py', 'U', 1))
       f.close()
       
-      if len(chunks) > 1:
-        #Convert to PascalCasing with hyphens going to underscores
-        classname = ''.join(map(string.capitalize, chunks[1].split('_'))).replace('-', '_')
+      #Convert to PascalCasing with hyphens going to underscores
+      classname = ''.join(map(string.capitalize, chunks[1].split('_'))).replace('-', '_') if len(chunks) > 1 else 'Index'
         
-        if hasattr(module, classname):
-          request.uri = '/' + '/'.join(chunks[2:])
-          return getattr(module, classname)(request, response)
-      
-      if hasattr(module, 'Index'):
-        request.uri = '/' + '/'.join(chunks[1:])
-        return getattr(module, 'Index')(request, response)
+      if hasattr(module, classname):
+        request.uri = '/' + '/'.join(chunks[2:])
+        return getattr(module, classname)(request, response)
       
     return False
   

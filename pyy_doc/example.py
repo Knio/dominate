@@ -29,34 +29,33 @@ class pyy_doc(document):
     document.__init__(self, title='%s - docs' % module)
     self.generate()
 
-  def generate(self):
+  def generate(self, show_hidden=False, trim_doc=100):
     mod = __import__(self.module)
     
-    d = div(h2('Module %s' % self.module), pre(escape(str(mod.__doc__))))
-    self += d
-
-    constants = self.add(div(h3('Constants')))
-    modules   = self.add(div(h3('Submodules')))
-    classes   = self.add(div(h3('Classes')))
-    functions = self.add(div(h3('Functions')))
+    #Module Header
+    self += div(h2('Module %s' % self.module), pre(escape(str(mod.__doc__).strip())))
     
-    constants += table()
-    modules   += table()
-    classes   += table()
-    functions += table()
+    #Sections
+    con, mod, cla, fun = self.add(div(h3('Constants') , table()), \
+                                  div(h3('Submodules'), table()), \
+                                  div(h3('Classes')   , table()), \
+                                  div(h3('Functions') , table()))
+    constants = con[1].add(tbody())
+    modules   = mod[1].add(tbody())
+    classes   = cla[1].add(tbody())
+    functions = fun[1].add(tbody())
     
-    
+    #Add module items to respective sections
     for k, v in mod.__dict__.items():
-      if k.startswith('_'): continue
+      if k.startswith('_') and not show_hidden: continue
       if type(v) is types.ModuleType:
-        modules.get()[1] += tr(td(a(k, href=k), __inline=True), td(escape(str(v.__doc__).strip()[:100]), __inline=True))
+        modules   += tr(td(a(k, href=k), __inline=True), td(escape(str(v.__doc__).strip()[:trim_doc]), __inline=True))
       elif type(v) is type:
-        classes.get()[1] += tr(td(a(k,href=k), __inline=True), td(escape(str(v.__doc__).strip()[:100]), __inline=True))
+        classes   += tr(td(a(k, href=k), __inline=True), td(escape(str(v.__doc__).strip()[:trim_doc]), __inline=True))
       elif type(v) is types.FunctionType:
-        functions.get()[1] += tr(td(a(k+'()',href=k), __inline=True), td(escape(str(v.__doc__).strip()[:100]), __inline=True))
+        functions += tr(td(a(k+'()', href=k), __inline=True), td(escape(str(v.__doc__).strip()[:trim_doc]), __inline=True))
       else:
-        print k, v
-        constants.get()[1] += tr(td(k), td(escape(repr(v)), __inline=True))
+        constants += tr(td(k), td(escape(repr(v)), __inline=True))
 
 
 

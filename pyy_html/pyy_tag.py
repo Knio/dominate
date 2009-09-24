@@ -228,8 +228,11 @@ class pyy_tag(object):
     @staticmethod
     def clean_pair(attribute, value):
         attribute = pyy_tag.clean_attribute(attribute)
+        
+        #Check for boolean attributes (i.e. selected=True becomes selected="selected")
         if value is True:
             value = attribute
+        
         return (attribute, value)
 
 # escape() is used in render

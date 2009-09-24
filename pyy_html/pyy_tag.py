@@ -38,11 +38,16 @@ class pyy_tag(object):
             self.set_attribute(*pyy_tag.clean_pair(attr, value))
     
     
-    def set_attribute(self, attr, value):
+    def set_attribute(self, key, value):
         '''
         Add or update the value of an attribute.
         '''
-        self.attributes[attr] = value
+        if isinstance(key, basestring):
+            self.children[key] = value
+        elif isinstance(key, string):
+            self.attributes[attr] = value
+        else:
+            raise TypeError('Only integer and string types are valid for assigning child tags and attributes, respectively.')
     __setitem__ = set_attribute
     
     def setdocument(self, doc):
@@ -53,19 +58,22 @@ class pyy_tag(object):
 
     def add(self, *args):
         for obj in args:
-            if   isinstance(obj, basestring):
+            if isinstance(obj, basestring):
                 if self.document and self.document.doctype:
                     self.document.doctype.validate(self, obj)
                 self.children.append(obj)
+                
             elif isinstance(obj, pyy_tag):
                 if self.document and self.document.doctype:
                     self.document.doctype.validate(self, obj)
                 self.children.append(obj)
                 obj.parent = self
                 obj.setdocument(self.document)
+                
             elif hasattr(obj, '__iter__'):
                 for subobj in obj:
                     self.add(subobj)
+                
             else: # wtf is it?
                 raise ValueError('%r not a tag or string' % obj)
                 self.children.append(obj)
@@ -94,12 +102,24 @@ class pyy_tag(object):
         return results
     
     
-    def __getitem__(self, attr):
+    def __getitem__(self, key):
         '''
-        Returns the stored value of the specified attribute (if it exists).
+        Returns the stored value of the specified attribute or child (if it exists).
         '''
-        try: return self.attributes[attr]
-        except KeyError: raise AttributeError('Attribute "%s" does not exist.' % attr)
+        if isinstance(key, int):
+            #Children are accessed using integers
+            try:
+                return self.children[key]
+            except KeyError:
+                raise AttributeError('Child with index "%s" does not exist.' % key)
+        elif isinstance(key, basestring):
+            #Attributes are accessed using strings
+            try:
+                return self.attributes[attr]
+            except KeyError:
+                raise AttributeError('Attribute "%s" does not exist.' % attr)
+        else:
+            raise TypeError('Only integer and string types are valid for accessing child tags and attributes, respectively.')
     __getattr__ = __getitem__
     
     def __len__(self):
@@ -109,7 +129,9 @@ class pyy_tag(object):
         return len(self.children)
 
     def __nonzero__(self):
-        'Hack for "if x" and __len__'
+        '''
+        Hack for "if x" and __len__
+        '''
         return True
       
     def __iter__(self):
@@ -155,7 +177,7 @@ class pyy_tag(object):
             rendered += self.render_children(indent, inline)
             
             # if there are no children, or only 1 child that is not an html element, do not add tabs and newlines
-            no_children = self.is_pretty and self.children and (not (len(self.children) == 1 and not isinstance(self.children[0], pyy_tag)))
+            no_children = self.is_pretty and self.children and (not (len(self.children) == 1 and not isinstance(self[0], pyy_tag)))
             
             if no_children and not inline:
                 rendered += '\n'

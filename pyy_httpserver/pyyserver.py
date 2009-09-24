@@ -25,7 +25,7 @@ class pyyserver(object):
   def __init__(self, root='.'):
     self.root = root
 
-  def handle(self, handler, req, res, fname):
+  def handle(self, handler, req, res, fname, *args):
     fname = os.path.join(self.root, fname)
     mname = os.path.basename(fname).split('.')[0]
     dname = os.path.dirname(fname)
@@ -40,7 +40,7 @@ class pyyserver(object):
     f = open(fname, 'U')
     m = imp.load_module(mname, f, fname, ('.py', 'U', 1))
     
-    m.main(handler, req, res)
+    m.main(handler, req, res, *args)
     
     sys.path.remove(self.root)
 

@@ -1,3 +1,6 @@
+'''
+HTML tag classes.
+'''
 __license__ = '''
 This file is part of pyy.
 

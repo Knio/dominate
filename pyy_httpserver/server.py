@@ -249,7 +249,7 @@ class server(object):
   def quit(self, timeout):
     self.done = True
     print 'Quiting'
-    time.sleep(timeout)
+    time.sleep(timeout or 0)
     while self.selectch.balance > 0:
       self.selectch.receive()
 

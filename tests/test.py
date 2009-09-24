@@ -24,15 +24,24 @@ import sys
 sys.path.insert(0, os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
 
 from unittest import defaultTestLoader, TestSuite, TextTestRunner
-import pyy_cgi_tests, pyy_html_tests, pyy_httpserver_tests, pyy_web_tests
+import pyy_cgi_tests, pyy_doc_tests, pyy_html_tests, pyy_httpserver_tests, pyy_web_tests
 
-#Create individual module suites
-suite_pyy_cgi        = defaultTestLoader.loadTestsFromModule(pyy_cgi_tests)
-suite_pyy_html       = defaultTestLoader.loadTestsFromModule(pyy_html_tests)
-suite_pyy_httpserver = defaultTestLoader.loadTestsFromModule(pyy_httpserver_tests)
-suite_pyy_web        = defaultTestLoader.loadTestsFromModule(pyy_web_tests)
+VALID = {'pyy_cgi'       : 1,
+         'pyy_doc'       : 2,
+         'pyy_html'      : 4,
+         'pyy_httpserver': 8,
+         'pyy_web'       : 16,
+         'all'           : 31}
 
-#Create entire package suite
-suite_pyy = TestSuite([suite_pyy_cgi, suite_pyy_html, suite_pyy_httpserver, suite_pyy_web])
+tests = VALID['all'] if not len(sys.argv[1:]) else 0
+for arg in sys.argv[1:]:
+  tests |= VALID[arg]
 
-TextTestRunner(verbosity=2).run(suite_pyy)
+suites = []
+if tests & VALID['pyy_cgi']:        suites += defaultTestLoader.loadTestsFromModule(pyy_cgi_tests)
+if tests & VALID['pyy_doc']:        suites += defaultTestLoader.loadTestsFromModule(pyy_doc_tests)
+if tests & VALID['pyy_html']:       suites += defaultTestLoader.loadTestsFromModule(pyy_html_tests)
+if tests & VALID['pyy_httpserver']: suites += defaultTestLoader.loadTestsFromModule(pyy_httpserver_tests)
+if tests & VALID['pyy_web']:        suites += defaultTestLoader.loadTestsFromModule(pyy_web_tests)
+
+TextTestRunner(verbosity=2).run(TestSuite(suites))

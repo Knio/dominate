@@ -1,3 +1,0 @@
-.. _library-index:
-
-hi.

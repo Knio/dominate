@@ -8,6 +8,7 @@ About
 Modules
 =======
 *   `pyy_cgi` - CGI gateway.
+*   `pyy_doc` - Automatic documentation generator using docstrings.
 *   `pyy_html` - Markup and document creation, validation, and rendering.
 *   `pyy_httpserver` - An extremely light web server.
 *   `pyy_web` - HTTP helper classes and functions.

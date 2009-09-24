@@ -7,36 +7,30 @@ without the need of using an intermediate templating language.
 `pyy_html` also provides you with helper classes for generating and parsing
 (X)HTML documents.
 
-Each specification includes an `htmlpage` class that aids in the creation of
-all aspects needed to respond to an HTTP request. The (X)HTML tree you created
-can be packaged with a DOCTYPE, XML declaration, and any cookies you wish to
-send. When rendered, this class will automatically format all of the contained
-information properly.
+--DESCRIBE TAGS AND SUCH HERE--
 
 The `parser` class contains two methods: `parse` and `pageparse`. `parse` will
 take valid and mostly-valid (X)HTML input and return a tag tree. `pageparse`
-will take an entire document and return an `htmlpage` instance complete with
-the XML declaration and DOCTYPE (if present) and a tag tree using the (X)HTML
-version specified by the DOCTYPE.
+will take an entire document and return a `document` instance complete with
+the DOCTYPE (if present) and a tag tree using the (X)HTML version specified
+by the DOCTYPE.
 
 
 Usage
 =====
-All these examples assume you have imported the appropriate classes from one of
-the (X)HTML specification files (i.e. `from pyy_html.html import *`).
+All these examples assume you have imported the appropriate tags or entire tag
+set (i.e. `from pyy_html.html import *`).
 
 Hello, pyy!
 -----------
 Constructing a "Hello, World!"-style example is as easy as this:
-    >>> print html(body(h1("Hello, pyy!")))
+    >>> print html(body(h1('Hello, pyy!')))
     <html>
       <body>
         <h1>Hello, pyy!</h1>
       </body>
     </html>
 
-Notice how the class automatically adds the XHTML 1.1 required `<html>`
-attribute `xmlns`.
 
 Complex Structures
 ------------------
@@ -46,7 +40,7 @@ create more advanced structures.
 Create a simple list:
     >>> list = ul()
     >>> for item in range(4):
-    >>>   list += li("Item #", item)
+    >>>   list += li('Item #', item)
     >>> print list
     <ul>
       <li>Item #0</li>
@@ -55,7 +49,7 @@ Create a simple list:
       <li>Item #3</li>
     </ul>
 
-If you are using a database or other backend to fetch data, `pyy` supports
+If you are using a database or other backend to fetch data, `pyy_html` supports
 iterables to help streamline your code:
     >>> print ul(li(a(name, href=link), __inline=True) for name, link in menu_items)
     <ul>
@@ -74,9 +68,9 @@ A simple document tree:
     >>> print _html
     <html>
       <body>
-        <div id='header'></div>
-        <div id='content'></div>
-        <div id='footer'></div>
+        <div id="header"></div>
+        <div id="content"></div>
+        <div id="footer"></div>
       </body>
     </html>
 
@@ -102,13 +96,15 @@ You can modify the attributes of tags through a dictionary-like interface:
     >>> header = div()
     >>> header['id'] = 'header'
     >>> print header
-    <div id='header'></div>
+    <div id="header"></div>
 
 Comments can be created using objects too!
-    >>> print comment("BEGIN HEADER")
+    >>> print comment('BEGIN HEADER')
     <!--BEGIN HEADER-->
-    >>> print comment(p("Stop using IE5!"), condition='lt IE6')
-    <!--[if lt IE6]><p>Stop using IE5!</p><![endif]-->
+    >>> print comment(p('Stop using IE5!'), condition='lt IE6')
+    <!--[if lt IE6]>
+    <p>Stop using IE5!</p>
+    <![endif]-->
 
 Creating Documents
 ------------------
@@ -117,7 +113,26 @@ Creating Documents
 
 Markup Validation
 -----------------
-...
+Once you have created a document validating its tags is extremely easy.
+
+Import the DTD specification that you wish to validate against and set it as
+the desired doctype in your document. This will automatically trigger
+the validation.
+    >>> d = document()
+    
+    ... add tags to d ...
+    
+    >>> from pyy_html.dtd import xhtml11
+    >>> d.setdoctype(xhtml11)
+
+If nothing happens when you call `setdoctype` then everything passed the
+validation! However, if you received an error then your document did not pass
+and the error will contain relevant information as to what the problem was.
+
+You can also pass a doctype on your document object creation as a keyword
+argument and validation testing will occur when the document is rendered.
+    >>> from pyy_html.dtd import html5
+    >>> d = document(doctype=html5)
 
 
 Developed By

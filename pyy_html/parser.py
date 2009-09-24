@@ -1,3 +1,7 @@
+'''
+Functions to parse HTML and HTML documents.
+'''
+
 __license__ = '''
 This file is part of pyy.
 

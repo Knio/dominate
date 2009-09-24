@@ -1,3 +1,7 @@
+'''
+Utility classes for creating dynamic html documents
+'''
+
 __license__ = '''
 This file is part of pyy.
 

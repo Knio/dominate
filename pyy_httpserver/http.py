@@ -277,12 +277,18 @@ class httphandler(object):
       self.conn.close()
     elif con == 'keep-alive':
       if res.headers.get('Content-Length') is None:
+        # TODO don't do this if Transfer-Encoding is chunked
         raise Exception('tried to keep-alive with no C-L')
     else:
       raise Exception('unknown Connecton: token')
 
   def validate_request(self, req):
-    if req.http == 1.1:
-      if not 'Host' in req.headers:
-        raise HTTPError(400)
-      
+    host = req.headers.get('Host')
+    if host:
+      req.host = host.split(':')[0]
+    else:
+      req.host = None
+
+    if req.http == 1.1 and not host:
+      raise HTTPError(400)
+

@@ -25,6 +25,9 @@ class dom1core(object):
   '''
   @property
   def parentNode(self):
+    '''
+    DOM API: Returns the parent tag of the current element.
+    '''
     return self.parent
 
   def getElementById(self, id):

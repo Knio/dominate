@@ -24,6 +24,15 @@ from dom1core import dom1core
 
 class html_tag(pyy_tag, dom1core):
   def __init__(self, *args, **kwargs):
+    '''
+    Creates a new html tag instance.
+    
+    Accepts a non-rendering special attribute which controls how the tag is
+    validated:
+    
+    * `__invalid` - Boolean value. If True it will allow for invalid attributes
+                    to be added and rendered.
+    '''
     #Allows missing required attributes and invalid attributes if True
     self.allow_invalid = kwargs.pop('__invalid', False)
     pyy_tag.__init__(self, *args, **kwargs)

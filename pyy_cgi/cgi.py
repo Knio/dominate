@@ -33,8 +33,8 @@ def get_request():
 
   env = os.environ
 
-  req.method  = env['REQUEST_METHOD']
-  req.uri     = env['REQUEST_URI']
+  req.method = env['REQUEST_METHOD']
+  req.uri    = env['REQUEST_URI']
   
   http = env['SERVER_PROTOCOL']
   if http == 'HTTP/1.0':
@@ -68,7 +68,7 @@ def make_response(res):
   if res.body is None: res.body = ''
   res.headers.setdefault('Content-Type', 'text/plain; charset=ISO-8859-4')
   res.headers.setdefault('Cache-Control': 'no-cache')
-#res.headers.setdefault('Content-Length', len(res.body))
+  #res.headers.setdefault('Content-Length', len(res.body))
 
 def write_response(res):
   print 'Status: %d %s' % (res.statusnum, res.statusmsg)
@@ -78,6 +78,8 @@ def write_response(res):
 
   print
   print res.body
+
+
 
 if __name__ == '__main__':
   import os
@@ -96,9 +98,9 @@ if __name__ == '__main__':
     mod = imp.load_module(mname, f, fname, ('.py', 'U', 1))
     req = get_request()
     res = httpresponse()
-
+    
     result = mod.main(None, req, res)
-
+    
     make_response(res)
     write_response(res)
     if result:

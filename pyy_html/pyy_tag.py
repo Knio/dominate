@@ -23,6 +23,15 @@ class pyy_tag(object):
   is_pretty = True  #Text inside the tag should be left as-is (ex. <pre>)
   
   def __init__(self, *args, **kwargs):
+    '''
+    Creates a new tag. Child tags should be passed as aruguments and attributes
+    should be passed as keyword arguments.
+    
+    There is a non-rendering attribute which controls how the tag renders:
+    
+    * `__inline` - Boolean value. If True renders all children tags on the same
+                   line.
+    '''
     self.attributes = {}
     self.children   = []
     self.parent     = None
@@ -51,12 +60,19 @@ class pyy_tag(object):
   __setitem__ = set_attribute
   
   def setdocument(self, doc):
+    '''
+    Creates a reference to the parent document to allow for partial-tree
+    validation.
+    '''
     self.document = doc
     for i in self.children:
       if not isinstance(i, pyy_tag): return
       i.setdocument(doc)
   
   def add(self, *args):
+    '''
+    Add new child tags.
+    '''
     for obj in args:
       if isinstance(obj, basestring):
         if self.document and self.document.doctype:
@@ -174,7 +190,7 @@ class pyy_tag(object):
       rendered += ' />'
     else:
       rendered += '>'
-      rendered += self.render_children(indent, inline)
+      rendered += self._render_children(indent, inline)
       
       # if there are no children, or only 1 child that is not an html element, do not add tabs and newlines
       no_children = self.is_pretty and self.children and (not (len(self.children) == 1 and not isinstance(self[0], pyy_tag)))
@@ -193,7 +209,7 @@ class pyy_tag(object):
     return self.render()
   __str__ = __unicode__
   
-  def render_children(self, indent=1, inline=False):
+  def _render_children(self, indent=1, inline=False):
     children = ''
     for child in self.children:
       if isinstance(child, pyy_tag):
@@ -220,13 +236,24 @@ class pyy_tag(object):
   
   @staticmethod
   def clean_attribute(attribute):
+    '''
+    Since some attributes match python keywords we append underscores to the
+    end of them. Python also does not support colons in keywords so underscores
+    mid-attribute are replaced with colons.
+    '''
     #Workaround for python's reserved words
-    if attribute[0] == '_': attribute = attribute[1:]
+    if attribute[-1] == '_': attribute = attribute[:-1]
     #Workaround for inability to use colon in python keywords
     return attribute.replace('_', ':').lower()
   
   @staticmethod
   def clean_pair(attribute, value):
+    '''
+    This will call `clean_attribute` on the attribute and also allows for the
+    creation of boolean attributes.
+    
+    Ex. input(selected=True) is equivalent to input(selected="selected")
+    '''
     attribute = pyy_tag.clean_attribute(attribute)
     
     #Check for boolean attributes (i.e. selected=True becomes selected="selected")

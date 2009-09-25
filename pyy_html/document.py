@@ -20,6 +20,9 @@ from html import html, body, head, title
 
 class document(object):
   def __init__(self, title='PYY Page', doctype=None):
+    '''
+    Creates a new document instance. Accepts `title` and `doctype` keywords.
+    '''
     self.cookies       = {}
     self.doctype       = doctype
     self.html          = html()
@@ -30,10 +33,16 @@ class document(object):
     self.title         = title
   
   def setdoctype(self, doctype=None):
+    '''
+    Assigns a doctype to the document for tag tree validation.
+    '''
     if doctype: doctype.validate(self.html)
     self.doctype = doctype
   
   def add(self, obj):
+    '''
+    Adding tags to a document appends them to the <body>.
+    '''
     return self._entry.add(obj)
   
   def __iadd__(self, obj):
@@ -46,6 +55,9 @@ class document(object):
     object.__setattr__(self, attr, value)
   
   def render(self):
+    '''
+    Create a <title> tag if not present and render the DOCTYPE and tag tree.
+    '''
     r = ""
     
     #Add a title tag if it does not exist

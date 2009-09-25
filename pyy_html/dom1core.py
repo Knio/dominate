@@ -17,42 +17,42 @@ Public License along with pyy.  If not, see
 '''
 
 class dom1core(object):
+  '''
+  Implements the Document Object Model (Core) Level 1
+
+  http://www.w3.org/TR/1998/REC-DOM-Level-1-19981001/
+  http://www.w3.org/TR/1998/REC-DOM-Level-1-19981001/level-one-core.html
+  '''
+  @property
+  def parentNode(self):
+    return self.parent
+
+  def getElementById(self, id):
     '''
-    Implements the Document Object Model (Core) Level 1
-
-    http://www.w3.org/TR/1998/REC-DOM-Level-1-19981001/
-    http://www.w3.org/TR/1998/REC-DOM-Level-1-19981001/level-one-core.html
+    DOM API: Returns single element with matching id value.
     '''
-    @property
-    def parentNode(self):
-        return self.parent
+    results = self.get(id=id)
+    if len(results) > 1:
+      raise ValueError('Multiple tags with id "%s".' % id)
+    elif results:
+      return results[0]
+    else:
+      return None
 
-    def getElementById(self, id):
-        '''
-        DOM API: Returns single element with matching id value.
-        '''
-        results = self.get(id=id)
-        if len(results) > 1:
-            raise ValueError('Multiple tags with id "%s".' % id)
-        elif results:
-            return results[0]
-        else:
-            return None
+  def getElementsByTagName(self, name):
+    '''
+    DOM API: Returns all tags that match name.
+    '''
+    if isinstance(name, basestring):
+      return self.get(name)
+    else:
+      return None
 
-    def getElementsByTagName(self, name):
-        '''
-        DOM API: Returns all tags that match name.
-        '''
-        if isinstance(name, basestring):
-            return self.get(name)
-        else:
-            return None
-
-    def appendChild(self, obj):
-        '''
-        DOM API: Add an item to the end of the children list.
-        '''
-        self.add(obj)
-        return self
+  def appendChild(self, obj):
+    '''
+    DOM API: Add an item to the end of the children list.
+    '''
+    self.add(obj)
+    return self
 
 

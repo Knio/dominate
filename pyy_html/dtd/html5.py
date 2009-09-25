@@ -253,4 +253,4 @@ class html5(dtd):
     #MISC: http://www.w3.org/TR/html5/interactive-elements.html#miscellaneous-elements
     legend: {VALID: GLOBAL, CHILDREN: FLOW | PHRASING},
     div   : {VALID: GLOBAL, CHILDREN: FLOW},
-}
+  }

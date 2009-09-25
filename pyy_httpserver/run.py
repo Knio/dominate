@@ -22,8 +22,8 @@ from pyy_httpserver.gvimfileserver import gvimfileserver
 if __name__ == '__main__':
   args = list(sys.argv[1:])
 
-  port  = 8080
-  dir   = '.'
+  port = 8080
+  dir  = '.'
   while args:
     c = args.pop(0)
     if c == '-p':

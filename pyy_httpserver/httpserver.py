@@ -24,6 +24,7 @@ class httpserver(object):
   rewrite = []
   uri     = []
   port    = 8080
+  
   def __init__(self):
     pass
 

@@ -18,42 +18,42 @@ Public License along with pyy.  If not, see
 
 (function()
 {
-    var tags = ['div', 'img', 'a', 'span']
-    for (var i=0; i < tags.length; i++)
-    {
-        (function(){
-            var tag = tags[i];
-            func = function()
+  var tags = ['div', 'img', 'a', 'span']
+  for (var i=0; i < tags.length; i++)
+  {
+    (function(){
+      var tag = tags[i];
+      func = function()
+      {
+        var dom = document.createElement(tag);
+        
+        for (var j=0; j < arguments.length; j++)
+        {
+          var argument = arguments[j];
+          if (argument instanceof Node) // TODO IE has no Node object
+              dom.appendChild(argument)
+          else if (typeof argument == 'string')                
+              dom.appendChild(document.createTextNode(argument))
+          else
+          {
+            for (key in argument)
             {
-                var dom = document.createElement(tag);
-                
-                for (var j=0; j < arguments.length; j++)
-                {
-                    var argument = arguments[j];
-                    if (argument instanceof Node) // TODO IE has no Node object
-                        dom.appendChild(argument)
-                    else if (typeof argument == 'string')                
-                        dom.appendChild(document.createTextNode(argument))
-                    else
-                    {
-                        for (key in argument)
-                        {
-                            var value = argument[key];
-                            if (key == 'class')
-                                YAHOO.util.Dom.addClass(dom,value);
-                            else if (key == 'style') // style: {background:'#000'}
-                                for (style in value)
-                                    YAHOO.util.Dom.setStyle(dom, style[style], value[style]);
-                            else if (k.slice(0, 2) == 'on') // an event handler
-                                dom.addEventListener(key.slice(2), value, false)
-                            else // otherwise a regular attribute
-                                dom.setAttribute(key, value);
-                        }
-                    }
-                }
-                return dom;
+              var value = argument[key];
+              if (key == 'class')
+                YAHOO.util.Dom.addClass(dom,value);
+              else if (key == 'style') // style: {background:'#000'}
+                for (style in value)
+                  YAHOO.util.Dom.setStyle(dom, style[style], value[style]);
+              else if (k.slice(0, 2) == 'on') // an event handler
+                dom.addEventListener(key.slice(2), value, false)
+              else // otherwise a regular attribute
+                dom.setAttribute(key, value);
             }
-            $[tag] = func;
-        }());
-    }
+          }
+        }
+        return dom;
+      }
+      $[tag] = func;
+    }());
+  }
 }());

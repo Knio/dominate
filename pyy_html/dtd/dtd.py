@@ -17,6 +17,7 @@ class dtdmeta(type):
 
 class dtd(object):
   __metaclass__ = dtdmeta
+  
   valid = {}
    
   @classmethod

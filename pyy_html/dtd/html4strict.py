@@ -48,8 +48,6 @@ class html4strict(dtd):
   docstring = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">'
   
   valid = {
-  #NEW:
-    
     #TEXT MARKUP
     tt      : {VALID: ATTRS, CHILDREN: INLINE},
     i       : {VALID: ATTRS, CHILDREN: INLINE},
@@ -208,4 +206,4 @@ class html4strict(dtd):
     
     #DOCUMENT STRUCTURE
     html: {VALID: I18N | set(['version']), CHILDREN: set([head, body])},
-}
+  }

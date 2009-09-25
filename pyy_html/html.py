@@ -23,10 +23,10 @@ from pyy_tag  import pyy_tag
 from dom1core import dom1core
 
 class html_tag(pyy_tag, dom1core):
-    def __init__(self, *args, **kwargs):
-        #Allows missing required attributes and invalid attributes if True
-        self.allow_invalid = kwargs.pop('__invalid', False)
-        pyy_tag.__init__(self, *args, **kwargs)
+  def __init__(self, *args, **kwargs):
+    #Allows missing required attributes and invalid attributes if True
+    self.allow_invalid = kwargs.pop('__invalid', False)
+    pyy_tag.__init__(self, *args, **kwargs)
 
 
 class single(html_tag): is_single = True
@@ -168,65 +168,65 @@ class video       (html_tag): pass
 class xmp         (html_tag): pass
 
 class comment(html_tag):
+  '''
+  Normal, one-line comment:
+    >>> print comment("Hello, comments!")
+    <!--Hello, comments!-->
+  
+  For IE's "if" statement comments:
+    >>> print comment(p("Upgrade your browser."), condition='lt IE6')
+    <!--[if lt IE6]><p>Upgrade your browser.</p><![endif]-->
+  
+  Downlevel conditional comments:
+    >>> print comment(p("You are using a ", em("downlevel"), " browser."), condition='false', downlevel='revealed')
+    <![if false]><p>You are using a <em>downlevel</em> browser.</p><![endif]>
+  
+  For more on conditional comments see:
+    http://msdn.microsoft.com/en-us/library/ms537512(VS.85).aspx
+  '''
+  ATTRIBUTE_CONDITION = 'condition'
+  ATTRIBUTE_DOWNLEVEL = 'downlevel' #Valid values are 'hidden' or 'revealed'
+  
+  def render(self, indent=1, inline=False):
+    has_condition = comment.ATTRIBUTE_CONDITION in self.attributes
+    is_revealed   = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
+    
+    rendered = '<!'
+    if not is_revealed:
+      rendered += '--'
+    if has_condition:
+      rendered += '[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION]
+    
+    rendered += self.render_children(indent - 1, inline)
+    
+    #TODO: This might be able to be changed to if len(self.children) > 1 since adjacent strings should always be joined
+    if any(isinstance(child, pyy_tag) for child in self):
+      rendered += '\n'
+      rendered += html_tag.TAB * (indent - 1)
+    
+    if has_condition:
+      rendered += '<![endif]'
+    if not is_revealed:
+      rendered += '--'
+    rendered += '>'
+    
+    return rendered
+  
+  @staticmethod
+  def comments2tags(data):
     '''
-    Normal, one-line comment:
-      >>> print comment("Hello, comments!")
-      <!--Hello, comments!-->
-    
-    For IE's "if" statement comments:
-      >>> print comment(p("Upgrade your browser."), condition='lt IE6')
-      <!--[if lt IE6]><p>Upgrade your browser.</p><![endif]-->
-    
-    Downlevel conditional comments:
-      >>> print comment(p("You are using a ", em("downlevel"), " browser."), condition='false', downlevel='revealed')
-      <![if false]><p>You are using a <em>downlevel</em> browser.</p><![endif]>
-    
-    For more on conditional comments see:
-      http://msdn.microsoft.com/en-us/library/ms537512(VS.85).aspx
+    Changes <!--comments--> to <comment>tags</comment> for easy parsing.
     '''
-    ATTRIBUTE_CONDITION = 'condition'
-    ATTRIBUTE_DOWNLEVEL = 'downlevel' #Valid values are 'hidden' or 'revealed'
+    import re
     
-    def render(self, indent=1, inline=False):
-        has_condition = comment.ATTRIBUTE_CONDITION in self.attributes
-        is_revealed   = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
-        
-        rendered = '<!'
-        if not is_revealed:
-            rendered += '--'
-        if has_condition:
-            rendered += '[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION]
-        
-        rendered += self.render_children(indent - 1, inline)
-        
-        #TODO: This might be able to be changed to if len(self.children) > 1 since adjacent strings should always be joined
-        if any(isinstance(child, pyy_tag) for child in self):
-            rendered += '\n'
-            rendered += html_tag.TAB * (indent - 1)
-        
-        if has_condition:
-            rendered += '<![endif]'
-        if not is_revealed:
-            rendered += '--'
-        rendered += '>'
-        
-        return rendered
+    REPLACE = [
+      (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S), r'<comment condition="\1">\2</comment>'),
+      (re.compile(r'<!--(.*?)-->', re.S)                        , r'<comment>\1</comment>'),
+      (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif\]>', re.S)    , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
+    ]
     
-    @staticmethod
-    def comments2tags(data):
-        '''
-        Changes <!--comments--> to <comment>tags</comment> for easy parsing.
-        '''
-        import re
-        
-        REPLACE = [
-            (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S), r'<comment condition="\1">\2</comment>'),
-            (re.compile(r'<!--(.*?)-->', re.S)                        , r'<comment>\1</comment>'),
-            (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif\]>', re.S)    , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
-        ]
-        
-        for search, replace in REPLACE:
-            data = search.sub(replace, data)
-        return data
+    for search, replace in REPLACE:
+      data = search.sub(replace, data)
+    return data
 
 

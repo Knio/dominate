@@ -206,7 +206,7 @@ class comment(html_tag):
     if has_condition:
       rendered += '[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION]
     
-    rendered += self.render_children(indent - 1, inline)
+    rendered += self._render_children(indent - 1, inline)
     
     #TODO: This might be able to be changed to if len(self.children) > 1 since adjacent strings should always be joined
     if any(isinstance(child, pyy_tag) for child in self):

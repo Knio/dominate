@@ -131,9 +131,9 @@ class pyy_tag(object):
     elif isinstance(key, basestring):
       #Attributes are accessed using strings
       try:
-        return self.attributes[attr]
+        return self.attributes[key]
       except KeyError:
-        raise AttributeError('Attribute "%s" does not exist.' % attr)
+        raise AttributeError('Attribute "%s" does not exist.' % key)
     else:
       raise TypeError('Only integer and string types are valid for accessing child tags and attributes, respectively.')
   __getattr__ = __getitem__

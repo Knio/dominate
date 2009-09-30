@@ -29,6 +29,10 @@ class Request:
 path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test')
 
 class ResolverTests(unittest.TestCase):
+  def testSelectIndexInFolder(self):
+    p = FileHeirarchyResolver(path, Request('admin/'), None)
+    self.assertEqual(str(p.__class__), '__init__.Index')
+  
   def testSelectIndexInFile(self):
     p = FileHeirarchyResolver(path, Request('admin/a/'), None)
     self.assertEqual(str(p.__class__), 'a.Index')

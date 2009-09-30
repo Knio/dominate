@@ -35,37 +35,40 @@ def FileHeirarchyResolver(root, request, response):
   if not os.path.isdir(root):
     raise ValueError('The directory "%s" could not be found.' % root)
   
-  
   def resolve_chunk(root, chunks):
     if root is []:
       return False #too deep!
     
-    dir = os.path.join(root, chunks[0])
-    
-    #Check if the first chunk is a folder, if so, recursively continue searching inside
-    if os.path.isdir(dir):
-      page = resolve_chunk(dir, chunks[1:])
-      if page:
-        return page
+    #If we have chunks look at them, otherwise check __init__ for an Index class
+    if chunks:
+      dir = os.path.join(root, chunks[0])
+      
+      #Check if the first chunk is a folder, if so, recursively continue searching inside
+      if os.path.isdir(dir):
+        page = resolve_chunk(dir, chunks[1:])
+        if page:
+          return page
+    else:
+      chunks = ['__init__']
     
     file = os.path.join(root, '%s.py' % chunks[0])
     
     #Check if the first chunk is a file in the current directory
     if os.path.isfile(file):
-      
       f = open(file, 'U')
       module = imp.load_module(chunks[0], f, file, ('.py', 'U', 1))
       f.close()
       
-      #Convert to PascalCasing with hyphens going to underscores
-      classname = ''.join(map(string.capitalize, chunks[1].split('_'))).replace('-', '_') if len(chunks) > 1 else 'Index'
+      if len(chunks) > 1:
+        #Convert to PascalCasing with hyphens going to underscores
+        classname = ''.join(map(string.capitalize, chunks[1].split('_'))).replace('-', '_')
+      else:
+        classname ='Index'
       
       if hasattr(module, classname):
         request.uri = '/' + '/'.join(chunks[2:])
         return getattr(module, classname)(request, response)
-      
     return False
-  
   
   page = resolve_chunk(root, filter(None, request.uri.split('/')))
   if not page:

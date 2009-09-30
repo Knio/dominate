@@ -17,3 +17,9 @@ Public License along with pyy. If not, see
 '''
 
 import a
+
+
+class Index:
+   def __init__(self, request, response):
+    self.request  = request
+    self.response = response

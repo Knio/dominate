@@ -263,5 +263,5 @@ class pyy_tag(object):
     return (attribute, value)
 
 # escape() is used in render
-from utils import escape
+from util import escape
 

@@ -40,7 +40,8 @@ class pyyserver(object):
     f = open(fname, 'U')
     m = imp.load_module(mname, f, fname, ('.py', 'U', 1))
     
-    m.main(handler, req, res, *args)
+    h = getattr(m, req.method.lower())
+    h(handler, req, res, *args)
     
     sys.path.remove(self.root)
 

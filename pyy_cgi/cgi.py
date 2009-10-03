@@ -95,11 +95,18 @@ if __name__ == '__main__':
   f = open(fname, 'U')
   
   try:
-    mod = imp.load_module(mname, f, fname, ('.py', 'U', 1))
+    m = imp.load_module(mname, f, fname, ('.py', 'U', 1))
     req = get_request()
     res = httpresponse()
     
-    result = mod.main(None, req, res)
+    h = getattr(m, req.method.lower(),
+        getattr(m, 'handle' None))
+    
+    if not h:
+      # TODO fix this!
+      raise HTTPError(405) # method not allowed
+    
+    result = h(None, req, res)
     
     make_response(res)
     write_response(res)

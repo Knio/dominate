@@ -19,29 +19,49 @@ Public License along with pyy.  If not, see
 import os
 import sys
 import imp
+from urllib import unquote_plus
 from http import HTTPError
 
-class pyyserver(object):
-  def __init__(self, root='.'):
-    self.root = root
 
-  def handle(self, handler, req, res, fname, *args):
-    fname = os.path.join(self.root, fname)
-    mname = os.path.basename(fname).split('.')[0]
-    dname = os.path.dirname(fname)
-    sys.path.append(dname)
+class pyyscript(object):
+  def __init__(self, root, fname):
+    self.root   = root
+    self.fname = os.path.join(self.root, unquote_plus(fname))
+    self.mname = os.path.basename(fname).split('.')[0]
+    self.dname = os.path.dirname(fname)
 
-    if not os.path.exists(fname):
+
+  def load_module(self):
+    if not self.fname.startswith(self.root):
+      raise HTTPError(403)
+
+    if not os.path.exists(self.fname):
       raise HTTPError(404)
 
-    if not os.path.isfile(fname):
-      raise HTTPError(401)
+    if not os.path.isfile(self.fname):
+      raise HTTPError(403)
     
-    f = open(fname, 'U')
-    m = imp.load_module(mname, f, fname, ('.py', 'U', 1))
+    if os.path.getmtime(self.fname):
+      return self.module
+
+    f = open(self.fname, 'U')
+    sys.path.append(self.dname) # do we even need this?
+
+    self.module = imp.load_module(self.mname, f, self.fname, ('.py', 'U', 1))
+    self.mtime  = os.path.getmtime(self.fname)
     
-    h = getattr(m, req.method.lower())
-    h(handler, req, res, *args)
+    sys.path.remove(dname)
+    return self.module
+
+  def handle(self, handler, req, res, *args):
+    m = self.load_module()
     
-    sys.path.remove(self.root)
+    h = getattr(m, req.method.lower(),
+        getattr(m, 'handle', None))
+    
+    if not h:
+      raise HTTPError(405) # method not allowed
+    
+    result = h(handler, req, res, *args)
+    return result
 

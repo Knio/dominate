@@ -17,40 +17,100 @@ Public License along with pyy.  If not, see
 '''
 
 import re
+import types
+
 import http
 import server
 
 class httpserver(object):
   rewrite = []
-  uri     = []
+  sites   = []
   port    = 8080
   
   def __init__(self):
-    pass
+   if not self.sites:
+     self.sites = [None, self.uri]
+
+
+  def find_handler(uri, config, *args):
+    handler = http.HTTPError(404)
+    for r, c in reversed(zip(config[0::2], config[1::2])):
+      h = False
+      # unconditionaly matches
+      if r is True:
+        h = c
+      
+      # matches None or empty string
+      elif r is None:
+        if not uri: 
+          h = c
+
+      # matches that error code
+      elif isinstance(r, int):
+        if isinstance(uri, http.HTTPError) and uri.args[0] == r:
+          h = c
+
+      # matches all errors
+      elif r is http.HTTPError:
+        if isinstance(uri, http.HTTPError):
+          h = c
+      
+      # matches regex string
+      elif isinstance(r, str):
+        if isinstance(uri, str):
+          m = re.match(r, req.uri)
+          if m:
+            args += m.groups()
+            uri = uri[:m.span()[1]]
+            h = c
+
+      # didn't match anything
+      if h is False:
+        continue
+
+      handler = h
+      break
+
+    return h, uri, args           
 
   def handle(self, conn, req, res):
     handler = None
     args = ()
     
+    # rewrite uris
     for r,s in self.rewrite:
       req.uri = re.sub(r, s, req.uri)
 
-    for r, h in reversed(self.uri):
-      m = re.match(r, req.uri)
-      if m:
-        handler = h
-        args = m.groups()
-        break
+    # find a handler
+    handler, uri, args = self.find_handler(req.host, self.sites)
+    uri = req.uri
+    while 1:
+      if isinstance(handler, list):
+        handler, uri, args = self.find_handler(uri, handler)
 
-    if not handler:
-      raise http.HTTPError(404)
+      elif isinstance(handler, http.HTTPError):
+        raise handler
 
-    return handler.handle(conn, req, res, *args)
+      elif isintance(handler, (types.FunctionType, types.MethodType)):
+        handler = handler(*args)
+        args = ()
+      
+      elif handler is None:
+        return False
+
+      elif hasattr(handler, 'handle'):
+        return handler.handle(conn, req, res, *args)
+
 
   def handle_error(self, http, req, res, status, *errors):
     if status == 500:
       import traceback
       res.body = traceback.format_exc()
+
+    elif status in (301, 302, 303):
+      if errors:
+        res.headers['Location'] = errors[0]
+        
 
   def run(self, *args):
     s = server.server()

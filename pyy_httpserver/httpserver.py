@@ -22,6 +22,8 @@ import types
 import http
 import server
 
+from http import HTTPError
+
 class httpserver(object):
   rewrite = []
   sites   = []
@@ -32,46 +34,36 @@ class httpserver(object):
      self.sites = [None, self.uri]
 
 
-  def find_handler(uri, config, *args):
-    handler = http.HTTPError(404)
+  def find_handler(self, uri, config, *args):
+    handler = False
     for r, c in reversed(zip(config[0::2], config[1::2])):
       h = False
       # unconditionaly matches
-      if r is True:
-        h = c
-      
+      if r is True: h = c
       # matches None or empty string
       elif r is None:
-        if not uri: 
-          h = c
-
+        if not uri: h = c
       # matches that error code
       elif isinstance(r, int):
-        if isinstance(uri, http.HTTPError) and uri.args[0] == r:
+        if isinstance(uri, HTTPError) and uri.args[0] == r:
           h = c
-
       # matches all errors
-      elif r is http.HTTPError:
-        if isinstance(uri, http.HTTPError):
-          h = c
-      
+      elif r is HTTPError:
+        if isinstance(uri, HTTPError):  h = c
       # matches regex string
       elif isinstance(r, str):
         if isinstance(uri, str):
-          m = re.match(r, req.uri)
+          m = re.match(r, uri)
           if m:
             args += m.groups()
             uri = uri[:m.span()[1]]
             h = c
-
       # didn't match anything
-      if h is False:
-        continue
+      if h is not False:
+        handler = h
+        break
+    return handler, uri, args
 
-      handler = h
-      break
-
-    return h, uri, args           
 
   def handle(self, conn, req, res):
     handler = None
@@ -88,21 +80,21 @@ class httpserver(object):
       if isinstance(handler, list):
         handler, uri, args = self.find_handler(uri, handler)
 
-      elif isinstance(handler, http.HTTPError):
+      elif isinstance(handler, HTTPError):
         raise handler
 
-      elif isintance(handler, (types.FunctionType, types.MethodType)):
+      elif isinstance(handler, (types.FunctionType, types.MethodType)):
         handler = handler(*args)
         args = ()
-      
-      elif handler is None:
-        return False
 
       elif hasattr(handler, 'handle'):
         return handler.handle(conn, req, res, *args)
+      
+      elif handler is False:  raise HTTPError(404)
+      elif handler is None:   return False      
+      else: raise valueError(handler)
 
-
-  def handle_error(self, http, req, res, status, *errors):
+  def handle_error(self, conn, req, res, status, *errors):
     if status == 500:
       import traceback
       res.body = traceback.format_exc()
@@ -110,7 +102,35 @@ class httpserver(object):
     elif status in (301, 302, 303):
       if errors:
         res.headers['Location'] = errors[0]
+
+    
+
+    handler, uri, args = self.find_handler(req.host, self.sites)
+    uri = HTTPError(status, *errors)
+    try:
+      while 1:
+        print handler
+        print
+        if isinstance(handler, list):
+          handler, uri, args = self.find_handler(uri, handler)
+
+        elif isinstance(handler, HTTPError):
+          raise handler
+
+        elif isinstance(handler, (types.FunctionType, types.MethodType)):
+          handler = handler(*args)
+          args = ()
         
+        elif hasattr(handler, 'handle'):
+          return handler.handle_error(conn, req, res, status, *args)
+
+        elif handler is None:   return False
+        elif handler is False:  return
+        else: raise ValueError(handler)
+        
+    except HTTPError, e:
+      return self.handle_error(conn, req, res, e.args[0], e.args[1:])
+
 
   def run(self, *args):
     s = server.server()

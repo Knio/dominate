@@ -11,6 +11,10 @@ the interfaces should look like and make sure they work.
 
 from pyy_httpserver import *
 
+
+
+
+
 class exampleserver(httpserver):   
   '''
   format of httpserver.sites:
@@ -37,17 +41,21 @@ class exampleserver(httpserver):
   '''
   
   # an example:
+
+  srcserv = fileserver('../..')
+  docserv = syntaxfileserver('../..')
+
   sites = [
     
     True, [ 
       # example.zkpq.ca didn't match, redirect the user to the right hostname
-      '^/(.*)$', lambda x: HTTPError(302, 'http://example.zkpq.ca/%s' % x)
+      '^/(.*)$', lambda x: HTTPError(302, 'http://example.zkpq.ca:50005/%s' % x)
     ],
     
     '^example.zkpq.ca$', [
-      '^/(\w+)$',   lambda x:pyyscript        ('.', '%s.py' %x), # need lambda to add '.py'
-      '^/src(.*)$', lambda x:syntaxfileserver ('../..',  x),    # serve the source dir with highlighting. don't need a lambda here, but it works
-      '^/doc(.*)$', fileserver('../',    x),    # serve the documentation 
+      '^/(\w*)$',   lambda x:pyyscript('.', '%s.py' %x), # need lambda to add '.py'
+      '^/src(.*)$', syntaxfileserver ('../..'), # serve the source dir with highlighting. don't need a lambda here, but it works
+      '^/doc(.*)$', fileserver('../'),          # serve the documentation 
       
       HTTPError,    lambda :pyyscript('.', 'error.py'), # generic error
       404,          lambda :pyyscript('.', '404.py'),   # specific error
@@ -59,5 +67,5 @@ class exampleserver(httpserver):
   
   port = 50005
 
-exampleserver().run()
+exampleserver().run(1)
 

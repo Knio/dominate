@@ -29,6 +29,8 @@ class pyyscript(object):
     self.fname = os.path.join(self.root, unquote_plus(fname))
     self.mname = os.path.basename(fname).split('.')[0]
     self.dname = os.path.dirname(fname)
+    self.mtime = 0
+    self.module = None
 
 
   def load_module(self):
@@ -41,7 +43,7 @@ class pyyscript(object):
     if not os.path.isfile(self.fname):
       raise HTTPError(403)
     
-    if os.path.getmtime(self.fname):
+    if os.path.getmtime(self.fname) == self.mtime:
       return self.module
 
     f = open(self.fname, 'U')
@@ -50,7 +52,7 @@ class pyyscript(object):
     self.module = imp.load_module(self.mname, f, self.fname, ('.py', 'U', 1))
     self.mtime  = os.path.getmtime(self.fname)
     
-    sys.path.remove(dname)
+    sys.path.remove(self.dname)
     return self.module
 
   def handle(self, handler, req, res, *args):
@@ -62,6 +64,14 @@ class pyyscript(object):
     if not h:
       raise HTTPError(405) # method not allowed
     
-    result = h(handler, req, res, *args)
-    return result
+    return  h(handler, req, res, *args)
+
+  def handle_error(self, handler, req, res, status, *args):
+    m = self.load_module()
+    
+    h = getattr(m, 'handle_error', None)
+    if not h: return
+    return  h(handler, req, res, status, *args)
+
+
 

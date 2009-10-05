@@ -68,7 +68,7 @@ class escape(pyy_tag):
     return data
   
   def render(self, indent=1, inline=False):
-    return self.escape(pyy_tag.render_children(self, indent, inline))
+    return self.escape(pyy_tag._render_children(self, indent, inline))
 
 _unescape = {'quot' :34,
              'amp'  :38,

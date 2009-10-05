@@ -24,7 +24,8 @@ class dtd(object):
   def validate(self, tag, child=None):
     cls   = type(tag)
     valid = self.valid[cls]
-      
+    
+
     #Check children
     children = child and [child] or tag.children
     if tag.is_single and children:
@@ -32,6 +33,7 @@ class dtd(object):
         % (cls.__name__, ', '.join(type(c).__name__ for c in children)))
     
     for child in children:
+      if not isinstance(child, html_tag): continue    # utility or user-derived class. leave it alone
       if type(child) not in valid[CHILDREN]:
         raise ValueError('%s element cannot contain %s element as child.' \
           % (cls.__name__, type(child).__name__))

@@ -31,7 +31,7 @@ class httpserver(object):
   
   def __init__(self):
    if not self.sites:
-     self.sites = [None, self.uri]
+     self.sites = [True, self.uri]
 
 
   def find_handler(self, uri, config, *args):
@@ -109,8 +109,6 @@ class httpserver(object):
     uri = HTTPError(status, *errors)
     try:
       while 1:
-        print handler
-        print
         if isinstance(handler, list):
           handler, uri, args = self.find_handler(uri, handler)
 

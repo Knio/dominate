@@ -19,9 +19,9 @@ Public License along with pyy.  If not, see
 from html import html, body, head, title
 
 class document(object):
-  def __init__(self, title='PYY Page', doctype=None):
+  def __init__(self, title='PYY Page', doctype=None, request=None):
     '''
-    Creates a new document instance. Accepts `title` and `doctype` keywords.
+    Creates a new document instance. Accepts `title`, `doctype`, and `request` keyword arguments.
     '''
     self.cookies       = {}
     self.doctype       = doctype
@@ -31,6 +31,7 @@ class document(object):
     self.body          = self.html.add(body())
     self._entry        = self.body
     self.title         = title
+    self.request       = request
   
   def setdoctype(self, doctype=None):
     '''

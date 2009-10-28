@@ -242,7 +242,7 @@ class pyy_tag(object):
     mid-attribute are replaced with colons.
     '''
     #Workaround for python's reserved words
-    if attribute[-1] == '_': attribute = attribute[:-1]
+    if attribute[0] == '_': attribute = attribute[1:]
     #Workaround for inability to use colon in python keywords
     return attribute.replace('_', ':').lower()
   

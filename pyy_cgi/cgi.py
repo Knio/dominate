@@ -43,15 +43,15 @@ def get_request():
     req.http = 1.1
 
   H = {
-    'CONTENT_LENGTH': 'Content-Length',
-    'CONTENT_TYPE':   'Content-Type',
-    'HTTP_USER_AGENT':'User-Agent',
-    'HTTP_COOKIE':    'Cookie',
-    'HTTP_TE':        'Transfer-Encoding',
-    'HTTP_COOKIE2':   'Cookie2',
-    'HTTP_HOST':      'Host',
-    'HTTP_CONNECTION':'Connection',
-    'HTTP_ACCEPT':    'Accept',
+    'CONTENT_LENGTH':       'Content-Length',
+    'CONTENT_TYPE':         'Content-Type',
+    'HTTP_USER_AGENT':      'User-Agent',
+    'HTTP_COOKIE':          'Cookie',
+    'HTTP_TE':              'Transfer-Encoding',
+    'HTTP_COOKIE2':         'Cookie2',
+    'HTTP_HOST':            'Host',
+    'HTTP_CONNECTION':      'Connection',
+    'HTTP_ACCEPT':          'Accept',
     'HTTP_ACCEPT_LANGUAGE': 'Accept-Language',
     'HTTP_ACCEPT_ENCODING': 'Accept-Encoding',
     'HTTP_ACCEPT_CHARSET':  'Accept-Charset',
@@ -67,11 +67,12 @@ def get_request():
 def make_response(res):
   if res.body is None: res.body = ''
   res.headers.setdefault('Content-Type', 'text/plain; charset=ISO-8859-4')
-  res.headers.setdefault('Cache-Control': 'no-cache')
+  res.headers.setdefault('Cache-Control', 'no-cache')
   #res.headers.setdefault('Content-Length', len(res.body))
 
 def write_response(res):
-  print 'Status: %d %s' % (res.statusnum, res.statusmsg)
+  if res.status:
+    print 'Status: %d %s' % (res.statusnum, res.statusmsg)
   
   for k,v in res.headers.iteritems():
     print '%s: %s' % (k,v)
@@ -95,11 +96,17 @@ if __name__ == '__main__':
   f = open(fname, 'U')
   
   try:
-    mod = imp.load_module(mname, f, fname, ('.py', 'U', 1))
+    m = imp.load_module(mname, f, fname, ('.py', 'U', 1))
     req = get_request()
     res = httpresponse()
     
-    result = mod.main(None, req, res)
+    h = getattr(m, req.method.lower(), getattr(m, 'handle', None))
+    
+    if not h:
+      # TODO fix this!
+      raise HTTPError(405) # method not allowed
+    
+    result = h(None, req, res)
     
     make_response(res)
     write_response(res)

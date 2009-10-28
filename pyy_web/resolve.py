@@ -20,17 +20,19 @@ import imp
 import re
 import os
 import string
+import sys
 
-def RegexResolver(mapping, request, response):
+
+def RegexResolver(mapping, request):
   for regex, pageclass in mapping:
     match = re.match(regex, request.uri)
     if match:
       request.get.update(match.groupdict())
-      return pageclass(request, response)
+      return pageclass(request=request)
   raise ValueError('URI did not resolve to a class.')
 
 
-def FileHeirarchyResolver(root, request, response):
+def FileHeirarchyResolver(root, request):
   root = os.path.abspath(root)
   if not os.path.isdir(root):
     raise ValueError('The directory "%s" could not be found.' % root)
@@ -55,6 +57,9 @@ def FileHeirarchyResolver(root, request, response):
     
     #Check if the first chunk is a file in the current directory
     if os.path.isfile(file):
+      #Add file directory to path so relative imports work
+      sys.path.insert(0, root);
+      
       f = open(file, 'U')
       module = imp.load_module(chunks[0], f, file, ('.py', 'U', 1))
       f.close()
@@ -67,7 +72,7 @@ def FileHeirarchyResolver(root, request, response):
       
       if hasattr(module, classname):
         request.uri = '/' + '/'.join(chunks[2:])
-        return getattr(module, classname)(request, response)
+        return getattr(module, classname)(request=request)
     return False
   
   page = resolve_chunk(root, filter(None, request.uri.split('/')))

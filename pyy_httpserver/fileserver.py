@@ -36,6 +36,9 @@ class fileserver(object):
     if not req.method in ['GET', 'HEAD']:
       raise HTTPError(405)
     
+    if path.startswith('/'):
+      path = path[1:]
+
     path = os.path.join(self.root, unquote_plus(path))
     path = os.path.realpath(os.path.abspath(path))
     root = os.path.realpath(os.path.abspath(self.root))
@@ -119,7 +122,7 @@ class fileserver(object):
       f.close()
 
     if fsize < 256*1024:
-      res.body = f.read()
+      res.body = ft.read()
       ft.close()
       return
     return write

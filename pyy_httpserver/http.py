@@ -78,7 +78,7 @@ class httphandler(object):
       res.body = '%s %s' % (res.status, res.statusmsg)
       try:
         self.handler.handle_error(self, req, res, error[0], *error[1:])
-      except:
+      except: # error handler had an error!
         res = httpresponse()
         res.status = 500
         res.body = '%s %s' % (res.status, res.statusmsg)
@@ -151,6 +151,7 @@ class httphandler(object):
     self.readline = self.readheader
 
   def readheader(self, request, line):
+    # TODO: headers can span lines! implement this
     if not line:
       return self.end_headers(request)
 

@@ -25,10 +25,10 @@ EVENTS = set(['onabort', 'onblur', 'oncanplay', 'oncanplaythrough', 'onchange', 
 
 #Elements
 METADATA    = set([base, command, link, meta, noscript, script, style, title])
-FLOW        = set([a, abbr, address, area, article, aside, audio, b, bdo, blockquote, br, button, canvas, cite, code, command, datalist, del_, details, dfn, dialog, div, dl, em, embed, fieldset, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, hr, i, iframe, img, input, ins, kbd, keygen, label, link, map, mark, math, menu, meta, meter, nav, noscript, object, ol, output, p, pre, progress, q, ruby, samp, script, section, select, small, span, strong, style, sub, sup, svg, table, textarea, time, ul, var, video, str])
+FLOW        = set([a, abbr, address, area, article, aside, audio, b, bdo, blockquote, br, button, canvas, cite, code, command, datalist, del_, details, dfn, dialog, div, dl, em, embed, fieldset, figure, footer, form, h1, h2, h3, h4, h5, h6, header, hgroup, hr, i, iframe, img, input_, ins, kbd, keygen, label, link, map, mark, math, menu, meta, meter, nav, noscript, object, ol, output, p, pre, progress, q, ruby, samp, script, section, select, small, span, strong, style, sub, sup, svg, table, textarea, time, ul, var, video, str])
 SECTION     = set([article, aside, nav, section])
 HEADING     = set([h1, h2, h3, h4, h5, h6, hgroup])
-PHRASING    = set([a, abbr, area, audio, b, bdo, br, button, canvas, cite, code, command, datalist, del_, dfn, em, embed, i, iframe, img, input, ins, kbd, keygen, label, link, map, mark, math, meta, meter, noscript, object, output, progress, q, ruby, samp, script, select, small, span, strong, sub, sup, svg, textarea, time, var, video, str])
+PHRASING    = set([a, abbr, area, audio, b, bdo, br, button, canvas, cite, code, command, datalist, del_, dfn, em, embed, i, iframe, img, input_, ins, kbd, keygen, label, link, map, mark, math, meta, meter, noscript, object, output, progress, q, ruby, samp, script, select, small, span, strong, sub, sup, svg, textarea, time, var, video, str])
 TRANSPARENT = set([a, audio, canvas, del_, ins, map_, noscript, object_, video, str])
 
 
@@ -228,7 +228,7 @@ class html5(dtd):
                CHILDREN: FLOW | set([legend])},
     label   : {VALID   : GLOBAL | set(['form', 'for']),
                CHILDREN: PHRASING},
-    input   : {VALID   : GLOBAL | set(['accept', 'alt', 'autocomplete', 'autofocus', 'checked', 'disabled', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'height', 'list', 'max', 'maxlength', 'min', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'src', 'step', 'type', 'value', 'width'])},
+    input_  : {VALID   : GLOBAL | set(['accept', 'alt', 'autocomplete', 'autofocus', 'checked', 'disabled', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'height', 'list', 'max', 'maxlength', 'min', 'multiple', 'name', 'pattern', 'placeholder', 'readonly', 'required', 'size', 'src', 'step', 'type', 'value', 'width'])},
     button  : {VALID   : GLOBAL | set(['autofocus', 'disabled', 'form', 'formaction', 'formenctype', 'formmethod', 'formnovalidate', 'formtarget', 'name', 'type', 'value']),
                CHILDREN: PHRASING},
     select  : {VALID   : GLOBAL | set(['autofocus', 'disabled', 'form', 'multiple', 'name', 'size']),

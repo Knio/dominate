@@ -93,6 +93,10 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
     name = match.group('name')
     if allow_invalid_markup: name = name.lower()
     
+    #Check if it is a special, underscored class
+    if name in html.underscored_classes:
+      name += '_'
+    
     #If we are inside a <!--regular--> comment just add tags as text
     if in_normal_comment and name != html.comment.__name__:
       stack[-1].append(data[match_start:match_end])

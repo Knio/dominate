@@ -176,6 +176,9 @@ class var         (html_tag): pass
 class video       (html_tag): pass
 class xmp         (html_tag): pass
 
+underscored_classes = set(['del', 'input', 'map', 'object'])
+
+
 class comment(html_tag):
   '''
   Normal, one-line comment:

@@ -16,10 +16,7 @@ Public License along with pyy. If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
+from pyy_html.document import document
 import a
 
-
-class Index:
-   def __init__(self, request, response):
-    self.request  = request
-    self.response = response
+class Index(document): pass

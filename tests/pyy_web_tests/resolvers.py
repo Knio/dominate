@@ -30,20 +30,20 @@ path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test')
 
 class ResolverTests(unittest.TestCase):
   def testSelectIndexInFolder(self):
-    p = FileHeirarchyResolver(path, Request('admin/'), None)
-    self.assertEqual(str(p.__class__), '__init__.Index')
+    p = FileHeirarchyResolver(path, Request('admin/'))
+    self.assertEqual(str(p.__class__), "<class '__init__.Index'>")
   
   def testSelectIndexInFile(self):
-    p = FileHeirarchyResolver(path, Request('admin/a/'), None)
-    self.assertEqual(str(p.__class__), 'a.Index')
+    p = FileHeirarchyResolver(path, Request('admin/a/'))
+    self.assertEqual(str(p.__class__), "<class 'a.Index'>")
   
   def testSelectClassInFile(self):
-    p = FileHeirarchyResolver(path, Request('admin/a/test'), None)
-    self.assertEqual(str(p.__class__), 'a.Test')
+    p = FileHeirarchyResolver(path, Request('admin/a/test'))
+    self.assertEqual(str(p.__class__), "<class 'a.Test'>")
   
   def testErrorWhenNoIndex(self):
     try:
-      FileHeirarchyResolver(path, Request('admin/hi/'), None)
+      FileHeirarchyResolver(path, Request('admin/hi/'))
       self.fail()
     except ValueError:
       pass

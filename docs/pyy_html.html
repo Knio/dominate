@@ -15,14 +15,6 @@ without the need of using an intermediate templating language.
 `pyy_html` also provides you with helper classes for generating and parsing
 (X)HTML documents.
 
---DESCRIBE TAGS AND SUCH HERE--
-
-The `parser` class contains two methods: `parse` and `pageparse`. `parse` will
-take valid and mostly-valid (X)HTML input and return a tag tree. `pageparse`
-will take an entire document and return a `document` instance complete with
-the DOCTYPE (if present) and a tag tree using the (X)HTML version specified
-by the DOCTYPE.
-
 
 Usage
 =====
@@ -116,31 +108,100 @@ Comments can be created using objects too!
 
 Creating Documents
 ------------------
-...
+Since creating the common structure of an HTML document everytime would be
+excessively tedious pyy_html provides a class to create an manage them for
+you, `document`.
 
+When you create a new document, the basic HTML tag structure is created for
+you.
+    &gt;&gt;&gt; d = document()
+    &gt;&gt;&gt; print d
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;title&gt;PYY Page&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;&lt;/body&gt;
+    &lt;/html&gt;
+
+The `document` class also provides helpers to allow you to access the `html`,
+`head`, and `body` elements directly.
+    &gt;&gt;&gt; d = document()
+    &gt;&gt;&gt; d.html
+    &lt;pyy_html.html.html: 0 attributes, 2 children&gt;
+    &gt;&gt;&gt; d.head
+    &lt;pyy_html.html.head: 0 attributes, 0 children&gt;
+    &gt;&gt;&gt; d.body
+    &lt;pyy_html.html.body: 0 attributes, 0 children&gt;
+    
+You should notice that here the `head` tag contains zero children. This is
+because the default `title` tag is only added when the document is rendered
+and the `head` element already does not contain one.
+
+The `document` class also provides helpers to allow you to directly add
+elements to the `body` tag.
+    &gt;&gt;&gt; d = document()
+    &gt;&gt;&gt; d += h1('Hello, World!')
+    &gt;&gt;&gt; p += p('This is a paragraph.')
+    &gt;&gt;&gt; print d
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;title&gt;PYY Page&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;h1&gt;Hello, World!&lt;/h1&gt;
+        &lt;p&gt;This is a paragraph.&lt;/p&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
 
 Markup Validation
 -----------------
-Once you have created a document validating its tags is extremely easy.
-
-Import the DTD specification that you wish to validate against and set it as
-the desired doctype in your document. This will automatically trigger
-the validation.
+You can also set the DOCTYPE via the `document` class which will validate the
+existing tag tree as well as whenever you attempt to add a new tag anywhere in
+the tag tree.
     &gt;&gt;&gt; d = document()
-    
-    ... add tags to d ...
-    
-    &gt;&gt;&gt; from pyy_html.dtd import xhtml11
-    &gt;&gt;&gt; d.setdoctype(xhtml11)
+    &gt;&gt;&gt; d.setdoctype(dtd.xhtml11)
+    &gt;&gt;&gt; print d
+    &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"&gt;
+    &lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
+      &lt;head&gt;
+        &lt;title&gt;PYY Page&lt;/title&gt;
+      &lt;/head&gt;
+      &lt;body&gt;&lt;/body&gt;
+    &lt;/html&gt;
 
 If nothing happens when you call `setdoctype` then everything passed the
 validation! However, if you received an error then your document did not pass
 and the error will contain relevant information as to what the problem was.
 
-You can also pass a doctype on your document object creation as a keyword
+You can also pass a DOCTYPE on your document object creation as a keyword
 argument and validation testing will occur when the document is rendered.
     &gt;&gt;&gt; from pyy_html.dtd import html5
     &gt;&gt;&gt; d = document(doctype=html5)
+
+Parsing Documents
+-----------------
+The `parser` class contains two methods: `parse` and `pageparse`. `parse` will
+take valid and mostly-valid (X)HTML input and return a tag tree. `pageparse`
+will take an entire document and return a `document` instance complete with
+the DOCTYPE (if present) and a tag tree using the (X)HTML version specified
+by the DOCTYPE.
+
+`parse` will simply return a heirarchy of all the tags and their content that
+it can recognize in a string.
+    &gt;&gt;&gt; parse('&lt;p&gt;Hello.&lt;/p&gt;')
+    &lt;pyy_html.html.p: 0 attributes, 1 child&gt;
+    &gt;&gt;&gt; parse('&lt;html&gt;&lt;head&gt;&lt;title&gt;test&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;h1&gt;Hi.&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;')
+    &lt;pyy_html.html.html: 0 attributes, 2 children&gt;
+    &gt;&gt;&gt; parse('&lt;div id="first"&gt;&lt;/div&gt;&lt;div id="second"&gt;&lt;/div&gt;')
+    [&lt;pyy_html.html.div: 1 attribute, 0 children&gt;, &lt;pyy_html.html.div: 1 attribute, 0 children&gt;]
+
+Notice that if multiple top-level tags exist in the string `parse` will return
+them as an array.
+
+`pageparse` also takes a string of tags and optionally a DOCTYPE and returns a
+`document` object.
+    &gt;&gt;&gt; pageparse('&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Hi.&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;')
+    &lt;pyy_html.document.document html5 "PYY Page"&gt;
 
 
 Developed By

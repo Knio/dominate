@@ -72,5 +72,17 @@ class document(object):
     r += self.html.render()
     return r
   __str__ = __unicode__ = render
-
+  
+  def __repr__(self):
+    r = '<pyy_html.document.document'
+    
+    if (self.doctype):
+      r += ' '
+      r += self.doctype.__name__
+    
+    if (self.title):
+      r += ' "%s"' % self.title
+    
+    r += '>'
+    return r
 

@@ -22,6 +22,7 @@ Public License along with pyy.  If not, see
 
 from pyy_tag import pyy_tag
 
+
 class include(pyy_tag):
   '''
   includes the contents of a file on disk.
@@ -34,6 +35,7 @@ class include(pyy_tag):
   
   def render(self, indent=1, inline=False):
     return self.data
+
 
 class pipe(pyy_tag):
   '''
@@ -48,6 +50,7 @@ class pipe(pyy_tag):
   
   def render(self, indent=1, inline=False):
     return self.data
+
 
 class escape(pyy_tag):
   '''
@@ -75,11 +78,10 @@ _unescape = {'quot' :34,
              'lt'   :60,
              'gt'   :62,
              'nbsp' :32,
-             
              # more here
-             
              'yuml' :255
              }
+
 
 def unescape(data):
   '''
@@ -105,6 +107,7 @@ def unescape(data):
   
   result.append(data)
   return ''.join(result)
+
 
 class lazy(pyy_tag):
   '''

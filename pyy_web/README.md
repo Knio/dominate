@@ -1,11 +1,11 @@
 About
 =====
-About `pyy_doc`.
+About `pyy_web`.
 
 
 Usage
 =====
-`pyy_doc` usage.
+`pyy_web` usage.
 
 
 Developed By

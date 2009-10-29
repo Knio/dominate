@@ -52,13 +52,13 @@ class pyy_doc(document):
       if name.startswith('_') and not show_hidden: continue
       if type(item) is types.ModuleType:
         self.submodules[name] = str(item.__doc__).strip()
-        sub += tr(td(a(name, href=name), __inline=True), td(escape(self.submodules[name][:trim_doc]), __inline=True))
+        sub += tr(td(a(name, href='%s.%s.html'%(module,name)), __inline=True), td(escape(self.submodules[name][:trim_doc]), __inline=True))
       elif type(item) is type:
         self.classes[name] = str(item.__doc__).strip()
-        cls += tr(td(a(name, href=name), __inline=True), td(escape(self.classes[name][:trim_doc]), __inline=True))
+        cls += tr(td(name), td(escape(self.classes[name][:trim_doc]), __inline=True))
       elif type(item) is types.FunctionType:
         self.functions[name] = str(item.__doc__).strip()
-        fun += tr(td(a(name, href=name), __inline=True), td(escape(self.functions[name][:trim_doc]), __inline=True))
+        fun += tr(td(name), td(escape(self.functions[name][:trim_doc]), __inline=True))
       else:
         self.constants[name] = repr(item)
         con += tr(td(name), td(self.constants[name]))

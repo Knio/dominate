@@ -1,11 +1,11 @@
 About
 =====
-About `pyy_httpserver`.
+About `pyy_cgi`.
 
 
 Usage
 =====
-`pyy_httpserver` usage.
+`pyy_cgi` usage.
 
 
 Developed By

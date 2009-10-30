@@ -19,14 +19,16 @@ Public License along with pyy. If not, see
 import unittest
 import os
 import test
-from pyy_web.resolve import RegexResolver, FileHeirarchyResolver
+from pyy_httpserver.http import HTTPError
+from pyy_web.resolve     import RegexResolver, FileHeirarchyResolver
+
+path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test')
+
 
 class Request:
   def __init__(self, uri):
     self.uri = uri
 
-
-path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test')
 
 class ResolverTests(unittest.TestCase):
   def testSelectIndexInFolder(self):
@@ -45,5 +47,5 @@ class ResolverTests(unittest.TestCase):
     try:
       FileHeirarchyResolver(path, Request('admin/hi/'))
       self.fail()
-    except ValueError:
+    except HTTPError:
       pass

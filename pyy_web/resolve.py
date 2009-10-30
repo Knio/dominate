@@ -45,25 +45,25 @@ def FileHeirarchyResolver(root, request):
     
     #If we have chunks look at them, otherwise check __init__ for an Index class
     if chunks:
-      dir = os.path.join(root, chunks[0])
+      thedir = os.path.join(root, chunks[0])
       
       #Check if the first chunk is a folder, if so, recursively continue searching inside
-      if os.path.isdir(dir):
-        page = resolve_chunk(dir, chunks[1:])
+      if os.path.isdir(thedir):
+        page = resolve_chunk(thedir, chunks[1:])
         if page:
           return page
     else:
       chunks = ['__init__']
     
-    file = os.path.join(root, '%s.py' % chunks[0])
+    thefile = os.path.join(root, '%s.py' % chunks[0])
     
     #Check if the first chunk is a file in the current directory
-    if os.path.isfile(file):
+    if os.path.isfile(thefile):
       #Add file directory to path so relative imports work
       sys.path.insert(0, root);
       
-      f = open(file, 'U')
-      module = imp.load_module(chunks[0], f, file, ('.py', 'U', 1))
+      f = open(thefile, 'U')
+      module = imp.load_module(chunks[0], f, thefile, ('.py', 'U', 1))
       f.close()
       
       if len(chunks) > 1:

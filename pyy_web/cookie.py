@@ -34,9 +34,9 @@ class cookie(object):
     self.secure   = secure
     self.httponly = httponly
 
-  def render(self, header=False):
+  def render(self, is_header=False):
     timestamp = None
-     if self.expires:
+    if self.expires:
       if isinstance(self.expires, datetime.datetime):
         timestamp = self.expires
       elif isinstance(self.expires, float) or \
@@ -60,9 +60,11 @@ class cookie(object):
     if self.secure:   cookie.append('secure;')
     if self.httponly: cookie.append('httponly;')
     
-    return ('Set-Cookie: ' if header else '') + ' '.join(cookie)
-
-
-if __name__ == '__main__':
-  assert cookie('hi', 'abc').render() == 'hi=abc; path=/;'
-  assert cookie('hi', '123', expires=10, secure=1, httponly=1).render(True) == 'Set-Cookie: hi=123; path=/; expires=Thu, 01-Jan-1970 00:00:10 GMT; secure; httponly;'
+    return ('Set-Cookie: ' if is_header else '') + ' '.join(cookie)
+  
+  def __str__(self):
+    return self.render()
+  __unicode__ = __str__
+  
+  def __repr__(self):
+    return "<pyy_web.cookie.cookie %s>" % self.render()

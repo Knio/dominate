@@ -9,15 +9,48 @@ Usage
 =====
 Cookies
 -------
-About `pyy_web.cookie`.
+`pyy_web.cookie` allows for easy creation of properly formatted cookies.
+
+The cookie name and value are the only two required fields for its simplest
+form:
+    >>> cookie('test', 'cookie')
+    <pyy_web.cookie.cookie test=cookie; path=/;>
+
+You can also pass any number of the following arguments:
+* `expires` - Expiration date (mutually exclusive with `duration`).
+* `duration` - Length of cookie (mutually exclusive with `expires`).
+* `path` - The URL path of the cookie (default: `/`).
+* `domain` - The cookie's domain.
+* `secure` - Whether or not the cookie is secure (default: `False`).
+* `httponly` - If the cookie applies to only HTTP (default: `False`).
+
+While the string and `__repr__` outputs contain the rendered cookie you can
+also call `render()` directly which takes an optional `is_header` boolean.
+    >>> cookie('test', 'cookie').render()
+    'test=cookie; path=/;'
+    >>> cookie('test', 'cookie').render(True)
+    'Set-Cookie: test=cookie; path=/;'
+
 
 HTTP Messages
 -------------
-About `pyy_web.httpmessage`.
+`pyy_web.httpmessage` contains the classes for the `httprequest` and
+`httpresponse` objects. These two classes hold information on the HTTP requests
+and the HTTP responses, respectively, that the other modules pass between
+themselves.
+
 
 Parsers
 -------
-About `pyy_web.parsers`.
+The `pyy_web.parsers` class contains four functions which aid in parsing common
+formats of the HTTP protocol into a more friendly and usable format.
+*   `parse_query(string)` - Parses `a=b&c=d` format into a dictionary. Also
+                            supports arrays.
+*   `parse_semi(string)` - Parses `a=b; c=d' format into a dictionary.
+*   `parse_user_agent(string)` - Parses a user agent string and returns a
+                                 browser object containing vendor and version.
+*   `parse_multipart(content_type, data) - Parses multipart encoded form data
+                                           into a dictionary.
 
 Resolvers
 ---------

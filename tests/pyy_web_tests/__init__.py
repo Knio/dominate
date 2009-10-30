@@ -17,3 +17,4 @@ Public License along with pyy. If not, see
 '''
 
 from resolvers import ResolverTests
+from cookies   import CookieTests

@@ -22,6 +22,8 @@ import os
 import string
 import sys
 
+from pyy_httpserver.http import HTTPError
+
 
 def RegexResolver(mapping, request):
   for regex, pageclass in mapping:
@@ -29,13 +31,13 @@ def RegexResolver(mapping, request):
     if match:
       request.get.update(match.groupdict())
       return pageclass(request=request)
-  raise ValueError('URI did not resolve to a class.')
+  raise HTTPError(404)
 
 
 def FileHeirarchyResolver(root, request):
   root = os.path.abspath(root)
   if not os.path.isdir(root):
-    raise ValueError('The directory "%s" could not be found.' % root)
+    raise HTTPError(404)
   
   def resolve_chunk(root, chunks):
     if root is []:
@@ -77,7 +79,7 @@ def FileHeirarchyResolver(root, request):
   
   page = resolve_chunk(root, filter(None, request.uri.split('/')))
   if not page:
-    raise ValueError('URI did not resolve to a class.')
+    raise HTTPError(404)
   
   return page
  

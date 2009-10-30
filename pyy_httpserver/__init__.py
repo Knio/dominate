@@ -1,7 +1,8 @@
 '''
 About
 =====
-About `pyy_httpserver`.
+`pyy_httpserver` is a lightweight, highly configurable web server written using
+stackless python for ultimate effeciency.
 
 
 Usage

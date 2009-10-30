@@ -1,6 +1,7 @@
 About
 =====
-About `pyy_cgi`.
+`pyy_cgi` provides a common standardized interface between a web server and a
+dynamic application being used to serve content.
 
 
 Usage

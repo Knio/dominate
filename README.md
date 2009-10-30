@@ -2,7 +2,8 @@ About
 =====
 `pyy` is a python library for creating and serving of (X)HTML pages.
 
-(more to come...)
+For an overview of the foundation of `pyy` please read the `README` for
+`pyy_html` [here](http://github.com/Knio/pyy/blob/master/pyy_html/README.md).
 
 
 Modules
@@ -12,6 +13,9 @@ Modules
 *   `pyy_html` - Markup and document creation, validation, and rendering.
 *   `pyy_httpserver` - An extremely light web server.
 *   `pyy_web` - HTTP helper classes and functions.
+
+Each module has a `README` which details and outlines its purpose as well as
+how to properly use it.
 
 
 Developed By

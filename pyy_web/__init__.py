@@ -1,12 +1,74 @@
 '''
 About
 =====
-About `pyy_web`.
+`pyy_web` contains useful classes and functions to aid in dealing with the HTTP
+protocol and serving websites.
 
 
 Usage
 =====
-`pyy_web` usage.
+Cookies
+-------
+About `pyy_web.cookie`.
+
+HTTP Messages
+-------------
+About `pyy_web.httpmessage`.
+
+Parsers
+-------
+About `pyy_web.parsers`.
+
+Resolvers
+---------
+When serving dynamic web applications it is sometimes useful to obfuscate your
+URLs or simple clean them up to be "pretty". The `resolvers` class allows you
+to create logical rules or patterns for your URLs and have them easily be
+mapped back to approprite classes.
+
+There are currently two methods of dynamic URL resolving: Regex-based and file
+heirarchy-based.
+
+Regex-based resolving takes a list of tuples which associate a regular
+expression to a class. When a request is resolved in this way the tuples are
+iterated over and the first match is taken and returned.
+    urls = [
+      (r'^/photos/', pages.photos),
+      (r'^/videos/', pages.videos),
+    ]
+If a match is not found, an `HTTPError` is raised with a 404 code.
+
+You can also use named match groups in your regular expressions to help parse
+the URL which will be copied into the request's `GET` mapping.
+    urls = [
+      (r'^/photos/((?P<id>\d+)/)?$', pages.photos)
+    ]
+Here an optional ID can be specified after the `/photos/` qualifier and the
+`pages.photos` class can react accordingly.
+
+--------
+The other type of resolver uses a file system-based heirarchy to determine
+which class to associate a URL with.
+
+When you create a directory like the following:
+    pages/
+          __init__.py
+          home.py
+          admin/
+                __init__.py
+                users.py
+you can use corresponding URLs to access those classes:
+    /             (would match in __init__.py)
+    /home/        (would match home.py)
+    /home/page2/  (would match home.py with 'page2' put into the request's GET)
+    /admin/       (would match admin/__init__.py)
+    /admin/users/ (would match admin/users.py)
+    /admin/other/ (would match admin/__init.py with 'other' put into the request's GET)
+
+In each of those files should be an Index class which is the default one
+selected in a file. If in the case of the `/admin/other/` URL the
+`admin/__init__.py` file had an `Other` class it would be the one that was
+selected.
 
 
 Developed By

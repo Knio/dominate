@@ -29,7 +29,7 @@ from setuptools import setup, find_packages
 
 
 
-version = '1.0.0dev'
+version = '1.0.0'
 
 try:
   version = os.popen('git describe').read().strip()

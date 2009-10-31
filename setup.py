@@ -20,10 +20,10 @@ import sys
 import os
 
 try:
-    import ez_setup
-    ez_setup.use_setuptools()
+  import ez_setup
+  ez_setup.use_setuptools()
 except ImportError:
-    pass
+  pass
 
 from setuptools import setup, find_packages
 
@@ -32,37 +32,37 @@ from setuptools import setup, find_packages
 version = '1.0.0dev'
 
 try:
-    version = os.popen('git describe').read().strip()
+  version = os.popen('git describe').read().strip()
 except:
-    pass # not a git repository or something
+  pass # not a git repository or something
 
 
 print find_packages()
 #sys.exit(0)
 
 setup(
-    name    = 'pyy',
-    version = version,
-    author  = 'Tom Flanagan and Jake Wharton',
-    license = 'LGPL',
-    
-    url          = 'http://github.com/Knio/pyy/',
-    download_url = 'http://github.com/Knio/pyy/tarball/'+version,
-    
-    description      = 'Python library for creating (X)HTML pages with the use of objects.',
-    long_description = 'Python library for creating (X)HTML pages with the use of objects. This allows you to tightly integrate (X)HTML generation into your backend without the need of using an intermediate templating language.',
-    keywords         = 'framework templating template html xhtml python html5',
-    
-    classifiers = [
-        'Programming Language :: Python',
-        'Operating System :: OS Independent',
-        'Topic :: Software Development :: Libraries :: Application Frameworks',
-        'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
-        'Intended Audience :: Developers',
-    ],
-    
-    packages    = find_packages(),
-    py_modules  = ['ez_setup'],
-    
-    include_package_data = True,
+  name    = 'pyy',
+  version = version,
+  author  = 'Tom Flanagan and Jake Wharton',
+  license = 'LGPL',
+  
+  url          = 'http://github.com/Knio/pyy/',
+  download_url = 'http://github.com/Knio/pyy/tarball/'+version,
+  
+  description      = 'Python library for creating (X)HTML pages with the use of objects.',
+  long_description = 'Python library for creating (X)HTML pages with the use of objects. This allows you to tightly integrate (X)HTML generation into your backend without the need of using an intermediate templating language.',
+  keywords         = 'framework templating template html xhtml python html5',
+  
+  classifiers = [
+    'Programming Language :: Python',
+    'Operating System :: OS Independent',
+    'Topic :: Software Development :: Libraries :: Application Frameworks',
+    'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+    'Intended Audience :: Developers',
+  ],
+  
+  packages   = find_packages(),
+  py_modules = ['ez_setup'],
+  
+  include_package_data = True,
 )

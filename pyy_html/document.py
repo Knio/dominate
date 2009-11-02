@@ -33,13 +33,6 @@ class document(object):
     self.title         = title
     self.request       = request
   
-  def setdoctype(self, doctype=None):
-    '''
-    Assigns a doctype to the document for tag tree validation.
-    '''
-    if doctype: doctype.validate(self.html)
-    self.doctype = doctype
-  
   def add(self, obj):
     '''
     Adding tags to a document appends them to the <body>.
@@ -50,24 +43,44 @@ class document(object):
     self._entry += obj
     return self
   
-  def __setattr__(self, attr, value):
-    if attr == 'title' and title in self.html:
-        self.html.get(title)[0].children = [value]
-    object.__setattr__(self, attr, value)
+  
+  def _get_title(self):
+    if title not in self.head:
+      self.head += title("PYY Page")
+    return self.head.get(title)[0].children[0]
+  
+  def _set_title(self, value):
+    if title in self.head:
+      self.head.get(title)[0].children = [value]
+    else:
+      self.head += title(value)
+  
+  title = property(_get_title, _set_title, None, 'Document title.')
+  
+  
+  def validate(self):
+    '''
+    Validates the tag tree against a DOCTYPE
+    '''
+    if self.doctype:
+      self.doctype.validate(self.html)
+    else:
+      raise ValueError('No DOCTYPE has been assigned.')
   
   def render(self):
     '''
-    Create a <title> tag if not present and render the DOCTYPE and tag tree.
+    Creates a <title> tag if not present and renders the DOCTYPE and tag tree.
     '''
-    r = ""
+    try:
+      self.validate()
+    except ValueError:
+      pass
     
-    #Add a title tag if it does not exist
-    if title not in self.html:
-        self.head += title(self.title)
+    r = ""
     
     #Add the doctype if one was set
     if self.doctype:
-        r += self.doctype.render() + '\n'
+      r += self.doctype.render() + '\n'
     
     r += self.html.render()
     return r
@@ -76,13 +89,11 @@ class document(object):
   def __repr__(self):
     r = '<pyy_html.document.document'
     
-    if (self.doctype):
+    if self.doctype:
       r += ' '
       r += self.doctype.__name__
     
-    if (self.title):
-      r += ' "%s"' % self.title
+    r += ' "%s">' % self.title
     
-    r += '>'
     return r
 

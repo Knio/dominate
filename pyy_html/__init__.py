@@ -128,7 +128,7 @@ The `document` class also provides helpers to allow you to access the `html`,
     
 You should notice that here the `head` tag contains zero children. This is
 because the default `title` tag is only added when the document is rendered
-and the `head` element already does not contain one.
+and the `head` element already does not explicitly contain one.
 
 The `document` class also provides helpers to allow you to directly add
 elements to the `body` tag.
@@ -148,11 +148,10 @@ elements to the `body` tag.
 
 Markup Validation
 -----------------
-You can also set the DOCTYPE via the `document` class which will validate the
-existing tag tree as well as whenever you attempt to add a new tag anywhere in
-the tag tree.
+You can also set the DOCTYPE of the `document` which will validate the tag tree
+when it is rendered.
     >>> d = document()
-    >>> d.setdoctype(dtd.xhtml11)
+    >>> d.doctype = dtd.xhtml11
     >>> print d
     <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -162,14 +161,15 @@ the tag tree.
       <body></body>
     </html>
 
-If nothing happens when you call `setdoctype` then everything passed the
-validation! However, if you received an error then your document did not pass
-and the error will contain relevant information as to what the problem was.
+Notice how the required XHTML 1.1 attribute `xmlns` is automatically added to
+the `<html>` tag.
 
-You can also pass a DOCTYPE on your document object creation as a keyword
-argument and validation testing will occur when the document is rendered.
-    >>> from pyy_html.dtd import html5
-    >>> d = document(doctype=html5)
+If there are any errors in the tag tree a `ValueError` will be thrown which
+describes the offending tag. You can check the validity of your document at
+any time by calling `validate()` explicity.
+
+You may also set a `document`'s DOCTYPE with the keyword argument `doctype`.
+    >>> d = document(doctype=dtd.html5)
 
 Parsing Documents
 -----------------
@@ -193,8 +193,8 @@ them as an array.
 
 `pageparse` also takes a string of tags and optionally a DOCTYPE and returns a
 `document` object.
-    >>> pageparse('<!DOCTYPE html><html><body><h1>Hi.</h1></body></html>')
-    <pyy_html.document.document html5 "PYY Page">
+    >>> pageparse('<!DOCTYPE html><html><head><title>Test</title></head><body></body></html>')
+    <pyy_html.document.document html5 "Test">
 
 
 Developed By
@@ -225,24 +225,6 @@ License
     You should have received a copy of the GNU Lesser General
     Public License along with pyy.  If not, see
     <http://www.gnu.org/licenses/>.
-'''
-
-__license__ = '''
-This file is part of pyy.
-
-pyy is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as
-published by the Free Software Foundation, either version 3 of
-the License, or (at your option) any later version.
-
-pyy is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General
-Public License along with pyy.  If not, see
-<http://www.gnu.org/licenses/>.
 '''
 
 from html     import *

@@ -1,7 +1,7 @@
 <html>
   <head>
-    <link media="screen" href="docs.css" type="text/css" rel="stylesheet" />
     <title>pyy_html - Documentation</title>
+    <link media="screen" href="docs.css" type="text/css" rel="stylesheet" />
   </head>
   <body>
     <div id="module-header">
@@ -135,7 +135,7 @@ The `document` class also provides helpers to allow you to access the `html`,
     
 You should notice that here the `head` tag contains zero children. This is
 because the default `title` tag is only added when the document is rendered
-and the `head` element already does not contain one.
+and the `head` element already does not explicitly contain one.
 
 The `document` class also provides helpers to allow you to directly add
 elements to the `body` tag.
@@ -155,11 +155,10 @@ elements to the `body` tag.
 
 Markup Validation
 -----------------
-You can also set the DOCTYPE via the `document` class which will validate the
-existing tag tree as well as whenever you attempt to add a new tag anywhere in
-the tag tree.
+You can also set the DOCTYPE of the `document` which will validate the tag tree
+when it is rendered.
     &gt;&gt;&gt; d = document()
-    &gt;&gt;&gt; d.setdoctype(dtd.xhtml11)
+    &gt;&gt;&gt; d.doctype = dtd.xhtml11
     &gt;&gt;&gt; print d
     &lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"&gt;
     &lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;
@@ -169,14 +168,15 @@ the tag tree.
       &lt;body&gt;&lt;/body&gt;
     &lt;/html&gt;
 
-If nothing happens when you call `setdoctype` then everything passed the
-validation! However, if you received an error then your document did not pass
-and the error will contain relevant information as to what the problem was.
+Notice how the required XHTML 1.1 attribute `xmlns` is automatically added to
+the `&lt;html&gt;` tag.
 
-You can also pass a DOCTYPE on your document object creation as a keyword
-argument and validation testing will occur when the document is rendered.
-    &gt;&gt;&gt; from pyy_html.dtd import html5
-    &gt;&gt;&gt; d = document(doctype=html5)
+If there are any errors in the tag tree a `ValueError` will be thrown which
+describes the offending tag. You can check the validity of your document at
+any time by calling `validate()` explicity.
+
+You may also set a `document`'s DOCTYPE with the keyword argument `doctype`.
+    &gt;&gt;&gt; d = document(doctype=dtd.html5)
 
 Parsing Documents
 -----------------
@@ -200,8 +200,8 @@ them as an array.
 
 `pageparse` also takes a string of tags and optionally a DOCTYPE and returns a
 `document` object.
-    &gt;&gt;&gt; pageparse('&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Hi.&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;')
-    &lt;pyy_html.document.document html5 "PYY Page"&gt;
+    &gt;&gt;&gt; pageparse('&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;title&gt;Test&lt;/title&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;/html&gt;')
+    &lt;pyy_html.document.document html5 "Test"&gt;
 
 
 Developed By

@@ -19,8 +19,8 @@ Public License along with pyy.  If not, see
 import os
 import sys
 import imp
-from urllib import unquote_plus
-from pyy_web.httpmessage import HTTPError
+from urllib  import unquote_plus
+from pyy_web import httperror
 
 
 class pyyscript(object):
@@ -35,13 +35,13 @@ class pyyscript(object):
 
   def load_module(self):
     if not self.fname.startswith(self.root):
-      raise HTTPError(403)
+      raise httperror(403)
 
     if not os.path.exists(self.fname):
-      raise HTTPError(404)
+      raise httperror(404)
 
     if not os.path.isfile(self.fname):
-      raise HTTPError(403)
+      raise httperror(403)
     
     if os.path.getmtime(self.fname) == self.mtime:
       return self.module
@@ -62,7 +62,7 @@ class pyyscript(object):
         getattr(m, 'handle', None))
     
     if not h:
-      raise HTTPError(405) # method not allowed
+      raise httperror(405) # method not allowed
     
     return  h(handler, req, res, *args)
 

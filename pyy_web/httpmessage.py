@@ -18,17 +18,17 @@ Public License along with pyy.  If not, see
 
 import parsers
 
-class HTTPError(Exception): pass
+class httperror(Exception): pass
 
-class HTTPMessage(object):
+class httpmessage(object):
   def __init__(self):
     self.http   = 0
     self.headers= {}
     self.body   = None
 
-class HTTPRequest(HTTPMessage):
+class httprequest(httpmessage):
   def __init__(self):
-    HTTPMessage.__init__(self)
+    httpmessage.__init__(self)
     self.method = None
     self.uri    = None
     del self.body
@@ -69,9 +69,9 @@ class HTTPRequest(HTTPMessage):
     setattr(self, attr, val)
     return val
 
-class HTTPResponse(HTTPMessage):
+class httpresponse(httpmessage):
   def __init__(self):
-    HTTPMessage.__init__(self)
+    httpmessage.__init__(self)
     self.statusnum = None
     self.statusmsg = None
     self.cookies   = {}
@@ -85,7 +85,7 @@ class HTTPResponse(HTTPMessage):
 
   def set_status(self, x):
     self.statusnum = x
-    self.statusmsg = HTTPResponse.STATUS.get(x, 'OK')
+    self.statusmsg = httpresponse.STATUS.get(x, 'OK')
   
   status = property(lambda s:s.statusnum, set_status)
   

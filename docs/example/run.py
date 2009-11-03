@@ -10,6 +10,7 @@ the interfaces should look like and make sure they work.
 
 
 from pyy_httpserver import *
+from pyy_web        import httperror
 
 
 
@@ -23,11 +24,11 @@ class exampleserver(httpserver):
   where SPECIFIER is one of:
     * a regular expression string - matches that hostname (or uri, in a sub-handler)
     * an HTTP error code          - matches that error code
-    * HTTPError                   - matches all errors
+    * httperror                   - matches all errors
     * None                        - matches None or the empty string
     * True                        - matches everything
   
-  If no specifiers match, an HTTPError(404) will be returned.
+  If no specifiers match, an httperror(404) will be returned.
   If multiple SPECIFIERs match, the last one will be used. If the last one returns a 404 error, then the second last one will be used, etc.
   Note that if a leaf-node (final handler) raises a 404, that error will be handled normally and will not cause the resolver to keep looking
   
@@ -36,7 +37,7 @@ class exampleserver(httpserver):
     * a function object           - will be called with f(*args) where args is a list of all regex matches that were encountered in the entire processing of this request. The function's return value will then be used as a new HANDLER
     * a handler object            - will be called with .handle(httpserver, request, response, *args) (or .handle_error(..) if this is an error match)
     * None                        - do nothing
-    * an HTTPError instance       - this error will be raised
+    * an httperror instance       - this error will be raised
   
   '''
   
@@ -49,7 +50,7 @@ class exampleserver(httpserver):
     
     True, [ 
       # example.zkpq.ca didn't match, redirect the user to the right hostname
-      '^/(.*)$', lambda x: HTTPError(302, 'http://example.zkpq.ca:50005/%s' % x)
+      '^/(.*)$', lambda x: httperror(302, 'http://example.zkpq.ca:50005/%s' % x)
     ],
     
     '^example.zkpq.ca$', [
@@ -57,7 +58,7 @@ class exampleserver(httpserver):
       '^/src(.*)$', syntaxfileserver ('../..'), # serve the source dir with highlighting. don't need a lambda here, but it works
       '^/doc(.*)$', fileserver('../'),          # serve the documentation 
       
-      HTTPError,    lambda :pyyscript('.', 'error.py'), # generic error
+      httperror,    lambda :pyyscript('.', 'error.py'), # generic error
       404,          lambda :pyyscript('.', '404.py'),   # specific error
     ]
     

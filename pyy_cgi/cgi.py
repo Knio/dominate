@@ -28,7 +28,7 @@ import imp
 
 
 def get_request():
-  req = HTTPRequest()
+  req = httprequest()
   req.read = sys.stdin.read
 
   env = os.environ
@@ -98,13 +98,13 @@ if __name__ == '__main__':
   try:
     m = imp.load_module(mname, f, fname, ('.py', 'U', 1))
     req = get_request()
-    res = HTTPResponse()
+    res = httpresponse()
     
     h = getattr(m, req.method.lower(), getattr(m, 'handle', None))
     
     if not h:
       # TODO fix this!
-      raise HTTPError(405) # method not allowed
+      raise httperror(405) # method not allowed
     
     result = h(None, req, res)
     

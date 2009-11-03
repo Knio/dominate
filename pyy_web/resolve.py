@@ -22,7 +22,7 @@ import os
 import string
 import sys
 
-from pyy_web.httpmessage import HTTPError
+from pyy_web import httperror
 
 
 def RegexResolver(mapping, request):
@@ -31,13 +31,13 @@ def RegexResolver(mapping, request):
     if match:
       request.get.update(match.groupdict())
       return pageclass(request=request)
-  raise HTTPError(404)
+  raise httperror(404)
 
 
 def FileHeirarchyResolver(root, request):
   root = os.path.abspath(root)
   if not os.path.isdir(root):
-    raise HTTPError(404)
+    raise httperror(404)
   
   def resolve_chunk(root, chunks):
     if root is []:
@@ -79,7 +79,7 @@ def FileHeirarchyResolver(root, request):
   
   page = resolve_chunk(root, filter(None, request.uri.split('/')))
   if not page:
-    raise HTTPError(404)
+    raise httperror(404)
   
   return page
  

@@ -22,7 +22,7 @@ import types
 import http
 import server
 
-from pyy_web.httpmessage import HTTPError
+from pyy_web import httperror
 
 class httpserver(object):
   rewrite = []
@@ -45,11 +45,11 @@ class httpserver(object):
         if not uri: h = c
       # matches that error code
       elif isinstance(r, int):
-        if isinstance(uri, HTTPError) and uri.args[0] == r:
+        if isinstance(uri, httperror) and uri.args[0] == r:
           h = c
       # matches all errors
-      elif r is HTTPError:
-        if isinstance(uri, HTTPError):  h = c
+      elif r is httperror:
+        if isinstance(uri, httperror):  h = c
       # matches regex string
       elif isinstance(r, str):
         if isinstance(uri, str):
@@ -80,7 +80,7 @@ class httpserver(object):
       if isinstance(handler, list):
         handler, uri, args = self.find_handler(uri, handler)
 
-      elif isinstance(handler, HTTPError):
+      elif isinstance(handler, httperror):
         raise handler
 
       elif isinstance(handler, (types.FunctionType, types.MethodType)):
@@ -90,7 +90,7 @@ class httpserver(object):
       elif hasattr(handler, 'handle'):
         return handler.handle(conn, req, res, *args)
       
-      elif handler is False:  raise HTTPError(404)
+      elif handler is False:  raise httperror(404)
       elif handler is None:   return False      
       else: raise valueError(handler)
 
@@ -106,13 +106,13 @@ class httpserver(object):
     
 
     handler, uri, args = self.find_handler(req.host, self.sites)
-    uri = HTTPError(status, *errors)
+    uri = httperror(status, *errors)
     try:
       while 1:
         if isinstance(handler, list):
           handler, uri, args = self.find_handler(uri, handler)
 
-        elif isinstance(handler, HTTPError):
+        elif isinstance(handler, httperror):
           raise handler
 
         elif isinstance(handler, (types.FunctionType, types.MethodType)):
@@ -126,7 +126,7 @@ class httpserver(object):
         elif handler is False:  return
         else: raise ValueError(handler)
         
-    except HTTPError, e:
+    except httperror, e:
       return self.handle_error(conn, req, res, e.args[0], e.args[1:])
 
 

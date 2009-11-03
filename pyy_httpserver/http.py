@@ -21,7 +21,7 @@ import warnings
 import time
 import datetime
 
-from pyy_web import HTTPRequest, HTTPResponse
+from pyy_web import httprequest, httpresponse, httperror
 
 def httptime(t=None):
   fmt = '%a, %d %b %Y %H:%M:%S GMT' # http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html#sec3.3.1
@@ -59,24 +59,24 @@ class httphandler(object):
     try:
       req = self.parse_request()
       self.validate_request(req)
-      res = HTTPResponse()
+      res = httpresponse()
       finish = self.handler.handle(self, req, res)
 
     except Exception, e:
       try: raise
-      except HTTPError, e:
+      except httperror, e:
         error = e.args
       except EOFError:
         raise
       except Exception, e:
         error = (500, e)
-      res = HTTPResponse()
+      res = httpresponse()
       res.status = error[0]
       res.body = '%s %s' % (res.status, res.statusmsg)
       try:
         self.handler.handle_error(self, req, res, error[0], *error[1:])
       except: # error handler had an error!
-        res = HTTPResponse()
+        res = httpresponse()
         res.status = 500
         res.body = '%s %s' % (res.status, res.statusmsg)
         import traceback
@@ -100,7 +100,7 @@ class httphandler(object):
     '''
     reads one request from the client and returns it
     '''
-    req = HTTPRequest()
+    req = httprequest()
 
     def read(bytes=None):
       l = cl = int(req.headers.get('Content-Length','0'))
@@ -123,7 +123,7 @@ class httphandler(object):
     
   def next_line(self):
     if len(self._lines[-1]) > 512*1024:
-      raise HTTPError(414) # don't let malicious users use up all the memory
+      raise httperror(414) # don't let malicious users use up all the memory
     
     while len(self._lines) < 2:
       data = self._lines.pop() + self.conn.read()
@@ -135,7 +135,7 @@ class httphandler(object):
     if not line: return
     try:
       method, uri, http = line.split(' ')
-    except ValueError: raise HTTPError(400)
+    except ValueError: raise httperror(400)
     request.method = method
     request.uri = uri
     if   http == 'HTTP/1.0':
@@ -143,7 +143,7 @@ class httphandler(object):
     elif http == 'HTTP/1.1':
       request.http = 1.1
     else:
-      raise HTTPError(505)
+      raise httperror(505)
     
     self.readline = self.readheader
 
@@ -288,5 +288,5 @@ class httphandler(object):
       req.host = None
 
     if req.http == 1.1 and not host:
-      raise HTTPError(400)
+      raise httperror(400)
 

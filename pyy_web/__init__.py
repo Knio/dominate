@@ -34,8 +34,8 @@ also call `render()` directly which takes an optional `is_header` boolean.
 
 HTTP Messages
 -------------
-`pyy_web.httpmessage` contains the classes for the `HTTPRequest` and
-`HTTPResponse` objects. These two classes hold information on the HTTP requests
+`pyy_web.httpmessage` contains the classes for the `httprequest` and
+`httpresponse` objects. These two classes hold information on the HTTP requests
 and the HTTP responses, respectively, that the other modules pass between
 themselves.
 
@@ -69,7 +69,7 @@ iterated over and the first match is taken and returned.
       (r'^/photos/', pages.photos),
       (r'^/videos/', pages.videos),
     ]
-If a match is not found, an `HTTPError` is raised with a 404 code.
+If a match is not found, an `httperror` is raised with a 404 code.
 
 You can also use named match groups in your regular expressions to help parse
 the URL which will be copied into the request's `GET` mapping.

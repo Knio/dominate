@@ -25,7 +25,7 @@ import http
 import time
 import warnings
 from urllib import unquote_plus
-from pyy_web.httpmessage import HTTPError
+from pyy_web import httperror
 
 
 class fileserver(object):
@@ -34,7 +34,7 @@ class fileserver(object):
 
   def handle(self, conn, req, res, path, *args):
     if not req.method in ['GET', 'HEAD']:
-      raise HTTPError(405)
+      raise httperror(405)
     
     if path.startswith('/'):
       path = path[1:]
@@ -45,11 +45,11 @@ class fileserver(object):
   
     # don't let them go outside root
     if not path.startswith(root):
-      raise HTTPError(403)
+      raise httperror(403)
     
     # does it exist?
     if not os.path.exists(path):
-      raise HTTPError(404)
+      raise httperror(404)
 
     # dir listing
     if os.path.isdir(path):
@@ -59,7 +59,7 @@ class fileserver(object):
 
     if not os.path.isfile(path):
       # then what is it?
-      raise HTTPError(406)
+      raise httperror(406)
 
     # ok, its a file
     return self.serve_file(conn, req, res, path, *args)
@@ -81,10 +81,10 @@ class fileserver(object):
           return
       
       elif k == 'Expect':
-        raise HTTPError(417)
+        raise httperror(417)
 
-      elif k == 'If-Range': raise HTTPError(501)
-      elif k == 'Range':    raise HTTPError(501)
+      elif k == 'If-Range': raise httperror(501)
+      elif k == 'Range':    raise httperror(501)
 
 
       #else:
@@ -106,7 +106,7 @@ class fileserver(object):
       return self.write_file(conn, req, res, path, *args)
     
     else:
-      raise HTTPError(405)
+      raise httperror(405)
 
 
   def write_file(self, conn, req, res, path, *args):

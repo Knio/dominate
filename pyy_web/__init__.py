@@ -34,8 +34,8 @@ also call `render()` directly which takes an optional `is_header` boolean.
 
 HTTP Messages
 -------------
-`pyy_web.httpmessage` contains the classes for the `httprequest` and
-`httpresponse` objects. These two classes hold information on the HTTP requests
+`pyy_web.httpmessage` contains the classes for the `HTTPRequest` and
+`HTTPResponse` objects. These two classes hold information on the HTTP requests
 and the HTTP responses, respectively, that the other modules pass between
 themselves.
 

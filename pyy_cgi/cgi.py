@@ -28,7 +28,7 @@ import imp
 
 
 def get_request():
-  req = httprequest()
+  req = HTTPRequest()
   req.read = sys.stdin.read
 
   env = os.environ
@@ -98,7 +98,7 @@ if __name__ == '__main__':
   try:
     m = imp.load_module(mname, f, fname, ('.py', 'U', 1))
     req = get_request()
-    res = httpresponse()
+    res = HTTPResponse()
     
     h = getattr(m, req.method.lower(), getattr(m, 'handle', None))
     

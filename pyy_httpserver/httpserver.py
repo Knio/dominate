@@ -22,7 +22,7 @@ import types
 import http
 import server
 
-from http import HTTPError
+from pyy_web.httpmessage import HTTPError
 
 class httpserver(object):
   rewrite = []

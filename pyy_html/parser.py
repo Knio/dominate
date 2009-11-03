@@ -271,8 +271,7 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
     else:
       raise ValueError('Unknown doctype "%s".' % doctype_text)
   
-  page = document()
+  page = document(doctype=spec)
   page.html = parse(data, start=start, debug=debug, allow_invalid=allow_invalid, allow_invalid_attributes=allow_invalid_attributes, allow_invalid_markup=allow_invalid_markup)
-  page.setdoctype(spec)
   
   return page

@@ -19,7 +19,7 @@ Public License along with pyy. If not, see
 import unittest
 import os
 import test
-from pyy_httpserver.http import HTTPError
+from pyy_web.httpmessage import HTTPError
 from pyy_web.resolve     import RegexResolver, FileHeirarchyResolver
 
 path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test')

@@ -22,7 +22,7 @@ import os
 import string
 import sys
 
-from pyy_httpserver.http import HTTPError
+from pyy_web.httpmessage import HTTPError
 
 
 def RegexResolver(mapping, request):

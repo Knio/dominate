@@ -20,7 +20,7 @@ import os
 import sys
 import imp
 from urllib import unquote_plus
-from http import HTTPError
+from pyy_web.httpmessage import HTTPError
 
 
 class pyyscript(object):

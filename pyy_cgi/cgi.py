@@ -82,13 +82,13 @@ def write_response(res):
 
 
 
-if __name__ == '__main__':
+if True: # TODO make sure this is a CGI environ?
   import os
   import sys
   import imp
   from pyy_web import *
   
-  fname = sys.argv[1]
+  fname = sys.argv[0]
   mname = os.path.basename(fname).split('.')[0]
   dname = os.path.dirname(fname)
   sys.path.append(dname)
@@ -104,7 +104,7 @@ if __name__ == '__main__':
     
     if not h:
       # TODO fix this!
-      raise HTTPError(405) # method not allowed
+      raise httperror(405) # method not allowed
     
     result = h(None, req, res)
     

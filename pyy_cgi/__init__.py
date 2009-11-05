@@ -7,7 +7,17 @@ dynamic application being used to serve content.
 
 Usage
 =====
-`pyy_cgi` usage.
+If you are working within a CGI environment then using `pyy_cgi` will allow
+your application to fail somewhat gracefully and will provide you with an easy
+means to access the request and response parameters.
+
+Simply add `import pyy_cgi` as the first line in your file to activate the
+module. You can then access the request via the `req` variable which is an
+`pyy_web.httpmessage.httprequest` instance. Your response should be put in the
+`res` variable which is an instance of `pyy_web.httpmessage.httpresponse`.
+
+Should your file have a syntax error or produce a run-time error `pyy_cgi` will
+catch and display it rather than producing an HTTP 500 error.
 
 
 Developed By

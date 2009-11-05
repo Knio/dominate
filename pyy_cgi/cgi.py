@@ -100,14 +100,19 @@ if True: # TODO make sure this is a CGI environ?
     req = get_request()
     res = httpresponse()
     
-    h = getattr(m, req.method.lower(), getattr(m, 'handle', None))
-    
-    if not h:
-      # TODO fix this!
-      raise httperror(405) # method not allowed
-    
-    result = h(None, req, res)
-    
+    result = None
+    try:
+      h = getattr(m, req.method.lower(), getattr(m, 'handle', None))
+      if not h:
+        raise httperror(405) # method not allowed
+      result = h(None, req, res)
+      
+    except httperror, e:
+      res = httpresponse()
+      res.status = e.args[0]
+      res.body = '%d %s' % (res.statusnum, res.statusmsg)
+      # TODO let the page do custom error handling
+
     make_response(res)
     write_response(res)
     if result:

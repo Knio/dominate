@@ -71,15 +71,11 @@ class document(object):
     '''
     Creates a <title> tag if not present and renders the DOCTYPE and tag tree.
     '''
-    try:
-      self.validate()
-    except ValueError:
-      pass
-    
     r = ""
     
-    #Add the doctype if one was set
+    #Validates the tag tree and adds the doctype if one was set
     if self.doctype:
+      self.validate()
       r += self.doctype.render() + '\n'
     
     r += self.html.render()

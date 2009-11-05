@@ -28,17 +28,12 @@ except ImportError:
 from setuptools import setup, find_packages
 
 
-
-version = '1.0.0'
-
+#Try to get a more accurate description of the version (mostly used for development)
 try:
   version = os.popen('git describe').read().strip()
 except:
-  pass # not a git repository or something
+  version = '1.0.1'
 
-
-print find_packages()
-#sys.exit(0)
 
 setup(
   name    = 'pyy',

@@ -1,7 +1,7 @@
 Change Log
 ==========
 
-Version 1.0.1 *(In Development)*
+Version 1.0.1 *(2009-11-04)*
 --------------------------------
 * Moved `httperror` to `pyy_web` to remove dependancy on `pyy_httpserver`.
 * `document` DOCTYPE is now set via the `doctype` attribute or the `doctype` keyword argument only.

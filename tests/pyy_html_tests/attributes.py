@@ -17,7 +17,9 @@ Public License along with pyy. If not, see
 '''
 
 import unittest
-from pyy_html.html import img
+from pyy_html.html import *
+from pyy_html.util import *
+
 
 class AttributeTests(unittest.TestCase):
   def testAddViaDict(self):
@@ -32,3 +34,9 @@ class AttributeTests(unittest.TestCase):
   def testBooleanAttribute(self):
     i = img(test=True)
     self.assertEqual(str(i), '<img test="test" />')
+
+  def testUtils(self):
+    d = div()
+    d += pipe('echo hi')
+    self.assertEqual(str(d), '<div>\n\thi\n\n</div>')
+

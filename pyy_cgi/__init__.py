@@ -49,3 +49,5 @@ License
     Public License along with pyy.  If not, see
     <http://www.gnu.org/licenses/>.
 '''
+
+import cgi

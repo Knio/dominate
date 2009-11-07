@@ -170,6 +170,9 @@ any time by calling `validate()` explicity.
 
 You may also set a `document`'s DOCTYPE with the keyword argument `doctype`.
     >>> d = document(doctype=dtd.html5)
+However, doing so will cause the entire document to be validated with every
+added tag. For production environments it is best to set the DOCTYPE after the
+entire tag tree has been created so it all is only validated once.
 
 Parsing Documents
 -----------------

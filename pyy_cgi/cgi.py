@@ -82,7 +82,7 @@ def write_response(res):
 
 
 
-if True: # TODO make sure this is a CGI environ?
+if 'REQUEST_METHOD' in os.environ:
   import os
   import sys
   import imp

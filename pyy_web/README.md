@@ -43,13 +43,15 @@ Parsers
 -------
 The `pyy_web.parsers` class contains four functions which aid in parsing common
 formats of the HTTP protocol into a more friendly and usable format.
+
 *   `parse_query(string)` - Parses `a=b&c=d` format into a dictionary. Also
-                            supports arrays.
+    supports arrays.
 *   `parse_semi(string)` - Parses `a=b; c=d' format into a dictionary.
 *   `parse_user_agent(string)` - Parses a user agent string and returns a
-                                 browser object containing vendor and version.
-*   `parse_multipart(content_type, data) - Parses multipart encoded form data
-                                           into a dictionary.
+    browser object containing vendor and version.
+*   `parse_multipart(content_type, data)` - Parses multipart encoded form data
+    into a dictionary.
+
 
 Resolvers
 ---------

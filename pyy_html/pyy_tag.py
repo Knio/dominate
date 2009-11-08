@@ -16,6 +16,9 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
+import numbers
+
+
 class pyy_tag(object):
   TAB = '  '#'\t'
   
@@ -74,6 +77,10 @@ class pyy_tag(object):
     Add new child tags.
     '''
     for obj in args:
+      if isinstance(obj, numbers.Number):
+        #Convert to string so we fall into next if block
+        obj = str(obj)
+      
       if isinstance(obj, basestring):
         if self.document and self.document.doctype:
           self.document.doctype.validate(self, obj)

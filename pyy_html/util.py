@@ -29,6 +29,8 @@ class include(pyy_tag):
   takes a filename
   '''
   def __init__(self, f):
+    pyy_tag.__init__(self)
+    
     fl = file(f, 'rb')
     self.data = fl.read()
     fl.close()
@@ -42,6 +44,8 @@ class pipe(pyy_tag):
   pipes the output of a program
   '''
   def __init__(self, cmd, data='', mode='t'):
+    pyy_tag.__init__(self)
+    
     import os
     fin, fout = os.popen4(cmd, mode)
     fin.write(data)
@@ -121,6 +125,8 @@ class lazy(pyy_tag):
   delays function execution until render
   '''
   def __init__(self, func, *args, **kwargs):
+    pyy_tag.__init__(self)
+    
     self.func = func
     self.args = args
     self.kwargs = kwargs

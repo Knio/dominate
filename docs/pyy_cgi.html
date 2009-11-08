@@ -15,17 +15,24 @@ dynamic application being used to serve content.
 
 Usage
 =====
-If you are working within a CGI environment then using `pyy_cgi` will allow
-your application to fail somewhat gracefully and will provide you with an easy
-means to access the request and response parameters.
+If you are working within a CGI environment using `pyy_cgi` will allow your
+application to fail somewhat gracefully and will provide you with an easy means
+to access the request and response parameters.
 
 Simply add `import pyy_cgi` as the first line in your file to activate the
-module. You can then access the request via the `req` variable which is an
-`pyy_web.httpmessage.httprequest` instance. Your response should be put in the
-`res` variable which is an instance of `pyy_web.httpmessage.httpresponse`.
+module. Then define one or more functions that correspond with HTTP methods to
+be called for a request.
+    def get(handler, request, response):
+        response.body = 'Hello, World!'
+
+Be sure to designate a function for each HTTP method you would like to support
+because an HTTP 405 error will be generated if no appropriate function is
+found. If you do all your processing in the same place as your generation you
+can simply add `post = get` to pass in all the POST requests.
 
 Should your file have a syntax error or produce a run-time error `pyy_cgi` will
-catch and display it rather than producing an HTTP 500 error.
+catch and display it rather than just causing the server to produce an HTTP 500
+error.
 
 
 Developed By
@@ -66,7 +73,12 @@ License
     <div class="module-section" id="module-submodules">
       <h2>Submodules</h2>
       <table>
-        <tbody></tbody>
+        <tbody>
+          <tr>
+            <td><a href="pyy_cgi.cgi.html">cgi</a></td>
+            <td>None</td>
+          </tr>
+        </tbody>
       </table>
     </div>
     <div class="module-section" id="module-classes">

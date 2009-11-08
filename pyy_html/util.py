@@ -51,6 +51,13 @@ class pipe(pyy_tag):
   def render(self, indent=1, inline=False):
     return self.data
 
+def pipe2(cmd, data='', mode='t'):
+  import os
+  fin, fout = os.popen4(cmd, mode)
+  fin.write(data)
+  fin.close()
+  return fout.read()
+
 
 class escape(pyy_tag):
   '''

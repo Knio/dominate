@@ -91,10 +91,12 @@ class connection(object):
         self.writechannel.send(o)
       
       except socket.error, e:
-        if e.args[0] == 10053: # closed the connection
+        if e.args[0] == 10053:  # closed the connection
           self.onclose(e)
           return
-        if e.args[0] == 10035: # would have blocked
+        if e.args[0] == 10035:  # would have blocked
+          return
+        if e.args[0] == 11:     # resource unavailable (??)
           return
         else: raise
     
@@ -115,12 +117,17 @@ class connection(object):
   def write(self, data):
     if not self.status:
       raise EOFError('write on closed connection')
+    assert type(data) == str
     #print 'WRITE: %r' % data[:80]
     self.writebuffer.append(data)
     self.server.set_writable(self)
     # block until it sent
     r = self.writechannel.receive()
-    assert data == r, (data[:80], r[:80])
+    #assert data == r, (len(data), len(r), data[:80], r[:80])
+    assert data.endswith(r) # this is not a very strong check, but
+                            # the one above fails when the loop on 
+                            # line 87 is interrupted and o != data 
+                            # on the next onwritable() call
     return r
   
   def read(self, x=None):
@@ -185,6 +192,7 @@ class server(object):
   def listen(self, addr, handler, *args):
     sock = socket.socket()
     sock.setblocking(0)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(addr)
     sock.listen(5)
     self.listeners.append(listener(

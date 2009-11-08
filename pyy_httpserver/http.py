@@ -202,7 +202,9 @@ class httphandler(object):
         elif k == 'Accept-Language':  pass
         elif k == 'Accept-Charset':   pass
         elif k == 'Accept-Encoding':
+          res.headers.setdefault('Content-Encoding', 'identity')
           if not res.body: continue
+          if not self.server.compress: continue
           tokens = v.lower().split(',')
           len1 = len(res.body)
           if 'deflate' in tokens: # zlib is better, try it first
@@ -222,12 +224,12 @@ class httphandler(object):
             gz = gzip.GzipFile(compresslevel=9, mode='wb', fileobj=ss)
             gz.write(res.body)
             gz.flush()
+            # end retardedness
             res.body = ss.getvalue()
             len2 = len(res.body)
             res.headers['Content-Encoding'] = 'gzip'
 
-          else: # unsupported encoding
-            res.headers.setdefault('Content-Encoding', 'identity')
+          else: # unsupported encoding            
             continue
 
           res.headers['Content-Length'] = len2

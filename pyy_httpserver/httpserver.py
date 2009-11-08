@@ -24,14 +24,17 @@ import server
 
 from pyy_web import httperror
 
-class httpserver(object):
+class httpserver(server.server):
+  compress = True
   rewrite = []
   sites   = []
+  uri     = []
   port    = 8080
   
   def __init__(self):
-   if not self.sites:
-     self.sites = [True, self.uri]
+    server.server.__init__(self)
+    if not self.sites:
+      self.sites = [True, self.uri]
 
 
   def find_handler(self, uri, config, *args):
@@ -102,9 +105,7 @@ class httpserver(object):
     elif status in (301, 302, 303):
       if errors:
         res.headers['Location'] = errors[0]
-
     
-
     handler, uri, args = self.find_handler(req.host, self.sites)
     uri = httperror(status, *errors)
     try:
@@ -131,8 +132,7 @@ class httpserver(object):
 
 
   def run(self, *args):
-    s = server.server()
-    s.listen(('',self.port), http.httphandler, self)
-    s.run(*args)
+    self.listen(('',self.port), http.httphandler, self)
+    server.server.run(self, *args)
 
 

@@ -138,7 +138,9 @@ class fileserver(object):
 
       
   MIME = {
+  'txt':  'text/plain',
   'htm':  'text/html',
   'html': 'text/html',
   'pyc':  'application/octet-stream',
+  'css':  'text/css',
   }

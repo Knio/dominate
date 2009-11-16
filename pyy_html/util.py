@@ -23,39 +23,21 @@ Public License along with pyy.  If not, see
 from pyy_tag import pyy_tag
 
 
-class include(pyy_tag):
+def include(f):
   '''
   includes the contents of a file on disk.
   takes a filename
   '''
-  def __init__(self, f):
-    pyy_tag.__init__(self)
-    
-    fl = file(f, 'rb')
-    self.data = fl.read()
-    fl.close()
-  
-  def render(self, indent=1, inline=False):
-    return self.data
+  fl = file(f, 'rb')
+  data = fl.read()
+  fl.close()
+  return data
 
 
-class pipe(pyy_tag):
+def system(cmd, data='', mode='t'):
   '''
   pipes the output of a program
   '''
-  def __init__(self, cmd, data='', mode='t'):
-    pyy_tag.__init__(self)
-    
-    import os
-    fin, fout = os.popen4(cmd, mode)
-    fin.write(data)
-    fin.close()
-    self.data = fout.read()
-  
-  def render(self, indent=1, inline=False):
-    return self.data
-
-def pipe2(cmd, data='', mode='t'):
   import os
   fin, fout = os.popen4(cmd, mode)
   fin.write(data)
@@ -63,26 +45,19 @@ def pipe2(cmd, data='', mode='t'):
   return fout.read()
 
 
-class escape(pyy_tag):
+def escape(data, quote=True): # stoled from std lib cgi
   '''
-  escapes special characters into their html entities
+  escapes special characters into their html entities    
+  Replace special characters "&", "<" and ">" to HTML-safe sequences.
+  If the optional flag quote is true, the quotation mark character (")
+  is also translated.
   '''
-  @staticmethod
-  def escape(data, quote=False): # stoled from std lib cgi
-    '''
-    Replace special characters "&", "<" and ">" to HTML-safe sequences.
-    If the optional flag quote is true, the quotation mark character (")
-    is also translated.
-    '''
-    data = data.replace("&", "&amp;") # Must be done first!
-    data = data.replace("<", "&lt;")
-    data = data.replace(">", "&gt;")
-    if quote:
-      data = data.replace('"', "&quot;")
-    return data
-  
-  def render(self, indent=1, inline=False):
-    return self.escape(pyy_tag._render_children(self, indent, inline))
+  data = data.replace("&", "&amp;") # Must be done first!
+  data = data.replace("<", "&lt;")
+  data = data.replace(">", "&gt;")
+  if quote:
+    data = data.replace('"', "&quot;")
+  return data
 
 _unescape = {'quot' :34,
              'amp'  :38,
@@ -96,7 +71,7 @@ _unescape = {'quot' :34,
 
 def unescape(data):
   '''
-  unescapes html entities
+  unescapes html entities. the opposite of escape.
   '''
   import re
   cc = re.compile('&(?:(?:#(\d+))|([^;]+));')
@@ -122,7 +97,7 @@ def unescape(data):
 
 class lazy(pyy_tag):
   '''
-  delays function execution until render
+  delays function execution until rendered
   '''
   def __init__(self, func, *args, **kwargs):
     pyy_tag.__init__(self)

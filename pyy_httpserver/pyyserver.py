@@ -24,12 +24,14 @@ from pyy_web import httperror
 
 
 class pyyscript(object):
-  def __init__(self, root, fname):
+  def __init__(self, root, fname, *args, **kwargs):
     self.root   = root
     self.fname = os.path.join(self.root, unquote_plus(fname))
     self.mname = os.path.basename(fname).split('.')[0]
     self.dname = os.path.dirname(fname)
     self.mtime = 0
+    self.args   = args
+    self.kwargs = kwargs
     self.module = None
 
 
@@ -55,16 +57,23 @@ class pyyscript(object):
     sys.path.remove(self.dname)
     return self.module
 
-  def handle(self, handler, req, res, *args):
+  def handle(self, handler, req, res, *args2, **kwargs2):
     m = self.load_module()
-    
+     
     h = getattr(m, req.method.lower(),
         getattr(m, 'handle', None))
     
     if not h:
       raise httperror(405) # method not allowed
     
-    return  h(handler, req, res, *args)
+    cwd = os.getcwd()
+    os.chdir(self.root)
+    args = self.args + args2
+    kwargs = dict(self.kwargs)
+    kwargs.update(kwargs2)
+    r = h(handler, req, res, *args, **kwargs)
+    os.chdir(cwd)
+    return r
 
   def handle_error(self, handler, req, res, status, *args):
     m = self.load_module()

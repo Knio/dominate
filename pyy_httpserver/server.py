@@ -57,6 +57,8 @@ class connection(object):
         return
       if e.args[0] == 10035: # would have blocked
         return
+      if e.args[0] == 11:     # resource temp unavailable      
+        return
       else: raise
 
     if data == '':
@@ -96,7 +98,7 @@ class connection(object):
           return
         if e.args[0] == 10035:  # would have blocked
           return
-        if e.args[0] == 11:     # resource unavailable (??)
+        if e.args[0] == 11:     # resource temp unavailable
           return
         else: raise
     
@@ -163,6 +165,8 @@ class listener(connection):
       sock, addr = self.sock.accept()
     except socket.error, e:
       if e.args[0] == 10035: # would have blocked
+        return
+      if e.args[0] == 11:     # resource temp unavailable
         return
       else: raise
     

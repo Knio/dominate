@@ -191,7 +191,7 @@ class pyy_tag(object):
     rendered = '<' + name
     
     for attribute, value in self.attributes.items():
-      rendered += ' %s="%s"' % (attribute, escape.escape(str(value), True))
+      rendered += ' %s="%s"' % (attribute, escape(str(value), True))
     
     if self.is_single:
       rendered += ' />'

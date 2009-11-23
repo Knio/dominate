@@ -16,11 +16,11 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-import fileserver
-import threadio
+from pyy_httpserver import fileserver
+from pyy_httpserver import threadio
 import os
 
-class gvimfileserver(fileserver.fileserver):
+class gvimfileserver(fileserver):
   def write_file(self, conn, req, res, path, *args):
                
     cmd = r'Z:\Programs\GVimPortable\GVimPortable.exe'\
@@ -34,6 +34,6 @@ class gvimfileserver(fileserver.fileserver):
     res.headers['Content-Length'] = fsize = os.path.getsize(path)
     res.headers['Content-Type'] = 'text/html' # xhtml?
     
-    return fileserver.fileserver.write_file(self, conn, req, res, path, *args)
+    return fileserver.write_file(self, conn, req, res, path, *args)
 
 

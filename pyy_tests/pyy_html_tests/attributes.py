@@ -37,6 +37,6 @@ class AttributeTests(unittest.TestCase):
 
   def testUtils(self):
     d = div()
-    d += pipe('echo hi')
-    self.assertEqual(str(d), '<div>\n\thi\n\n</div>')
+    d += system('echo hi')
+    self.assertEqual(str(d), '<div>hi\n</div>')
 

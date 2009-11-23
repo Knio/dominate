@@ -54,8 +54,8 @@ if tests & VALID['pyy_web']:        suites += defaultTestLoader.loadTestsFromMod
 
 #Run tests on each module in the array
 
-def test()
-  return TextTestRunner(verbosity=2).run(TestSuite(suites))
+def test(verbosity=2):
+  return TextTestRunner(verbosity=verbosity).run(TestSuite(suites))
 
 if __name__ == '__main__':
 	test()

@@ -19,6 +19,8 @@ Public License along with pyy. If not, see
 import unittest
 from pyy_html.document import document
 from pyy_html.html     import body, h1, p, comment
+from pyy_html.util     import *
+
 
 class RenderingTests(unittest.TestCase):
   def testInline(self):
@@ -51,3 +53,9 @@ class RenderingTests(unittest.TestCase):
     rd2 = d2.render()
     self.assertEqual(rd1, rd2)
 
+  def testEscape(self):
+    self.assertEqual(str(p('Hi & There')), '<p>Hi & There</p>')
+    self.assertEqual(str(p(escape('Hi & There'))), '<p>Hi &amp; There</p>')
+    self.assertEqual(str(p(unescape('Hi &amp; There'))), '<p>Hi & There</p>')
+    
+    

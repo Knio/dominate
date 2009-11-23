@@ -53,4 +53,10 @@ if tests & VALID['pyy_httpserver']: suites += defaultTestLoader.loadTestsFromMod
 if tests & VALID['pyy_web']:        suites += defaultTestLoader.loadTestsFromModule(pyy_web_tests)
 
 #Run tests on each module in the array
-TextTestRunner(verbosity=2).run(TestSuite(suites))
+
+def test()
+  return TextTestRunner(verbosity=2).run(TestSuite(suites))
+
+if __name__ == '__main__':
+	test()
+	

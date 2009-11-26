@@ -104,6 +104,11 @@ class ParsingTests(unittest.TestCase):
     s = '<div><!--hi there <div> <--></div>'
     self.assertEquals(parse(s).render(), h.render())
 
+  def testComment3(self):
+    h = document('Title', doctype=dtd.html5)
+    h += comment('hi there <div> <')
+    s = '<!DOCTYPE html>\n<html>\n\t<head>\n\t\t<title>Title</title>\n\t</head>\n\t<body>\n\t\t<!--hi there <div> <-->\n\t</body>\n</html>'
+    self.assertEquals(pageparse(s).render(), h.render())
 
     
 

@@ -94,4 +94,16 @@ class ParsingTests(unittest.TestCase):
     s = '<div><!--hi there--></div>'
     self.assertEquals(parse(s).render(), h.render())
     
+  def testComment2(self):
+    h = div(comment('hi there <div> </div>'))
+    s = '<div><!--hi there <div> </div>--></div>'
+    self.assertEquals(parse(s).render(), h.render())
+
+  def testComment3(self):
+    h = div(comment('hi there <div> <'))
+    s = '<div><!--hi there <div> <--></div>'
+    self.assertEquals(parse(s).render(), h.render())
+
+
+    
 

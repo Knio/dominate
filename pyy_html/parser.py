@@ -164,7 +164,7 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
         if debug: print "  PUSHED: %s (%s)" % (name, ','.join(type(x).__name__ for x in stack[:-1]))
         
         #If we are in a <!--regular--> comment indicate such so tag parsing ceases
-        if type(new) == html.comment and comment.ATTRIBUTE_CONDITION not in new:
+        if type(new) == html.comment and html.comment.ATTRIBUTE_CONDITION not in new:
           in_normal_comment = True
     
     #Move to after current tag

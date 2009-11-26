@@ -65,6 +65,7 @@ _unescape = {'quot' :34,
              'gt'   :62,
              'nbsp' :32,
              # more here
+             # http://www.w3.org/TR/html4/sgml/entities.html
              'yuml' :255
              }
 

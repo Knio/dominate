@@ -89,3 +89,9 @@ class ParsingTests(unittest.TestCase):
     s = '<div>paragraph<p>new paragraph<P>new paragraph</div>'
     self.assertEquals(parse(s, allow_invalid_markup=True).render(), h.render())
 
+  def testComment(self):
+    h = div(comment('hi there'))
+    s = '<div><!--hi there--></div>'
+    self.assertEquals(parse(s).render(), h.render())
+    
+

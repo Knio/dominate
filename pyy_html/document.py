@@ -46,7 +46,7 @@ class document(object):
   
   def _get_title(self):
     if title not in self.head:
-      self.head += title("PYY Page")
+      self.head += title('PYY Page')
     return self.head.get(title)[0].children[0]
   
   def _set_title(self, value):
@@ -71,7 +71,7 @@ class document(object):
     '''
     Creates a <title> tag if not present and renders the DOCTYPE and tag tree.
     '''
-    r = ""
+    r = ''
     
     #Validates the tag tree and adds the doctype if one was set
     if self.doctype:

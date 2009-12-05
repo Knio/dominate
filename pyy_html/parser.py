@@ -259,7 +259,7 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
         elif strength == 'Transitional':
           raise ValueError('No class set for XHTML 1.0 Transitional.')
         else:
-          raise ValueError('Unknown XHTML 1.0 strength "%s".' % strength)
+          raise ValueError('Invalid XHTML 1.0 strength "%s".' % strength)
       elif version == '1.1':
         spec = dtd.xhtml11
       else:
@@ -276,7 +276,7 @@ def pageparse(data, start=0, allow_invalid=False, allow_invalid_attributes=False
         elif strength == 'Transitional':
           raise ValueError('No class set for HTML 4.01 Transitional')
         else:
-          raise ValueError('Unknown HTML 4.01 strength "%s".' % strength)
+          raise ValueError('Invalid HTML 4.01 strength "%s".' % strength)
       elif version == '3' or version == '2':
         raise ValueError('No class set for HTML version %s.' % version)
       else:

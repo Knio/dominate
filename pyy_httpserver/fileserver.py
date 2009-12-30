@@ -74,8 +74,7 @@ class fileserver(object):
       if k == 'If-Modified-Since':
         try:
           t = http.httptime(v).timetuple()
-        except:
-          continue
+        except:  continue
         if time.gmtime(mtime) <= t: # I hate time libraries so much
           res.status = 304 # not modified
           return
@@ -143,4 +142,6 @@ class fileserver(object):
   'html': 'text/html',
   'pyc':  'application/octet-stream',
   'css':  'text/css',
+  'jpg':  'image/jpeg',
+  'png':  'image/png',
   }

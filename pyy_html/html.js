@@ -16,9 +16,16 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 */
 
+//function $(){}
+
 (function()
 {
-  var tags = ['div', 'img', 'a', 'span']
+  var tags = [
+    'div', 'img', 'a', 'span', 'canvas', 
+    'h1', 'h2', 'h3', 'h4', 'h5', 
+    'table', 'tr', 'td', 'th',
+    'input','form'
+    ];
   for (var i=0; i < tags.length; i++)
   {
     (function(){
@@ -44,7 +51,7 @@ Public License along with pyy.  If not, see
               else if (key == 'style') // style: {background:'#000'}
                 for (style in value)
                   YAHOO.util.Dom.setStyle(dom, style[style], value[style]);
-              else if (k.slice(0, 2) == 'on') // an event handler
+              else if (key.slice(0, 2) == 'on') // an event handler
                 dom.addEventListener(key.slice(2), value, false)
               else // otherwise a regular attribute
                 dom.setAttribute(key, value);

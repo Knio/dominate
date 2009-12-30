@@ -82,12 +82,11 @@ class httphandler(object):
         import traceback
         traceback.print_exc()
 
-    self.make_response(req, res)
+    self.make_response(req, res, finish)
     self.write_response(res)
 
     if finish:
-      try:
-        finish()
+      try:   finish()
       except:
         # we already sent out the response+headers,
         # nothing to tell the client at this point
@@ -169,18 +168,15 @@ class httphandler(object):
     self.conn.readbuffer[0:0] = self._lines
     del self._lines
   
-  def make_response(self, req, res):
+  def make_response(self, req, res, finish):
     '''
     create a response object based on the request
     '''
     if not res.http:
-      try:
-        res.http = req.http
-      except:
-        res.http = 1.1
+      try:     res.http = req.http
+      except:  res.http = 1.1
 
-    if not res.status:
-      res.status = 200
+    if not res.status:  res.status = 200
     res.headers.setdefault('Server', 'pyy-httpserver-test')
     res.headers.setdefault('Content-Type', 'text/plain; charset=ISO-8859-4')
     res.headers.setdefault('Date', httptime())
@@ -203,8 +199,9 @@ class httphandler(object):
         elif k == 'Accept-Charset':   pass
         elif k == 'Accept-Encoding':
           res.headers.setdefault('Content-Encoding', 'identity')
-          if not res.body: continue
+          if not res.body:             continue
           if not self.server.compress: continue
+          if finish:                   continue
           tokens = v.lower().split(',')
           len1 = len(res.body)
           if 'deflate' in tokens: # zlib is better, try it first
@@ -247,11 +244,12 @@ class httphandler(object):
         else:
           warnings.warn('Unhandled request header: %s: %s' % (k,v))
     
-    if res.body is None:
-      res.body = ''
-
-    res.headers.setdefault('Content-Length', len(res.body))
-   
+    if res.body is None:  res.body = ''
+    
+    # TODO sanity check C-L header
+    if not finish:
+      res.headers['Content-Length'] = len(res.body)
+    
     return res
     
   def write_response(self, res):

@@ -20,11 +20,18 @@ Public License along with pyy.  If not, see
 
 (function()
 {
+  function node(obj)
+  {   
+    try { return (obj instanceof Node); }
+    catch (e) { return obj.nodeType; }
+  }  
+  
   var tags = [
-    'div', 'img', 'a', 'span', 'canvas', 
+    'div', 'span', 'p', 'img', 'a', 
     'h1', 'h2', 'h3', 'h4', 'h5', 
     'table', 'tr', 'td', 'th',
-    'input','form'
+    'input','form','textarea',
+    'canvas','audio','video'
     ];
   for (var i=0; i < tags.length; i++)
   {
@@ -37,7 +44,7 @@ Public License along with pyy.  If not, see
         for (var j=0; j < arguments.length; j++)
         {
           var argument = arguments[j];
-          if (argument instanceof Node) // TODO IE has no Node object
+          if (node(argument))
               dom.appendChild(argument)
           else if (typeof argument == 'string')                
               dom.appendChild(document.createTextNode(argument))
@@ -47,7 +54,7 @@ Public License along with pyy.  If not, see
             {
               var value = argument[key];
               if (key == 'class')
-                YAHOO.util.Dom.addClass(dom,value);
+                dom.className = value; // TODO multiple classes
               else if (key == 'style') // style: {background:'#000'}
                 for (style in value)
                   YAHOO.util.Dom.setStyle(dom, style[style], value[style]);

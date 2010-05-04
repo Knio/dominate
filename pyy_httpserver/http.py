@@ -188,7 +188,7 @@ class httphandler(object):
     if res.body is not None:
       res.body = str(res.body)
 
-    
+    s = []
     if req:
       for k, v in req.headers.iteritems():
         if   k == 'User-Agent': pass
@@ -201,6 +201,7 @@ class httphandler(object):
           res.headers.setdefault('Content-Encoding', 'identity')
           if not res.body:             continue
           if not self.server.compress: continue
+          if not res.compress:         continue
           if finish:                   continue
           tokens = v.lower().split(',')
           len1 = len(res.body)
@@ -230,7 +231,7 @@ class httphandler(object):
             continue
 
           res.headers['Content-Length'] = len2
-          print 'compressed response to %d/%s (%2.0f%%) %s' % (len2, len1, 100.*len2/len1, tokens)
+          s.append('%d/%s (%2.0f%%)' % (len2, len1, 100.*len2/len1))
 
         elif k == 'Connection':
           if v == 'keep-alive':
@@ -249,6 +250,8 @@ class httphandler(object):
     # TODO sanity check C-L header
     if not finish:
       res.headers['Content-Length'] = len(res.body)
+    
+    print '%d %s %s' % (res.statusnum, req.uri, ' '.join(s))
     
     return res
     

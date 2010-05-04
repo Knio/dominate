@@ -16,7 +16,7 @@ class page(document):
 
     for i in self.script:
       if self.inline:  self.head += script(include(i), type="text/javascript")
-      else:            self.head += script(href=i,     type="text/javascript")
+      else:            self.head += script(src=i,      type="text/javascript")
 
 
   @classmethod

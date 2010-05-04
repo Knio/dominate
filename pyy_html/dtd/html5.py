@@ -50,10 +50,11 @@ class html5(dtd):
             REQUIRED: set(['href'])},
     
     meta : {VALID   : GLOBAL | set(['name', 'http-equiv', 'content', 'charset']),
-            CUSTOM  : lambda self: ('name' in self.attributes ^ 'http-equiv' in self.attributes ^ \
-                                   'content' in self.attributes ^ 'charset' in self.attributes) and \
-                                   #"If either name, http-equiv, or itemprop is specified, then the content attribute must also be specified. Otherwise, it must be omitted."
-                                   (('name' in self.attributes or 'http-equiv' in self.attributes or 'itemprop' in self.attributes) ^ 'content' not in self.attributes)},
+           # CUSTOM  : lambda self: ('name' in self.attributes ^ 'http-equiv' in self.attributes ^ \
+           #                        'content' in self.attributes ^ 'charset' in self.attributes) and \
+           #                        #"If either name, http-equiv, or itemprop is specified, then the content attribute must also be specified. Otherwise, it must be omitted."
+           #                        (('name' in self.attributes or 'http-equiv' in self.attributes or 'itemprop' in self.attributes) ^ 'content' not in self.attributes)
+           },
     style: {VALID   : GLOBAL | set(['media', 'type', 'scoped']),
             CHILDREN: set([str])},
     

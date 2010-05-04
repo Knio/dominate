@@ -49,13 +49,14 @@ class connection(object):
     try:
       data = self.sock.recv(256*1024)
     except socket.error, e:
-      if e.args[0] == 10053 or \
-        e.args[0] == 10054 or \
-        e.args[0] == 9:
+      if  e.args[0] == 10053  or \
+          e.args[0] == 10054  or \
+          e.args[0] == 9      or \
+          e.args[0] == 105:         # Connection reset by peer
         #print 'Client %s closed the connection' % (self.addr,)
         self.onclose(e)
         return
-      if e.args[0] == 10035: # would have blocked
+      if e.args[0] == 10035:  # would have blocked
         return
       if e.args[0] == 11:     # resource temp unavailable      
         return
@@ -223,6 +224,12 @@ class server(object):
       self.selectch.send(([],[],[]))
   
   def select(self, timeout):
+    if timeout==0:
+      r = select.select(
+        self.readable, self.writable, [], timeout)
+
+      return r
+    
     def thread():
       r = select.select(
         self.readable, self.writable, [], timeout)
@@ -252,6 +259,7 @@ class server(object):
         while 1:
           self.tick(timeout)
           stackless.schedule()
+          time.sleep(0.05)
       finally:
         self.quit(timeout)
     

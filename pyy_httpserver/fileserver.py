@@ -24,18 +24,69 @@ import threadio
 import http
 import time
 import warnings
-from urllib import unquote_plus
-from pyy_web import httperror
+from datetime import datetime
+from urllib   import unquote_plus
+from pyy_web  import httperror
 
 
-class fileserver(object):
-  def __init__(self, root='.'):
-    self.root = root
+class staticserver(object):
+  def __init__(self, handler):
+    self.handler  = handler
 
-  def handle(self, conn, req, res, path, *args):
+  def handle(self, conn, req, res, *args):
     if not req.method in ['GET', 'HEAD']:
       raise httperror(405)
     
+    for k,v in req.headers.iteritems():
+      if k == 'If-Modified-Since':
+        try:     t = http.httptime(v)
+        except:  continue # malformed header value
+        if self.handler.get_mtime(*args) <= t: # I hate time libraries so much
+          res.status = 304 # not modified
+          return
+      
+      elif k == 'Expect':   raise httperror(417)
+      elif k == 'If-Range': raise httperror(501)
+      elif k == 'Range':    raise httperror(501)
+    
+      elif k == 'Referrer': pass
+
+      else:
+        warnings.warn('unhandled request header: %s: %s' % (k,v))
+
+    return self.handler.handle(conn, req, res, *args)
+
+
+# from stacklessfileIOCP import stacklessfile
+ 
+class fileserver(object):
+  MIME = {
+  'txt':  'text/plain',
+  'htm':  'text/html',
+  'html': 'text/html',
+  'pyc':  'application/octet-stream',
+  'css':  'text/css',
+  'jpg':  'image/jpeg',
+  'jpeg': 'image/jpeg',
+  'png':  'image/png',
+  }
+  
+  COMPRESS = {
+  'png':  False,
+  'jpg':  False,
+  'jpeg': False,
+  'gif':  False,
+  'zip':  False,
+  'rar':  False,
+  'mp3':  False,
+  'avi':  False,
+  }
+  
+  def __init__(self, root='.', dir_listing=True):
+    self.root = root
+    self.dir_listing = dir_listing
+  
+  def check_path(self, path):
     if path.startswith('/'):
       path = path[1:]
 
@@ -50,83 +101,60 @@ class fileserver(object):
     # does it exist?
     if not os.path.exists(path):
       raise httperror(404)
-
-    # dir listing
-    if os.path.isdir(path):
-      res.headers['Content-Type'] = 'text/html'
-      res.body = self.dir_listing(path)
-      return
-
-    if not os.path.isfile(path):
-      # then what is it?
+      
+    valid = False
+    if os.path.isfile(path): valid = True
+    if os.path.isdir(path) and self.dir_listing: valid = True
+    
+    if not valid:
       raise httperror(406)
+      
+    return path
 
-    # ok, its a file
-    return self.serve_file(conn, req, res, path, *args)
-
-
-  def serve_file(self, conn, req, res, path, *args):
+  def get_mtime(self, *args):
+    path = self.check_path(*args)
+    return datetime.fromtimestamp(os.path.getmtime(path))
+  
+  def handle(self, conn, req, res, path):
+    path = self.check_path(path)
     
-    mtime = os.path.getmtime(path)
+    if os.path.isfile(path):
+      fsize = os.path.getsize(path)
+      mtime = os.path.getmtime(path)
+      try:    ext = os.path.basename(path).split('.')[-1]
+      except: ext = ''
+      res.compress  = self.COMPRESS.get(ext, True)
+      res.headers['Content-Type']   = self.MIME.get(ext, 'text/plain')
+      res.headers['Content-Length'] = fsize
+      res.headers['Last-Modified']  = http.httptime(time.gmtime(mtime))
+      
+      if req.method == 'GET':
+        return self.write_file(conn, req, res, path)
+      
+    if os.path.isdir(path):
+      # what if HEAD?
+      res.headers['Content-Type'] = 'text/html'
+      res.body = self.write_dir_listing(path)
+      
+  
+  def write_file(self, conn, req, res, path):
     fsize = os.path.getsize(path)
     
-    for k,v in req.headers.iteritems():
-      if k == 'If-Modified-Since':
-        try:
-          t = http.httptime(v).timetuple()
-        except:  continue
-        if time.gmtime(mtime) <= t: # I hate time libraries so much
-          res.status = 304 # not modified
-          return
-      
-      elif k == 'Expect':
-        raise httperror(417)
-
-      elif k == 'If-Range': raise httperror(501)
-      elif k == 'Range':    raise httperror(501)
-
-
-      #else:
-      #  warnings.warn('unhandled request header: %s: %s' % (k,v))
-
-    
-    try:
-      ext = os.path.basename(path).split('.')[-1]
-    except:
-      ext = ''
-    res.headers['Content-Type']   = self.MIME.get(ext, 'text/plain')
-    res.headers['Content-Length'] = fsize
-    res.headers['Last-Modified']  = http.httptime(time.gmtime(mtime))
-      
-    if req.method == 'HEAD':
-      return
-    
-    elif req.method == 'GET':
-      return self.write_file(conn, req, res, path, *args)
-    
-    else:
-      raise httperror(405)
-
-
-  def write_file(self, conn, req, res, path, *args):
-    fsize = os.path.getsize(path)
     f = file(path, 'rb')
-    ft = threadio.threadio(f) # this causes blocking in select()
-
+    ft = threadio.threadio(f) # this causes blocking in select() ???
+    
+    # ft = stacklessfile(path, 'rb') # use this instead, when it doesn't crash
+    
     def write():
       while 1:
         data = ft.read(256*1024)
         if not data: break
         conn.conn.write(data)
       f.close()
-
-    if fsize < 256*1024:
-      res.body = ft.read()
-      ft.close()
-      return
+      
     return write
 
-  def dir_listing(self, path):
+  def write_dir_listing(self, path):
     f = os.listdir(path)
     f = (os.path.isdir(os.path.join(path,i)) and i+'/' or i for i in f)
     
@@ -134,14 +162,4 @@ class fileserver(object):
     r.extend('<a href="%s">%s</a><br />' % (i,i) for i in f)
     r.extend(['</html>','</body>'])
     return '\r\n'.join(r)
-
-      
-  MIME = {
-  'txt':  'text/plain',
-  'htm':  'text/html',
-  'html': 'text/html',
-  'pyc':  'application/octet-stream',
-  'css':  'text/css',
-  'jpg':  'image/jpeg',
-  'png':  'image/png',
-  }
+    

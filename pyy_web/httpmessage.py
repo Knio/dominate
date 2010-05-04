@@ -74,6 +74,7 @@ class httpresponse(httpmessage):
     httpmessage.__init__(self)
     self.statusnum = None
     self.statusmsg = None
+    self.compress  = True
     self.cookies   = {}
 
   def set_cookie(self, cookie):

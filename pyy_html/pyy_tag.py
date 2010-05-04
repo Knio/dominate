@@ -20,7 +20,7 @@ import numbers
 
 
 class pyy_tag(object):
-  TAB = '  '#'\t'
+  TAB = '  '
   
   is_single = False #Tag does not require matching end tag (ex. <hr/>)
   is_pretty = True  #Text inside the tag should be left as-is (ex. <pre>)
@@ -98,12 +98,12 @@ class pyy_tag(object):
           self.add(subobj)
       
       else: # wtf is it?
-        raise ValueError('%r not a tag or string' % obj)
+        raise ValueError('%r not a tag or string.' % obj)
         
     
     if len(args) > 1:
       return args
-    elif len(args) == 1:
+    if len(args) == 1:
       return args[0]
     
   def get(self, tag=None, **kwargs):
@@ -117,10 +117,10 @@ class pyy_tag(object):
     for child in self.children:
       if (isinstance(tag, basestring) and type(child).__name__ == tag) or (not isinstance(tag, basestring) and isinstance(child, tag)):
         if all(pyy_tag.clean_attribute(attribute) in child.attributes and child.attributes[pyy_tag.clean_attribute(attribute)] == value for attribute, value in kwargs.iteritems()):
-          #If the child is of correct type and has all attribute and values in kwargs add as a result
+          #If the child is of correct type and has all attributes and values in kwargs add as a result
           results.append(child)
       if isinstance(child, pyy_tag):
-        #If the child is an pyy_tag extend the search down its children
+        #If the child is a pyy_tag extend the search down through its children
         results.extend(child.get(tag, **kwargs))
     return results
   

@@ -211,8 +211,7 @@ class comment(html_tag):
     
     rendered += self._render_children(indent - 1, inline)
     
-    #TODO: This might be able to be changed to if len(self.children) > 1 since adjacent strings should always be joined
-    if any(isinstance(child, pyy_tag) for child in self):
+    if len(self.children) > 1:
       rendered += '\n'
       rendered += html_tag.TAB * (indent - 1)
     

@@ -23,7 +23,7 @@ class cookie(object):
                domain=None, secure=False, httponly=False):
     
     if duration and expires:
-        raise ValueError('cookie cannot have both expiry date and duration')
+        raise ValueError('Cookie cannot have both expiry date and duration.')
     
     self.name     = name.lower()
     self.value    = value
@@ -43,14 +43,14 @@ class cookie(object):
            isinstance(self.expires, int):
         timestamp = datetime.datetime.utcfromtimestamp(self.expires)
       else:
-        raise TypeError('Invalid expiry time. Implement me!')
+        raise TypeError('Invalid expiry time.')
     if self.duration:
       timestamp = datetime.datetime.utcnow()
       if isinstance(self.duration, float) or \
           isinstance(self.duration, int):
          timestamp += datetime.timedelta(seconds=self.duration)
       else:
-        raise TypeError('Invalid duration. Implement me!')
+        raise TypeError('Invalid duration.')
      
     cookie = []
     cookie.append('%s=%s;' % (self.name, self.value))

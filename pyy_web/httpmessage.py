@@ -22,9 +22,9 @@ class httperror(Exception): pass
 
 class httpmessage(object):
   def __init__(self):
-    self.http   = 0
-    self.headers= {}
-    self.body   = None
+    self.http    = 0
+    self.headers = {}
+    self.body    = None
 
 class httprequest(httpmessage):
   def __init__(self):
@@ -37,12 +37,12 @@ class httprequest(httpmessage):
     raise NotImplementedError
 
   def _get(self):
-    try:    get = self.uri.split('?',1)[1]
+    try:    get = self.uri.split('?', 1)[1]
     except: get = ''
     return parsers.parse_query(get)
 
   def _cookie(self):
-    return parsers.parse_semi(self.headers.get('Cookie',''))
+    return parsers.parse_semi(self.headers.get('Cookie', ''))
 
   def _post(self):
     ct = self.headers.get('Content-Type','')
@@ -56,16 +56,16 @@ class httprequest(httpmessage):
       return {}
 
   def _ua(self):
-    return parsers.parse_user_agent(self.headers.get('User-Agent',''))
+    return parsers.parse_user_agent(self.headers.get('User-Agent', ''))
 
   def _body(self):
     return self.read()
 
   def __getattr__(self, attr):
-    if not hasattr(self, '_'+attr):
+    if not hasattr(self, '_' + attr):
       raise AttributeError
 
-    val = getattr(self, '_'+attr)()
+    val = getattr(self, '_' + attr)()
     setattr(self, attr, val)
     return val
 
@@ -88,7 +88,7 @@ class httpresponse(httpmessage):
     self.statusnum = x
     self.statusmsg = httpresponse.STATUS.get(x, 'OK')
   
-  status = property(lambda s:s.statusnum, set_status)
+  status = property(lambda s: s.statusnum, set_status)
   
   STATUS = {
     100: "Continue",

@@ -103,8 +103,8 @@ class lazy(pyy_tag):
   def __init__(self, func, *args, **kwargs):
     pyy_tag.__init__(self)
     
-    self.func = func
-    self.args = args
+    self.func   = func
+    self.args   = args
     self.kwargs = kwargs
   
   def render(self, indent=1, inline=False):

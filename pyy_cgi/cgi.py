@@ -25,14 +25,11 @@ import sys
 import imp
 
 
-
-
 def get_request():
-  req = httprequest()
-  req.read = sys.stdin.read
-
   env = os.environ
-
+  req = httprequest()
+  
+  req.read   = sys.stdin.read
   req.method = env['REQUEST_METHOD']
   req.uri    = env['REQUEST_URI']
   
@@ -42,7 +39,7 @@ def get_request():
   elif http == 'HTTP/1.1':
     req.http = 1.1
 
-  H = {
+  HEADERS = {
     'CONTENT_LENGTH':       'Content-Length',
     'CONTENT_TYPE':         'Content-Type',
     'HTTP_USER_AGENT':      'User-Agent',
@@ -57,9 +54,9 @@ def get_request():
     'HTTP_ACCEPT_CHARSET':  'Accept-Charset',
   }
   
-  for k,v in env.iteritems():
-    if k in H:
-      req.headers[H[k]] = v
+  for key, value in env.iteritems():
+    if key in HEADERS:
+      req.headers[HEADERS[key]] = value
   
   return req
 
@@ -74,8 +71,8 @@ def write_response(res):
   if res.status:
     print 'Status: %d %s' % (res.statusnum, res.statusmsg)
   
-  for k,v in res.headers.iteritems():
-    print '%s: %s' % (k,v)
+  for key, value in res.headers.iteritems():
+    print '%s: %s' % (key, value)
 
   print
   print res.body
@@ -96,7 +93,7 @@ if 'REQUEST_METHOD' in os.environ:
   f = open(fname, 'U')
   
   try:
-    m = imp.load_module(mname, f, fname, ('.py', 'U', 1))
+    m   = imp.load_module(mname, f, fname, ('.py', 'U', 1))
     req = get_request()
     res = httpresponse()
     
@@ -110,14 +107,13 @@ if 'REQUEST_METHOD' in os.environ:
     except httperror, e:
       res = httpresponse()
       res.status = e.args[0]
-      res.body = '%d %s' % (res.statusnum, res.statusmsg)
+      res.body   = '%d %s' % (res.statusnum, res.statusmsg)
       # TODO let the page do custom error handling
 
     make_response(res)
     write_response(res)
     if result:
       result()
-    
 
   except SystemExit:
     pass
@@ -134,4 +130,3 @@ if 'REQUEST_METHOD' in os.environ:
       
   f.close()
   sys.exit(0)
-

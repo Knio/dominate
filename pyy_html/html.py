@@ -211,7 +211,8 @@ class comment(html_tag):
     
     rendered += self._render_children(indent - 1, inline)
     
-    if len(self.children) > 1:
+    # if len(self.children) > 1:
+    if any(isinstance(child, pyy_tag) for child in self):
       rendered += '\n'
       rendered += html_tag.TAB * (indent - 1)
     

@@ -101,10 +101,10 @@ class pyy_tag(object):
         raise ValueError('%r not a tag or string.' % obj)
         
     
-    if len(args) > 1:
-      return args
     if len(args) == 1:
       return args[0]
+    
+    return args
     
   def get(self, tag=None, **kwargs):
     '''

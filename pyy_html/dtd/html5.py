@@ -124,7 +124,7 @@ class html5(dtd):
     
     #TEXT: http://www.w3.org/TR/html5/text-level-semantics.html#text-level-semantics
     a       : {VALID   : GLOBAL | set(['href', 'target', 'ping', 'rel', 'media', 'hreflang', 'type']),
-               CHILDREN: TRANSPARENT},
+               CHILDREN: TRANSPARENT | FLOW | PHRASING}, # TODO XXX This is wrong. Transparent is not a class of elements
     em      : {VALID   : GLOBAL,
                CHILDREN: PHRASING},
     strong  : {VALID   : GLOBAL,

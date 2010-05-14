@@ -105,8 +105,8 @@ class httpserver(server.server):
     elif status in (301, 302, 303):
       if errors:
         res.headers['Location'] = errors[0]
-    
-    handler, uri, args = self.find_handler(req.host, self.sites)
+        
+    handler, uri, args = self.find_handler(req and req.host, self.sites)
     uri = httperror(status, *errors)
     try:
       while 1:
@@ -128,7 +128,9 @@ class httpserver(server.server):
         else: raise ValueError(handler)
         
     except httperror, e:
-      return self.handle_error(conn, req, res, e.args[0], e.args[1:])
+      if e.args == (status,)+errors:
+        return self.handle_error(conn, req, res, 500, 'infinite recursion in error handler')
+      return self.handle_error(conn, req, res, e.args[0], *e.args[1:])
 
 
   def run(self, *args):

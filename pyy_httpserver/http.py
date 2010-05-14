@@ -33,22 +33,27 @@ def httptime(t=None):
 
 CRLF = '\r\n'
 
-
 class httphandler(object):
   def __init__(self, server, conn, handler):
     self.server = server
     self.conn = conn
     self.handler = handler
     
-    try:
-      while self.conn.status:
-        self.do_request()
-    except EOFError:
-      # client closed the connection
-      pass
-    except Exception, e:
-      import traceback
-      traceback.print_exc()
+    def handle_requests():
+      try:
+        while self.conn.status:
+          self.do_request()
+      except EOFError:
+        # client closed the connection
+        pass
+      except Exception, e:
+        import traceback
+        traceback.print_exc()
+    
+    import threading
+    self.thread = threading.Thread(target=handle_requests)
+    self.thread.start()
+
 
   def do_request(self):
     req     = None
@@ -63,6 +68,9 @@ class httphandler(object):
       finish = self.handler.handle(self, req, res)
 
     except Exception, e:
+      # import traceback
+      # traceback.print_exc()
+      
       try: raise
       except httperror, e:
         error = e.args
@@ -72,7 +80,11 @@ class httphandler(object):
         error = (500, e)
       res = httpresponse()
       res.status = error[0]
-      res.body = '%s %s' % (res.status, res.statusmsg)
+      if (res.status <= 100) or (res.status in (204,304)) or (req and req.method == 'HEAD'):
+        # these messages cannot have a body
+        pass
+      else:
+        res.body = '%s %s' % (res.status, res.statusmsg)
       try:
         self.handler.handle_error(self, req, res, error[0], *error[1:])
       except: # error handler had an error!
@@ -92,6 +104,7 @@ class httphandler(object):
         # nothing to tell the client at this point
         import traceback
         traceback.print_exc()
+        self.conn.close()
     self.finish_response(res)
 
     
@@ -127,8 +140,9 @@ class httphandler(object):
     while len(self._lines) < 2:
       data = self._lines.pop() + self.conn.read()
       self._lines.extend(data.split(CRLF))
-
-    return self._lines.pop(0)
+    
+    line = self._lines.pop(0)
+    return line
     
   def readrequest(self, request, line):
     if not line: return
@@ -165,7 +179,9 @@ class httphandler(object):
     del self.readline
     # if we got extra data, push it back to the front of
     # the connection's read buffer, so someone can read() later
-    self.conn.readbuffer[0:0] = self._lines
+    last = self._lines.pop()
+    l = [i + CRLF for i in self._lines] + [last]
+    self.conn.readbuffer[0:0] = l
     del self._lines
   
   def make_response(self, req, res, finish):
@@ -195,8 +211,9 @@ class httphandler(object):
         elif k == 'Host':       pass
         elif k == 'Referer':    pass
         elif k == 'Accept':     pass
-        elif k == 'Accept-Language':  pass
-        elif k == 'Accept-Charset':   pass
+        elif k == 'If-Modified-Since':  pass
+        elif k == 'Accept-Language':    pass
+        elif k == 'Accept-Charset':     pass
         elif k == 'Accept-Encoding':
           res.headers.setdefault('Content-Encoding', 'identity')
           if not res.body:             continue
@@ -227,8 +244,9 @@ class httphandler(object):
             len2 = len(res.body)
             res.headers['Content-Encoding'] = 'gzip'
 
-          else: # unsupported encoding            
+          else: # unsupported encoding. leave it as identity   
             continue
+            # [C-E] 'identity' ?
 
           res.headers['Content-Length'] = len2
           s.append('%d/%s (%2.0f%%)' % (len2, len1, 100.*len2/len1))
@@ -251,7 +269,7 @@ class httphandler(object):
     if not finish:
       res.headers['Content-Length'] = len(res.body)
     
-    print '%d %s %s' % (res.statusnum, req.uri, ' '.join(s))
+    print '%d %s %s' % (res.statusnum, req and req.uri, ' '.join(s))
     
     return res
     

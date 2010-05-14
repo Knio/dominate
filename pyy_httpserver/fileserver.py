@@ -37,13 +37,18 @@ class staticserver(object):
     if not req.method in ['GET', 'HEAD']:
       raise httperror(405)
     
+    cache     = True
+    modified  = True
     for k,v in req.headers.iteritems():
       if k == 'If-Modified-Since':
         try:     t = http.httptime(v)
         except:  continue # malformed header value
         if self.handler.get_mtime(*args) <= t: # I hate time libraries so much
-          res.status = 304 # not modified
-          return
+          modified = False
+      
+      elif k == 'Cache-Control':
+        if v == 'no-cache':
+          cache = False
       
       elif k == 'Expect':   raise httperror(417)
       elif k == 'If-Range': raise httperror(501)
@@ -53,7 +58,10 @@ class staticserver(object):
 
       else:
         warnings.warn('unhandled request header: %s: %s' % (k,v))
-
+        
+    if not modified and cache:
+      raise httperror(304)
+    
     return self.handler.handle(conn, req, res, *args)
 
 
@@ -113,7 +121,7 @@ class fileserver(object):
 
   def get_mtime(self, *args):
     path = self.check_path(*args)
-    return datetime.fromtimestamp(os.path.getmtime(path))
+    return datetime.utcfromtimestamp(os.path.getmtime(path))
   
   def handle(self, conn, req, res, path):
     path = self.check_path(path)
@@ -141,7 +149,7 @@ class fileserver(object):
     fsize = os.path.getsize(path)
     
     f = file(path, 'rb')
-    ft = threadio.threadio(f) # this causes blocking in select() ???
+    ft = f #threadio.threadio(f) # this causes blocking in select() ???
     
     # ft = stacklessfile(path, 'rb') # use this instead, when it doesn't crash
     

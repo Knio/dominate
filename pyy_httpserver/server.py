@@ -52,7 +52,8 @@ class connection(object):
       if  e.args[0] == 10053  or \
           e.args[0] == 10054  or \
           e.args[0] == 9      or \
-          e.args[0] == 105:         # Connection reset by peer
+          e.args[0] == 105    or \
+          e.args[0] == 104:         # Connection reset by peer
         #print 'Client %s closed the connection' % (self.addr,)
         self.onclose(e)
         return
@@ -70,7 +71,7 @@ class connection(object):
       self.onclose()
       return
     
-    #print '%s GOT DATA: %r' % (self.addr, data[:80])
+    # print '%s GOT DATA: %r' % (self.addr, data)
     self.readbuffer.append(data)
     if self.handler and self.handler.hasattr('ondata'):
       self.handler.ondata(data)
@@ -162,21 +163,21 @@ class listener(connection):
     self.server.set_readable(self)
   
   def onreadable(self):
-    try:
-      sock, addr = self.sock.accept()
-    except socket.error, e:
-      if e.args[0] == 10035: # would have blocked
-        return
-      if e.args[0] == 11:     # resource temp unavailable
-        return
-      else: raise
-    
-    sock.setblocking(0)
-    conn = connection(self.server, sock, addr)
-    self.server.requests.add(conn)
-    handler = stackless.tasklet(self.handler)(
-      self.server, conn, *self.args)
-    #print 'Accepted connection: %s' % (addr,)
+    while 1:
+      try:
+        sock, addr = self.sock.accept()
+      except socket.error, e:
+        if e.args[0] == 10035: # would have blocked
+          return
+        if e.args[0] == 11:     # resource temp unavailable
+          return
+        else: raise
+      
+      sock.setblocking(0)
+      conn = connection(self.server, sock, addr)
+      self.server.requests.add(conn)
+      handler = stackless.tasklet(self.handler)(self.server, conn, *self.args)
+      #print 'Accepted connection: %s' % (addr,)
 
 
 class handler(object):
@@ -199,7 +200,7 @@ class server(object):
     sock.setblocking(0)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(addr)
-    sock.listen(5)
+    sock.listen(100)
     self.listeners.append(listener(
       self, sock, addr, handler, *args))
     print 'Listening on %s' % (addr,)
@@ -225,10 +226,10 @@ class server(object):
   
   def select(self, timeout):
     if timeout==0:
-      r = select.select(
+      r, w, e = select.select(
         self.readable, self.writable, [], timeout)
-
-      return r
+      
+      return r, w, e
     
     def thread():
       r = select.select(
@@ -260,6 +261,7 @@ class server(object):
           self.tick(timeout)
           stackless.schedule()
           time.sleep(0.05)
+      except KeyboardInterrupt: pass
       finally:
         self.quit(timeout)
     

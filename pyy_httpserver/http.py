@@ -52,6 +52,7 @@ class httphandler(object):
     
     import threading
     self.thread = threading.Thread(target=handle_requests)
+    self.thread.daemon = True
     self.thread.start()
 
 

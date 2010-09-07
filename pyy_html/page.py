@@ -4,6 +4,7 @@ from pyy_html import *
 import subprocess
 
 class page(document):
+  prefix  = ''
   css     = []
   script  = []
   inline  = False

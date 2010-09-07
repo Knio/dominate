@@ -80,6 +80,9 @@ class httpserver(server.server):
     handler, uri, args = self.find_handler(req.host, self.sites)
     uri = req.uri
     while 1:
+      if isinstance(handler, str):
+        handler, uri, args = self.find_handler(handler, self.sites)
+
       if isinstance(handler, list):
         handler, uri, args = self.find_handler(uri, handler)
 
@@ -123,8 +126,18 @@ class httpserver(server.server):
         elif hasattr(handler, 'handle'):
           return handler.handle_error(conn, req, res, status, *args)
 
-        elif handler is None:   return False
-        elif handler is False:  return
+
+        # why is this two different cases?
+        elif handler is None:   
+          if status == 500:
+            import traceback
+            traceback.print_exc()
+          return False
+        elif handler is False:  
+          if status == 500:
+            import traceback
+            traceback.print_exc()
+          return
         else: raise ValueError(handler)
         
     except httperror, e:

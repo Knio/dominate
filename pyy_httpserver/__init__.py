@@ -91,8 +91,9 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from server           import server
-from httpserver       import httpserver
-from fileserver       import *
-from pyyserver        import *
-from syntaxfileserver import *
+from server             import server
+from httpserver         import httpserver
+from fileserver         import *
+from filterserver       import *
+from pyyserver          import *
+from syntaxfileserver   import *

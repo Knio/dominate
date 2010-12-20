@@ -22,14 +22,16 @@ import threading
 class threadio(object):
   def __init__(self, file):
     self.file = file
-  
+
   def __getattr__(self, attr):
     f = getattr(self.file, attr)
-    def wrapper(*args):
+    if not callable(f):
+      return f
+    def wrapper(*args, **kwargs):
       ch = stackless.channel()
       def thread():
         try:
-          r = f(*args)
+          r = f(*args, **kwargs)
           ch.send(r)
         except Exception, e:
           ch.send_exception(type(e), e)

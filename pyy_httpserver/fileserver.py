@@ -36,7 +36,7 @@ class staticserver(object):
   def handle(self, conn, req, res, *args):
     if not req.method in ['GET', 'HEAD']:
       raise httperror(405)
-    
+
     cache     = True
     modified  = True
     for k,v in req.headers.iteritems():
@@ -45,28 +45,28 @@ class staticserver(object):
         except:  continue # malformed header value
         if self.handler.get_mtime(*args) <= t: # I hate time libraries so much
           modified = False
-      
+
       elif k == 'Cache-Control':
         if v == 'no-cache':
           cache = False
-      
+
       elif k == 'Expect':   raise httperror(417)
       elif k == 'If-Range': raise httperror(501)
       elif k == 'Range':    raise httperror(501)
-    
+
       elif k == 'Referrer': pass
 
       else:
         warnings.warn('unhandled request header: %s: %s' % (k,v))
-        
+
     if not modified and cache:
       raise httperror(304)
-    
+
     return self.handler.handle(conn, req, res, *args)
 
 
 # from stacklessfileIOCP import stacklessfile
- 
+
 class fileserver(object):
   MIME = {
   'txt':  'text/plain',
@@ -78,7 +78,7 @@ class fileserver(object):
   'jpeg': 'image/jpeg',
   'png':  'image/png',
   }
-  
+
   COMPRESS = {
   'png':  False,
   'jpg':  False,
@@ -89,11 +89,11 @@ class fileserver(object):
   'mp3':  False,
   'avi':  False,
   }
-  
+
   def __init__(self, root='.', dir_listing=True):
     self.root = root
     self.dir_listing = dir_listing
-  
+
   def check_path(self, path):
     if path.startswith('/'):
       path = path[1:]
@@ -101,31 +101,31 @@ class fileserver(object):
     path = os.path.join(self.root, unquote_plus(path))
     path = os.path.realpath(os.path.abspath(path))
     root = os.path.realpath(os.path.abspath(self.root))
-  
+
     # don't let them go outside root
     if not path.startswith(root):
       raise httperror(403)
-    
+
     # does it exist?
     if not os.path.exists(path):
       raise httperror(404)
-      
+
     valid = False
     if os.path.isfile(path): valid = True
     if os.path.isdir(path) and self.dir_listing: valid = True
-    
+
     if not valid:
       raise httperror(406)
-      
+
     return path
 
   def get_mtime(self, *args):
     path = self.check_path(*args)
     return datetime.utcfromtimestamp(os.path.getmtime(path))
-  
-  def handle(self, conn, req, res, path):
+
+  def handle(self, conn, req, res, path, *unused):
     path = self.check_path(path)
-    
+
     if os.path.isfile(path):
       fsize = os.path.getsize(path)
       mtime = os.path.getmtime(path)
@@ -135,39 +135,38 @@ class fileserver(object):
       res.headers['Content-Type']   = self.MIME.get(ext, 'text/plain')
       res.headers['Content-Length'] = fsize
       res.headers['Last-Modified']  = http.httptime(time.gmtime(mtime))
-      
+
       if req.method == 'GET':
         return self.write_file(conn, req, res, path)
-      
+
     if os.path.isdir(path):
       # what if HEAD?
       res.headers['Content-Type'] = 'text/html'
       res.body = self.write_dir_listing(path)
-      
-  
+
+
   def write_file(self, conn, req, res, path):
     fsize = os.path.getsize(path)
-    
+
     f = file(path, 'rb')
-    ft = f #threadio.threadio(f) # this causes blocking in select() ???
-    
-    # ft = stacklessfile(path, 'rb') # use this instead, when it doesn't crash
-    
+
+    # res.body = f.read()
+    # return
+
     def write():
       while 1:
-        data = ft.read(256*1024)
+        data = f.read(256*1024)
         if not data: break
         conn.conn.write(data)
       f.close()
-      
+
     return write
 
   def write_dir_listing(self, path):
     f = os.listdir(path)
     f = (os.path.isdir(os.path.join(path,i)) and i+'/' or i for i in f)
-    
+
     r = ['<html>','<body>']
     r.extend('<a href="%s">%s</a><br />' % (i,i) for i in f)
     r.extend(['</html>','</body>'])
     return '\r\n'.join(r)
-    

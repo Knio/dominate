@@ -20,6 +20,7 @@ Public License along with pyy.  If not, see
 import warnings
 import time
 import datetime
+import socket
 
 from pyy_web import httprequest, httpresponse, httperror
 
@@ -34,27 +35,46 @@ def httptime(t=None):
 CRLF = '\r\n'
 
 class httphandler(object):
-  def __init__(self, server, conn, handler):
-    self.server = server
+  '''
+  httphandler class
+
+  httphandler(conn, handler)
+    conn - an object that supports blocking
+              .read([n])
+              .unread(data)
+              .write(data)
+              .close()
+
+
+    handler - http server confoguration object.
+            will document later
+
+
+
+    this class reads data from the connection,
+    processes HTTP requests,
+    lets handler handle them,
+    and writes the results back over HTTP.
+
+    Supports HTTP/1.1 and pipelining
+
+  '''
+
+  def __init__(self, conn, handler):
     self.conn = conn
     self.handler = handler
-    
-    def handle_requests():
-      try:
-        while self.conn.status:
-          self.do_request()
-      except EOFError:
-        # client closed the connection
-        pass
-      except Exception, e:
-        import traceback
-        traceback.print_exc()
-    
-    import threading
-    self.thread = threading.Thread(target=handle_requests)
-    self.thread.daemon = True
-    self.thread.start()
 
+    self.conn.sock.settimeout(60.0)
+
+    try:
+      while self.conn.status:
+        self.do_request()
+    except EOFError:
+      # client closed the connection
+      pass
+    except Exception, e:
+      import traceback
+      traceback.print_exc()
 
   def do_request(self):
     req     = None
@@ -63,15 +83,21 @@ class httphandler(object):
     finish  = None
 
     try:
-      req = self.parse_request()
-      self.validate_request(req)
-      res = httpresponse()
-      finish = self.handler.handle(self, req, res)
+      try:
+        req = self.parse_request()
+      except socket.timeout:
+        self.conn.close()
+        return
+
+      else:
+        self.validate_request(req)
+        res = httpresponse()
+        finish = self.handler.handle(self, req, res)
 
     except Exception, e:
       # import traceback
       # traceback.print_exc()
-      
+
       try: raise
       except httperror, e:
         error = e.args
@@ -79,9 +105,11 @@ class httphandler(object):
         raise
       except Exception, e:
         error = (500, e)
+
       res = httpresponse()
       res.status = error[0]
-      if (res.status <= 100) or (res.status in (204,304)) or (req and req.method == 'HEAD'):
+      if (res.status <= 100) or (res.status in (204,304)) \
+        or (req and req.method == 'HEAD'):
         # these messages cannot have a body
         pass
       else:
@@ -108,7 +136,7 @@ class httphandler(object):
         self.conn.close()
     self.finish_response(res)
 
-    
+
   def parse_request(self):
     '''
     reads one request from the client and returns it
@@ -125,26 +153,26 @@ class httphandler(object):
       data = ''.join(data)
       assert len(data) == cl, (len(data), cl)
       return data
-        
+
     req.read = read
-    
+
     self.readline = self.readrequest
     self._lines = ['']
     while hasattr(self, 'readline'):
       self.readline(req, self.next_line())
     return req
-    
+
   def next_line(self):
     if len(self._lines[-1]) > 512*1024:
       raise httperror(414) # don't let malicious users use up all the memory
-    
+
     while len(self._lines) < 2:
       data = self._lines.pop() + self.conn.read()
       self._lines.extend(data.split(CRLF))
-    
+
     line = self._lines.pop(0)
     return line
-    
+
   def readrequest(self, request, line):
     if not line: return
     try:
@@ -158,7 +186,7 @@ class httphandler(object):
       request.http = 1.1
     else:
       raise httperror(505)
-    
+
     self.readline = self.readheader
 
   def readheader(self, request, line):
@@ -180,11 +208,14 @@ class httphandler(object):
     del self.readline
     # if we got extra data, push it back to the front of
     # the connection's read buffer, so someone can read() later
+    # this is an abuse of the api because most file objects
+    # wont support unread().
+    # fix this later.
     last = self._lines.pop()
     l = [i + CRLF for i in self._lines] + [last]
-    self.conn.readbuffer[0:0] = l
+    self.conn.unread(''.join(l))
     del self._lines
-  
+
   def make_response(self, req, res, finish):
     '''
     create a response object based on the request
@@ -201,7 +232,7 @@ class httphandler(object):
     # http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html#sec8.1.2
     # default should be to keep the connection open, but this is easier for testing
     res.headers.setdefault('Connection', 'close')
-    
+
     if res.body is not None:
       res.body = str(res.body)
 
@@ -218,7 +249,7 @@ class httphandler(object):
         elif k == 'Accept-Encoding':
           res.headers.setdefault('Content-Encoding', 'identity')
           if not res.body:             continue
-          if not self.server.compress: continue
+          if not self.handler.compress:continue
           if not res.compress:         continue
           if finish:                   continue
           tokens = v.lower().split(',')
@@ -245,7 +276,7 @@ class httphandler(object):
             len2 = len(res.body)
             res.headers['Content-Encoding'] = 'gzip'
 
-          else: # unsupported encoding. leave it as identity   
+          else: # unsupported encoding. leave it as identity
             continue
             # [C-E] 'identity' ?
 
@@ -260,20 +291,24 @@ class httphandler(object):
 
         elif k == 'Keep-Alive':
           pass
-        
+
         else:
           warnings.warn('Unhandled request header: %s: %s' % (k,v))
-    
+
     if res.body is None:  res.body = ''
-    
-    # TODO sanity check C-L header
+
+    lb = len(res.body)
     if not finish:
-      res.headers['Content-Length'] = len(res.body)
-    
+      cl = res.headers.get('Content-Length', lb)
+      if cl != lb:
+        raise Exception('Set C-L header (%d) that was not equal to '
+          'response body (%d)' % (cl, lb))
+      else:
+        res.headers['Content-Length'] = lb
+
     print '%d %s %s' % (res.statusnum, req and req.uri, ' '.join(s))
-    
     return res
-    
+
   def write_response(self, res):
     '''
     write the response object to the client.
@@ -285,7 +320,7 @@ class httphandler(object):
     r.append(CRLF)
     self.conn.write(CRLF.join(r))
     self.conn.write(res.body)
-    
+
   def finish_response(self, res):
     '''
     clean up a response. (close the connection if required)

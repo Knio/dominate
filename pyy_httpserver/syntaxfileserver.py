@@ -25,18 +25,18 @@ class syntaxfileserver(fileserver):
       from pygments            import highlight
       from pygments.lexers     import get_lexer_for_filename
       from pygments.formatters import HtmlFormatter
-      import threadio
-      
-      #TODO: use threadio?
-      code = file(path).read()
-      name = os.path.basename(path)
-      
-      ret = highlight(code, get_lexer_for_filename(name), HtmlFormatter(full=True))
-      res.headers['Content-Type']   = 'text/html'
-      res.body = ret
 
     except ImportError:
       import warnings
       warnings.warn('pygments not found, serving files as plain-text')
-      ret = fileserver.fileserver.write_file(self, conn, req, res, path, *args)
+      return fileserver.write_file(self, conn, req, res, path, *args)
+
+    else:
+      code = file(path).read()
+      name = os.path.basename(path)
+
+      ret = highlight(code, get_lexer_for_filename(name), HtmlFormatter(full=True))
+      res.headers['Content-Type']   = 'text/html'
+      res.body = ret
+
 

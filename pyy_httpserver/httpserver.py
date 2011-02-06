@@ -20,19 +20,18 @@ import re
 import types
 
 import http
-import server
+import threadserver as server
 
 from pyy_web import httperror
 
-class httpserver(server.server):
+class httpserver(object):
   compress = True
   rewrite = []
   sites   = []
   uri     = []
   port    = 8080
-  
+
   def __init__(self):
-    server.server.__init__(self)
     if not self.sites:
       self.sites = [True, self.uri]
 
@@ -71,7 +70,7 @@ class httpserver(server.server):
   def handle(self, conn, req, res):
     handler = None
     args = ()
-    
+
     # rewrite uris
     for r,s in self.rewrite:
       req.uri = re.sub(r, s, req.uri)
@@ -95,10 +94,10 @@ class httpserver(server.server):
 
       elif hasattr(handler, 'handle'):
         return handler.handle(conn, req, res, *args)
-      
+
       elif handler is False:  raise httperror(404)
-      elif handler is None:   return False      
-      else: raise valueError(handler)
+      elif handler is None:   return False
+      else:                   raise ValueError(handler)
 
   def handle_error(self, conn, req, res, status, *errors):
     if status == 500:
@@ -108,7 +107,7 @@ class httpserver(server.server):
     elif status in (301, 302, 303):
       if errors:
         res.headers['Location'] = errors[0]
-        
+
     handler, uri, args = self.find_handler(req and req.host, self.sites)
     uri = httperror(status, *errors)
     try:
@@ -122,24 +121,23 @@ class httpserver(server.server):
         elif isinstance(handler, (types.FunctionType, types.MethodType)):
           handler = handler(*args)
           args = ()
-        
-        elif hasattr(handler, 'handle'):
+
+        elif hasattr(handler, 'handle_error'):
           return handler.handle_error(conn, req, res, status, *args)
 
-
         # why is this two different cases?
-        elif handler is None:   
+        elif handler is None:
           if status == 500:
             import traceback
             traceback.print_exc()
           return False
-        elif handler is False:  
+        elif handler is False:
           if status == 500:
             import traceback
             traceback.print_exc()
           return
         else: raise ValueError(handler)
-        
+
     except httperror, e:
       if e.args == (status,)+errors:
         return self.handle_error(conn, req, res, 500, 'infinite recursion in error handler')
@@ -147,7 +145,10 @@ class httpserver(server.server):
 
 
   def run(self, *args):
-    self.listen(('',self.port), http.httphandler, self)
-    server.server.run(self, *args)
+    s = server.server()
+    def handle(server, conn):
+      return http.httphandler(conn, self)
 
+    s.listen(('',self.port), handle)
+    s.run()
 

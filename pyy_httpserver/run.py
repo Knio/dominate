@@ -17,7 +17,10 @@ Public License along with pyy.  If not, see
 '''
 import sys
 from pyy_httpserver import *
-from pyy_httpserver.gvimfileserver import gvimfileserver
+
+
+from fileserver import fileserver
+from pyyserver  import pyyscript
 
 if __name__ == '__main__':
   args = list(sys.argv[1:])
@@ -30,16 +33,16 @@ if __name__ == '__main__':
       port = int(args.pop(0))
     if c == '-d':
       dir = args.pop(0)
-  
+
 
   class myserver(httpserver):
     port = port
     uri = [
-      ('^/(.*)$',                   fileserver(dir)),
-      ('^/(.*\.(py|c|h|js|java))$', syntaxfileserver(dir)),
-      ('^/(.*\.m)$',                gvimfileserver(dir)),
-      ('^/(.*\.pyy)$',              pyyserver(dir)),
+      '^/(.*)$',                   fileserver(dir),
+      '^/(.*(.py|c|h|js|java))$',  syntaxfileserver(dir),
+      # ('^/(.*\.m)$',                gvimfileserver(dir)),
+      # ('^/(.*\.pyy)$',              pyyscript(dir)),
     ]
 
-  myserver().run(0.1)
+  myserver().run()
 

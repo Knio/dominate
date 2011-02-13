@@ -62,10 +62,22 @@ class connection(object):
         return data
 
       else:
-        return self.sock.recv(1024*1024)
+        while 1:
+          try:
+            return self.sock.recv(1024*1024)
+          except socket.error, e:
+            # resource temp unavailable
+            if e.args[0] == 11: time.sleep(0.1)
+            else: raise
+
 
     while sum(map(len, self.readbuffer)) < n:
-      self.readbuffer.append(self.sock.recv(1024*1024))
+      try:
+        self.readbuffer.append(self.sock.recv(1024*1024))
+      except socket.error, e:
+        # resource temp unavailable
+        if e.args[0] == 11: time.sleep(0.1)
+        else: raise
 
     data = ''.join(self.readbuffer)
 
@@ -74,7 +86,13 @@ class connection(object):
 
   def write(self, data):
     while data:
-      data = data[self.sock.send(data):]
+      try:
+        data = data[self.sock.send(data):]
+      except socket.error, e:
+        # resource temp unavailable
+        if e.args[0] == 11: time.sleep(0.1)
+        else: raise
+
 
   def close(self, how=socket.SHUT_RDWR):
     self.sock.shutdown(how)
@@ -112,7 +130,7 @@ class server(object):
         try:
           newsock, newaddr = sock.accept()
         except socket.timeout:
-          pass
+          time.sleep(0.1)
 
         else:
           newsock.settimeout(5.0)
@@ -123,6 +141,11 @@ class server(object):
               handler(self, conn, *args, **kwargs)
             finally:
               newsock.close()
+
+          def profile():
+            h = handle
+            import cProfile as profile
+            profile.runctx("h()", globals(), locals())
 
           thread = threading.Thread(target=handle)
           thread.daemon = True

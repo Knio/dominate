@@ -20,7 +20,6 @@ import stackless
 import os
 import os.path
 import sys
-import threadio
 import http
 import time
 import warnings

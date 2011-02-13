@@ -26,24 +26,24 @@ class connection(object):
   READABLE = 1
   WRITABLE = 2
   OPEN = 1
-  
+
   def __init__(self, server, sock, addr):
     self.server   = server
     self.addr     = addr
     self.sock     = sock
     self.handler  = None
-    
+
     self.readbuffer  = []
     self.writebuffer = []
-    
+
     self.readchannel  = stackless.channel()
     self.writechannel = stackless.channel()
-    
+
     self.status = connection.OPEN
-  
+
   def fileno(self):
     return self.sock.fileno()
-  
+
   def onreadable(self):
     if not self.status: return
     try:
@@ -59,7 +59,7 @@ class connection(object):
         return
       if e.args[0] == 10035:  # would have blocked
         return
-      if e.args[0] == 11:     # resource temp unavailable      
+      if e.args[0] == 11:     # resource temp unavailable
         return
       else: raise
 
@@ -70,30 +70,30 @@ class connection(object):
       #print 'Client %s closed the connection' % (self.addr,)
       self.onclose()
       return
-    
+
     # print '%s GOT DATA: %r' % (self.addr, data)
     self.readbuffer.append(data)
     if self.handler and self.handler.hasattr('ondata'):
       self.handler.ondata(data)
-    
+
     # is someone waiting on read?
     if self.readchannel.balance < 0:
       self.readchannel.send(None)
-  
+
   def onwritable(self):
     if not self.status: return
     while self.writebuffer:
       d = self.writebuffer[0]
       o = d
       #print '%s SENDING: %r' % (self.addr, d[:80])
-      
+
       try:
         while d:
           d = d[self.sock.send(d):]
           self.writebuffer[0] = d
         self.writebuffer.pop(0)
         self.writechannel.send(o)
-      
+
       except socket.error, e:
         if e.args[0] == 10053:  # closed the connection
           self.onclose(e)
@@ -103,21 +103,21 @@ class connection(object):
         if e.args[0] == 11:     # resource temp unavailable
           return
         else: raise
-    
+
     self.server.set_writable(self, False)
-  
+
   def onclose(self, e=None):
     if not self.status: return # we closed already
     while self.readchannel.balance < 0:
       self.readchannel.send_exception(EOFError, EOFError('connection reset', e))
     while self.writechannel.balance < 0:
       self.writechannel.send_exception(EOFError, EOFError(e))
-    
+
     self.server.close(self)
     self.status = 0
     if self.handler and self.handler.hasattr('onclose'):
       self.handler.onclose()
-  
+
   def write(self, data):
     if not self.status:
       raise EOFError('write on closed connection')
@@ -129,11 +129,11 @@ class connection(object):
     r = self.writechannel.receive()
     #assert data == r, (len(data), len(r), data[:80], r[:80])
     assert data.endswith(r) # this is not a very strong check, but
-                            # the one above fails when the loop on 
-                            # line 87 is interrupted and o != data 
+                            # the one above fails when the loop on
+                            # line 87 is interrupted and o != data
                             # on the next onwritable() call
     return r
-  
+
   def read(self, x=None):
     if not self.status:
       raise EOFError('read on closed connection')
@@ -144,7 +144,7 @@ class connection(object):
     data = ''.join(self.readbuffer)
     self.readbuffer = x and [data[x:]] or []
     return data[:x]
-  
+
   def close(self, how=socket.SHUT_RDWR):
     #print 'CLOSING: %s' % (self.addr,)
     if self.writebuffer:
@@ -161,7 +161,7 @@ class listener(connection):
     self.handler  = handler
     self.args     = args
     self.server.set_readable(self)
-  
+
   def onreadable(self):
     while 1:
       try:
@@ -172,7 +172,7 @@ class listener(connection):
         if e.args[0] == 11:     # resource temp unavailable
           return
         else: raise
-      
+
       sock.setblocking(0)
       conn = connection(self.server, sock, addr)
       self.server.requests.add(conn)
@@ -184,7 +184,7 @@ class handler(object):
   def __init__(self, server, conn, *args):
     self.conn = conn
     self.server = server
-    
+
 
 class server(object):
   def __init__(self):
@@ -194,7 +194,7 @@ class server(object):
     self.writable  = set()
     self.selectch  = stackless.channel()
     self.done      = False
-  
+
   def listen(self, addr, handler, *args):
     sock = socket.socket()
     sock.setblocking(0)
@@ -204,56 +204,56 @@ class server(object):
     self.listeners.append(listener(
       self, sock, addr, handler, *args))
     print 'Listening on %s' % (addr,)
-  
+
   def set_readable(self, req, x=True):
     if x: self.readable.add(req)
     else: self.readable.discard(req)
     if x: self.interrupt()
-  
+
   def set_writable(self, req, x=True):
     if x: self.writable.add(req)
     else: self.writable.discard(req)
     if x: self.interrupt()
-  
+
   def close(self, req):
     self.readable.discard(req)
     self.writable.discard(req)
     self.requests.discard(req)
-  
+
   def interrupt(self):
     if self.selectch.balance < 0:
       self.selectch.send(([],[],[]))
-  
+
   def select(self, timeout):
     if timeout==0:
       r, w, e = select.select(
         self.readable, self.writable, [], timeout)
-      
+
       return r, w, e
-    
+
     def thread():
       r = select.select(
         self.readable, self.writable, [], timeout)
       #if self.selectch.balance < 0: # this causes stackless to crash!
       self.selectch.send(r)
-    
+
     threading.Thread(target=thread).start()
-    
+
     r = self.selectch.receive()
     while self.selectch.balance > 0:
       r2 = self.selectch.receive()
       map(lambda x:reduce(list.extend,x) ,zip(r,r2))
     return r
-  
+
   def tick(self, timeout=None):
     readable, writable, _e = self.select(timeout)
-    
+
     for i in readable:
       i.onreadable()
-    
+
     for i in writable:
       i.onwritable()
-  
+
   def run(self, timeout=None):
     def mainloop():
       try:
@@ -264,10 +264,10 @@ class server(object):
       except KeyboardInterrupt: pass
       finally:
         self.quit(timeout)
-    
+
     stackless.tasklet(mainloop)()
     stackless.run(threadblock=True)
-  
+
   def quit(self, timeout):
     self.done = True
     print 'Quiting'

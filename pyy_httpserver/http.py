@@ -59,83 +59,78 @@ class httphandler(object):
     Supports HTTP/1.1 and pipelining
 
   '''
-
+  id = 0
   def __init__(self, conn, handler):
     self.conn = conn
     self.handler = handler
 
     self.conn.sock.settimeout(60.0)
+    self.requests = 0
+    self.id = httphandler.id
+    httphandler.id += 1
 
-    try:
-      while self.conn.status:
-        self.do_request()
-    except EOFError:
-      # client closed the connection
-      pass
-    except Exception, e:
-      import traceback
-      traceback.print_exc()
+    while self.conn.status:
+      self.do_request()
 
   def do_request(self):
     req     = None
-    res     = None
+    res     = httpresponse()
     error   = None
     finish  = None
+    self.requests += 1
 
     try:
       try:
         req = self.parse_request()
-      except socket.timeout:
-        self.conn.close()
-        return
-
-      else:
         self.validate_request(req)
-        res = httpresponse()
-        finish = self.handler.handle(self, req, res)
+        self.process_request(req)
 
-    except Exception, e:
-      # import traceback
-      # traceback.print_exc()
+        try:
+          finish = self.handler.handle(self, req, res)
+        except httperror:
+          raise
+        except Exception, e:
+          error = (500, e)
 
-      try: raise
       except httperror, e:
         error = e.args
-      except EOFError:
-        raise
-      except Exception, e:
-        error = (500, e)
 
-      res = httpresponse()
-      res.status = error[0]
-      if (res.status <= 100) or (res.status in (204,304)) \
-        or (req and req.method == 'HEAD'):
-        # these messages cannot have a body
-        pass
-      else:
-        res.body = '%s %s' % (res.status, res.statusmsg)
-      try:
-        self.handler.handle_error(self, req, res, error[0], *error[1:])
-      except: # error handler had an error!
+      if error:
         res = httpresponse()
-        res.status = 500
-        res.body = '%s %s' % (res.status, res.statusmsg)
-        import traceback
-        traceback.print_exc()
+        res.status = error[0]
+        if (res.status <= 100) or (res.status in (204,304)) \
+          or (req and req.method == 'HEAD'):
+          # these messages cannot have a body
+          pass
+        else:
+          res.body = '%s %s' % (res.status, res.statusmsg)
+        try:
+          self.handler.handle_error(self, req, res, error[0], *error[1:])
+        except: # error handler had an error!
+          res = httpresponse()
+          res.status = 500
+          res.body = '%s %s' % (res.status, res.statusmsg)
+          import traceback
+          traceback.print_exc()
 
-    self.make_response(req, res, finish)
-    self.write_response(res)
+      self.make_response(req, res, finish)
+      self.write_response(res)
 
-    if finish:
-      try:   finish()
-      except:
-        # we already sent out the response+headers,
-        # nothing to tell the client at this point
-        import traceback
-        traceback.print_exc()
-        self.conn.close()
-    self.finish_response(res)
+      if finish:
+        try:   finish()
+        except:
+          # we already sent out the response+headers,
+          # nothing to tell the client at this point
+          import traceback
+          traceback.print_exc()
+          self.conn.close()
 
+      self.finish_response(req, res)
+
+    except IOError, e:
+      print e
+      self.conn.close()
+      return
 
   def parse_request(self):
     '''
@@ -216,6 +211,23 @@ class httphandler(object):
     self.conn.unread(''.join(l))
     del self._lines
 
+  def validate_request(self, req):
+    host = req.headers.get('Host')
+    if host:
+      req.host = host.split(':')[0]
+    else:
+      req.host = None
+
+    if req.http == 1.1 and not host:
+      raise httperror(400)
+
+  def process_request(self, req):
+    if req.http == 1.1:
+      if req.headers.get('Connection') != 'close':
+        # get value from K-A header?
+        # set K-A header?
+        self.conn.sock.settimeout(300)
+
   def make_response(self, req, res, finish):
     '''
     create a response object based on the request
@@ -231,7 +243,7 @@ class httphandler(object):
 
     # http://www.w3.org/Protocols/rfc2616/rfc2616-sec8.html#sec8.1.2
     # default should be to keep the connection open, but this is easier for testing
-    res.headers.setdefault('Connection', 'close')
+    res.headers.setdefault('Connection', 'keep-alive')
 
     if res.body is not None:
       res.body = str(res.body)
@@ -306,7 +318,8 @@ class httphandler(object):
       else:
         res.headers['Content-Length'] = lb
 
-    print '%d %s %s' % (res.statusnum, req and req.uri, ' '.join(s))
+    print '[%d.%d] %d %s %s' % \
+        (self.id, self.requests, res.statusnum, req and req.uri, ' '.join(s))
     return res
 
   def write_response(self, res):
@@ -321,13 +334,14 @@ class httphandler(object):
     self.conn.write(CRLF.join(r))
     self.conn.write(res.body)
 
-  def finish_response(self, res):
+  def finish_response(self, req, res):
     '''
     clean up a response. (close the connection if required)
     '''
     con = res.headers.get('Connection')
     if con is None:
-      self.conn.close()
+      if req.http == 1.0:
+        self.conn.close()
     elif con == 'close':
       self.conn.close()
     elif con == 'keep-alive':
@@ -336,14 +350,3 @@ class httphandler(object):
         raise Exception('tried to keep-alive with no C-L')
     else:
       raise Exception('unknown Connecton: token')
-
-  def validate_request(self, req):
-    host = req.headers.get('Host')
-    if host:
-      req.host = host.split(':')[0]
-    else:
-      req.host = None
-
-    if req.http == 1.1 and not host:
-      raise httperror(400)
-

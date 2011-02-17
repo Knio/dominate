@@ -64,7 +64,9 @@ class connection(object):
       else:
         while 1:
           try:
-            return self.sock.recv(1024*1024)
+            data = self.sock.recv(1024*1024)
+            if data == '': raise EOFError()
+            return data
           except socket.error, e:
             # resource temp unavailable
             if e.args[0] == 11: time.sleep(0.1)
@@ -73,7 +75,9 @@ class connection(object):
 
     while sum(map(len, self.readbuffer)) < n:
       try:
-        self.readbuffer.append(self.sock.recv(1024*1024))
+        data = self.sock.recv(1024*1024)
+        if data == '':  raise EOFError()
+        self.readbuffer.append(data)
       except socket.error, e:
         # resource temp unavailable
         if e.args[0] == 11: time.sleep(0.1)

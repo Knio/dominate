@@ -34,6 +34,8 @@ def httptime(t=None):
 
 CRLF = '\r\n'
 
+class endconnection(EOFError): pass
+
 class httphandler(object):
   '''
   httphandler class
@@ -92,6 +94,9 @@ class httphandler(object):
         except Exception, e:
           error = (500, e)
 
+      except endconnection:
+        return
+
       except httperror, e:
         error = e.args
 
@@ -138,6 +143,8 @@ class httphandler(object):
     '''
     req = httprequest()
 
+    # read the body of the HTTP message, or '' if the client
+    # did not specify a C-L
     def read(bytes=None):
       l = cl = int(req.headers.get('Content-Length','0'))
       if not cl: return ''
@@ -153,6 +160,14 @@ class httphandler(object):
 
     self.readline = self.readrequest
     self._lines = ['']
+    try:
+      # check if there is a next line to so we can
+      # gracefully handle socket closes.
+      # we still want to throw an exception if the socket
+      # closes when we are reading headers etc
+      self._lines.insert(0, self.next_line())
+    except EOFError:
+      raise endconnection
     while hasattr(self, 'readline'):
       self.readline(req, self.next_line())
     return req

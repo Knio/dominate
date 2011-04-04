@@ -41,6 +41,7 @@ class connection(object):
 
 
   OPEN = 1
+  CLOSED = 0
 
   def __init__(self, server, sock, addr):
     self.server   = server
@@ -65,7 +66,9 @@ class connection(object):
         while 1:
           try:
             data = self.sock.recv(1024*1024)
-            if data == '': raise EOFError()
+            if data == '':
+              self.status = connection.CLOSED
+              raise EOFError()
             return data
           except socket.error, e:
             # resource temp unavailable

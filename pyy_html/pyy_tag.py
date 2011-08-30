@@ -21,17 +21,17 @@ import numbers
 
 class pyy_tag(object):
   TAB = '  '
-  
+
   is_single = False #Tag does not require matching end tag (ex. <hr/>)
   is_pretty = True  #Text inside the tag should be left as-is (ex. <pre>)
-  
+
   def __init__(self, *args, **kwargs):
     '''
     Creates a new tag. Child tags should be passed as aruguments and attributes
     should be passed as keyword arguments.
-    
+
     There is a non-rendering attribute which controls how the tag renders:
-    
+
     * `__inline` - Boolean value. If True renders all children tags on the same
                    line.
     '''
@@ -39,17 +39,17 @@ class pyy_tag(object):
     self.children   = []
     self.parent     = None
     self.document   = None
-    
+
     #Does not insert newlines on all children if True (recursive attribute)
     self.do_inline = kwargs.pop('__inline', False)
-    
+
     #Add child elements
     self.add(*args)
-    
+
     for attr, value in kwargs.items():
       self.set_attribute(*pyy_tag.clean_pair(attr, value))
-  
-  
+
+
   def set_attribute(self, key, value):
     '''
     Add or update the value of an attribute.
@@ -59,9 +59,10 @@ class pyy_tag(object):
     elif isinstance(key, basestring):
       self.attributes[key] = value
     else:
-      raise TypeError('Only integer and string types are valid for assigning child tags and attributes, respectively.')
+      raise TypeError('Only integer and string types are valid for assigning '
+          'child tags and attributes, respectively.')
   __setitem__ = set_attribute
-  
+
   def setdocument(self, doc):
     '''
     Creates a reference to the parent document to allow for partial-tree
@@ -71,204 +72,226 @@ class pyy_tag(object):
     for i in self.children:
       if not isinstance(i, pyy_tag): return
       i.setdocument(doc)
-  
+
   def add(self, *args):
     '''
     Add new child tags.
     '''
     for obj in args:
       if isinstance(obj, numbers.Number):
-        #Convert to string so we fall into next if block
+        # Convert to string so we fall into next if block
         obj = str(obj)
-      
+
       if isinstance(obj, basestring):
         if self.document and self.document.doctype:
           self.document.doctype.validate(self, obj)
         self.children.append(obj)
-        
+
       elif isinstance(obj, pyy_tag):
         if self.document and self.document.doctype:
           self.document.doctype.validate(self, obj)
         self.children.append(obj)
         obj.parent = self
         obj.setdocument(self.document)
-      
+
       elif hasattr(obj, '__iter__'):
         for subobj in obj:
           self.add(subobj)
-      
+
       else: # wtf is it?
         raise ValueError('%r not a tag or string.' % obj)
-        
-    
+
+
     if len(args) == 1:
       return args[0]
-    
+
     return args
-    
+
+  def clear(self):
+    for i in self.children:
+      if isinstance(i, pyy_tag) and i.parent is self:
+        i.parent = None
+    self.children = []
+
   def get(self, tag=None, **kwargs):
     '''
-    Recursively searches children for tags of a certain type with matching attributes.
+    Recursively searches children for tags of a certain
+    type with matching attributes.
     '''
-    #Stupid workaround since we can not use pyy_tag in the method declaration
+    # Stupid workaround since we can not use pyy_tag in the method declaration
     if tag is None: tag = pyy_tag
-    
+
+    attrs = [(pyy_tag.clean_attribute(attr), value)
+        for attr, value in kwargs.items()]
+
     results = []
     for child in self.children:
-      if (isinstance(tag, basestring) and type(child).__name__ == tag) or (not isinstance(tag, basestring) and isinstance(child, tag)):
-        if all(pyy_tag.clean_attribute(attribute) in child.attributes and child.attributes[pyy_tag.clean_attribute(attribute)] == value for attribute, value in kwargs.iteritems()):
-          #If the child is of correct type and has all attributes and values in kwargs add as a result
+      if (isinstance(tag, basestring) and type(child).__name__ == tag) or \
+        (not isinstance(tag, basestring) and isinstance(child, tag)):
+
+        if all(child.attributes.get(attribute) == value
+            for attribute, value in attrs):
+          # If the child is of correct type and has all attributes and values
+          # in kwargs add as a result
           results.append(child)
       if isinstance(child, pyy_tag):
-        #If the child is a pyy_tag extend the search down through its children
+        # If the child is a pyy_tag extend the search down through its children
         results.extend(child.get(tag, **kwargs))
     return results
-  
-  
+
+
   def __getitem__(self, key):
     '''
     Returns the stored value of the specified attribute or child (if it exists).
     '''
     if isinstance(key, int):
-      #Children are accessed using integers
+      # Children are accessed using integers
       try:
         return self.children[key]
       except KeyError:
-        raise AttributeError('Child with index "%s" does not exist.' % key)
+        raise IndexError('Child with index "%s" does not exist.' % key)
     elif isinstance(key, basestring):
-      #Attributes are accessed using strings
+      # Attributes are accessed using strings
       try:
         return self.attributes[key]
       except KeyError:
         raise AttributeError('Attribute "%s" does not exist.' % key)
     else:
-      raise TypeError('Only integer and string types are valid for accessing child tags and attributes, respectively.')
+      raise TypeError('Only integer and string types are valid for accessing '
+          'child tags and attributes, respectively.')
   __getattr__ = __getitem__
-  
+
   def __len__(self):
     '''
     Number of child elements.
     '''
     return len(self.children)
-  
+
   def __nonzero__(self):
     '''
     Hack for "if x" and __len__
     '''
     return True
-    
+
   def __iter__(self):
     '''
     Iterates over child elements.
     '''
     return self.children.__iter__()
-  
+
   def __contains__(self, item):
     '''
-    Checks recursively if item is in children tree. Accepts both a string and a class.
+    Checks recursively if item is in children tree.
+    Accepts both a string and a class.
     '''
     return bool(self.get(item))
-  
+
   def __iadd__(self, obj):
     '''
     Reflexive binary addition simply adds tag as a child.
     '''
     self.add(obj)
     return self
-  
+
   def render(self, indent=1, inline=False):
     '''
     Returns a well-formatted string representation of the tag and renderings
     of all its child tags.
     '''
     inline = self.do_inline or inline
-    
-    #Workaround for python keywords and standard classes/methods (del, object, input)
-    if type(self).__name__[-1] == "_":
-      name = type(self).__name__[:-1]
-    else:
-      name = type(self).__name__
-    rendered = '<' + name
-    
+
+    name = type(self).__name__
+
+    # Workaround for python keywords and standard classes/methods
+    # (del, object, input)
+    if name[-1] == "_":
+      name = name[:-1]
+
+    rendered = ['<', name]
+
     for attribute, value in self.attributes.items():
-      rendered += ' %s="%s"' % (attribute, escape(str(value), True))
-    
+      rendered.append(' %s="%s"' % (attribute, escape(str(value), True)))
+
     if self.is_single:
-      rendered += ' />'
+      rendered.append(' />')
     else:
-      rendered += '>'
-      rendered += self._render_children(indent, inline)
-      
-      # if there are no children, or only 1 child that is not an html element, do not add tabs and newlines
-      no_children = self.is_pretty and self.children and (not (len(self.children) == 1 and not isinstance(self[0], pyy_tag)))
-      
+      rendered.append('>')
+      rendered.append(self._render_children(indent, inline))
+
+      # if there are no children, or only 1 child that is not an html element,
+      # do not add tabs and newlines
+      no_children = self.is_pretty and self.children and \
+          (not (len(self.children) == 1 and not isinstance(self[0], pyy_tag)))
+
       if no_children and not inline:
-        rendered += '\n'
-        rendered += pyy_tag.TAB * (indent - 1)
-      rendered += '</'
-      rendered += name
-      rendered += '>'
-    
-    return rendered
-  
-  #String and unicode representations are the same as render()
+        rendered.append('\n')
+        rendered.append(pyy_tag.TAB * (indent - 1))
+
+      rendered.append('</')
+      rendered.append(name)
+      rendered.append('>')
+
+    return ''.join(rendered)
+
+  # String and unicode representations are the same as render()
   def __unicode__(self):
     return self.render()
   __str__ = __unicode__
-  
+
   def _render_children(self, indent=1, inline=False):
-    children = ''
+    children = []
     for child in self.children:
       if isinstance(child, pyy_tag):
         if not inline and self.is_pretty:
-          children += '\n'
-          children += pyy_tag.TAB * indent
-        children += child.render(indent + 1, inline)
+          children.append('\n')
+          children.append(pyy_tag.TAB * indent)
+        children.append(child.render(indent + 1, inline))
       else:
-        children += str(child)
-    return children
-    
+        children.append(unicode(child))
+    return ''.join(children)
+
   def __repr__(self):
     name = '%s.%s' % (self.__module__, type(self).__name__)
-    
+
     attributes_len = len(self.attributes)
     attributes = '%s attribute' % attributes_len
     if attributes_len != 1: attributes += 's'
-    
+
     children_len = len(self.children)
     children = '%s child' % children_len
     if children_len != 1: children += 'ren'
-    
+
     return '<%s: %s, %s>' % (name, attributes, children)
-  
+
   @staticmethod
   def clean_attribute(attribute):
     '''
-    Since some attributes match python keywords we append underscores to the
-    end of them. Python also does not support colons in keywords so underscores
+    Since some attributes match python keywords we prepend them with
+    underscores. Python also does not support colons in keywords so underscores
     mid-attribute are replaced with colons.
     '''
-    #Workaround for python's reserved words
+    # Workaround for python's reserved words
     if attribute[0] == '_': attribute = attribute[1:]
-    #Workaround for inability to use colon in python keywords
+    # Workaround for inability to use colon in python keywords
     if attribute in set(['http_equiv']):
       return attribute.replace('_', '-').lower()
     return attribute.replace('_', ':').lower()
-  
+
   @staticmethod
   def clean_pair(attribute, value):
     '''
     This will call `clean_attribute` on the attribute and also allows for the
     creation of boolean attributes.
-    
+
     Ex. input(selected=True) is equivalent to input(selected="selected")
     '''
     attribute = pyy_tag.clean_attribute(attribute)
-    
-    #Check for boolean attributes (i.e. selected=True becomes selected="selected")
+
+    # Check for boolean attributes
+    # (i.e. selected=True becomes selected="selected")
     if value is True:
       value = attribute
-    
+
     return (attribute, value)
 
 # escape() is used in render

@@ -26,10 +26,10 @@ class html_tag(pyy_tag, dom1core):
   def __init__(self, *args, **kwargs):
     '''
     Creates a new html tag instance.
-    
+
     Accepts a non-rendering special attribute which controls how the tag is
     validated:
-    
+
     * `__invalid` - Boolean value. If True it will allow for invalid attributes
                     to be added and rendered.
     '''
@@ -167,7 +167,15 @@ class tfoot       (html_tag): pass
 class th          (html_tag): pass
 class thead       (html_tag): pass
 class time        (html_tag): pass
-class title       (html_tag): pass
+class title       (html_tag):
+  def _get_text(self):
+    return ''.join(self.get(basestring))
+
+  def _set_text(self, text):
+    self.clear()
+    self.add(text)
+  text = property(_get_text, _set_text)
+
 class tr          (html_tag): pass
 class tt          (html_tag): pass
 class u           (html_tag): pass
@@ -184,59 +192,64 @@ class comment(html_tag):
   Normal, one-line comment:
     >>> print comment("Hello, comments!")
     <!--Hello, comments!-->
-  
+
   For IE's "if" statement comments:
     >>> print comment(p("Upgrade your browser."), condition='lt IE6')
     <!--[if lt IE6]><p>Upgrade your browser.</p><![endif]-->
-  
+
   Downlevel conditional comments:
-    >>> print comment(p("You are using a ", em("downlevel"), " browser."), condition='false', downlevel='revealed')
+    >>> print comment(p("You are using a ", em("downlevel"), " browser."),
+            condition='false', downlevel='revealed')
     <![if false]><p>You are using a <em>downlevel</em> browser.</p><![endif]>
-  
+
   For more on conditional comments see:
     http://msdn.microsoft.com/en-us/library/ms537512(VS.85).aspx
   '''
   ATTRIBUTE_CONDITION = 'condition'
   ATTRIBUTE_DOWNLEVEL = 'downlevel' #Valid values are 'hidden' or 'revealed'
-  
+
   def render(self, indent=1, inline=False):
     has_condition = comment.ATTRIBUTE_CONDITION in self.attributes
-    is_revealed   = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
-    
+    is_revealed   = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and \
+        self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
+
     rendered = '<!'
     if not is_revealed:
       rendered += '--'
     if has_condition:
       rendered += '[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION]
-    
+
     rendered += self._render_children(indent - 1, inline)
-    
+
     # if len(self.children) > 1:
     if any(isinstance(child, pyy_tag) for child in self):
       rendered += '\n'
       rendered += html_tag.TAB * (indent - 1)
-    
+
     if has_condition:
       rendered += '<![endif]'
     if not is_revealed:
       rendered += '--'
     rendered += '>'
-    
+
     return rendered
-  
+
   @staticmethod
   def comments2tags(data):
     '''
     Changes <!--comments--> to <comment>tags</comment> for easy parsing.
     '''
     import re
-    
+
     REPLACE = [
-      (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S), r'<comment condition="\1">\2</comment>'),
-      (re.compile(r'<!--(.*?)-->', re.S)                        , r'<comment>\1</comment>'),
-      (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif\]>', re.S)    , r'<comment condition="\1" downlevel="revealed">\2</comment>'),
+      (re.compile(r'<!--\[if (.*?)\]>(.*?)<!\[endif\]-->', re.S),
+          r'<comment condition="\1">\2</comment>'),
+      (re.compile(r'<!--(.*?)-->', re.S),
+          r'<comment>\1</comment>'),
+      (re.compile(r'<!\[if (.*?)\]>(.*?)<!\[endif\]>', re.S),
+          r'<comment condition="\1" downlevel="revealed">\2</comment>'),
     ]
-    
+
     for search, replace in REPLACE:
       data = search.sub(replace, data)
     return data

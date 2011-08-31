@@ -67,4 +67,4 @@ class cookie(object):
   __unicode__ = __str__
   
   def __repr__(self):
-    return "<pyy_web.cookie.cookie %s>" % self.render()
+    return "<pyy.web.cookie.cookie %s>" % self.render()

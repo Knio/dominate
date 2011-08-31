@@ -23,7 +23,7 @@ Public License along with pyy.  If not, see
 '''
 
 from pyy_httpserver import *
-from pyy_web        import httperror
+from pyy.web        import httperror
 
 
 class exampleserver(httpserver):   

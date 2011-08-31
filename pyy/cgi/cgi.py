@@ -83,7 +83,7 @@ if 'REQUEST_METHOD' in os.environ:
   import os
   import sys
   import imp
-  from pyy_web import *
+  from pyy.web import *
   
   fname = sys.argv[0]
   mname = os.path.basename(fname).split('.')[0]

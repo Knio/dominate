@@ -12,7 +12,7 @@ Modules
 *   `pyy_doc` - Automatic documentation generator using docstrings.
 *   `pyy.html` - Markup and document creation, validation, and rendering.
 *   `pyy_httpserver` - A lightweight and __highly experimental__ web server.
-*   `pyy_web` - HTTP helper classes and functions.
+*   `pyy.web` - HTTP helper classes and functions.
 
 Each module has a `README` which details and outlines its purpose as well as
 how to properly use it.

@@ -8,7 +8,7 @@ For an overview of the foundation of `pyy` please read the `README` for
 
 Modules
 =======
-*   `pyy_cgi` - CGI gateway.
+*   `pyy.cgi` - CGI gateway.
 *   `pyy_doc` - Automatic documentation generator using docstrings.
 *   `pyy.html` - Markup and document creation, validation, and rendering.
 *   `pyy_httpserver` - A lightweight and __highly experimental__ web server.

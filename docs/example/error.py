@@ -1,4 +1,4 @@
-from pyy_html import *
+from pyy.html import *
 ief handle_error(handler, req, res, status, *args):
   if status == 500:
     tb = res.body

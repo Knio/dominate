@@ -11,7 +11,7 @@ To run the test suite simply execute `python test.py` and it will iterate
 through the tests for each module.
 
 You can also run only the tests for a single module by passing its name as
-an argument (i.e. `python test.py pyy_html`).
+an argument (i.e. `python test.py pyy.html`).
 
 
 Developed By

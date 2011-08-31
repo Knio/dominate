@@ -6,7 +6,7 @@ docstrings that they contain.
 
 This documentation is presented as a description for the module as well as
 multiple dictionaries for the submodules, classes, functions, and constants.
-The documentation is also formatted into a `pyy_html.document` which allows
+The documentation is also formatted into a `pyy.html.document` which allows
 for easy exporting to static HTML or serving via `pyy_httpserver` (or web
 server of your choice).
 
@@ -14,7 +14,7 @@ server of your choice).
 Usage
 =====
 `pyy_doc` takes only the module name as a string and will return a
-`pyy_html.document` that has be preformatted for output but that also
+`pyy.html.document` that has be preformatted for output but that also
 contains the module's description and four dictionaries which hold the
 documentation for its submodules, classes, functions, and constants.
 
@@ -32,10 +32,10 @@ some of what it parsed:
     >>> len(d.constants)
     172
 
-Remember `d` is also a `pyy_html.document` instance so we can output static
+Remember `d` is also a `pyy.html.document` instance so we can output static
 HTML of the documentation for easier browsing.
     >>> d
-    <pyy_html.document.document "os - Documentation">
+    <pyy.html.document.document "os - Documentation">
     >>> f = open('os.html', 'w')
     >>> f.write(d.render())
     >>> f.close()

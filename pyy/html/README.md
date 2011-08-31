@@ -1,17 +1,17 @@
 About
 =====
-`pyy_html` allows for creating (X)HTML markup through the use of objects.
+`pyy.html` allows for creating (X)HTML markup through the use of objects.
 This allows you to tightly integrate (X)HTML generation into your backend
 without the need of using an intermediate templating language.
 
-`pyy_html` also provides you with helper classes for generating and parsing
+`pyy.html` also provides you with helper classes for generating and parsing
 (X)HTML documents.
 
 
 Usage
 =====
 All these examples assume you have imported the appropriate tags or entire tag
-set (i.e. `from pyy_html.html import *`).
+set (i.e. `from pyy.html.tags import *`).
 
 Hello, pyy!
 -----------
@@ -41,7 +41,7 @@ Create a simple list:
       <li>Item #3</li>
     </ul>
 
-If you are using a database or other backend to fetch data, `pyy_html` supports
+If you are using a database or other backend to fetch data, `pyy.html` supports
 iterables to help streamline your code:
     >>> print ul(li(a(name, href=link), __inline=True) for name, link in menu_items)
     <ul>
@@ -101,7 +101,7 @@ Comments can be created using objects too!
 Creating Documents
 ------------------
 Since creating the common structure of an HTML document everytime would be
-excessively tedious pyy_html provides a class to create an manage them for
+excessively tedious pyy.html provides a class to create an manage them for
 you, `document`.
 
 When you create a new document, the basic HTML tag structure is created for
@@ -119,11 +119,11 @@ The `document` class also provides helpers to allow you to access the `html`,
 `head`, and `body` elements directly.
     >>> d = document()
     >>> d.html
-    <pyy_html.html.html: 0 attributes, 2 children>
+    <pyy.html.tags.html: 0 attributes, 2 children>
     >>> d.head
-    <pyy_html.html.head: 0 attributes, 0 children>
+    <pyy.html.tags.head: 0 attributes, 0 children>
     >>> d.body
-    <pyy_html.html.body: 0 attributes, 0 children>
+    <pyy.html.tags.body: 0 attributes, 0 children>
     
 You should notice that here the `head` tag contains zero children. This is
 because the default `title` tag is only added when the document is rendered
@@ -184,11 +184,11 @@ by the DOCTYPE.
 `parse` will simply return a heirarchy of all the tags and their content that
 it can recognize in a string.
     >>> parse('<p>Hello.</p>')
-    <pyy_html.html.p: 0 attributes, 1 child>
+    <pyy.html.tags.p: 0 attributes, 1 child>
     >>> parse('<html><head><title>test</title></head><body><h1>Hi.</h1></body></html>')
-    <pyy_html.html.html: 0 attributes, 2 children>
+    <pyy.html.tags.html: 0 attributes, 2 children>
     >>> parse('<div id="first"></div><div id="second"></div>')
-    [<pyy_html.html.div: 1 attribute, 0 children>, <pyy_html.html.div: 1 attribute, 0 children>]
+    [<pyy.html.tags.div: 1 attribute, 0 children>, <pyy.html.tags.div: 1 attribute, 0 children>]
 
 Notice that if multiple top-level tags exist in the string `parse` will return
 them as an array.
@@ -196,7 +196,7 @@ them as an array.
 `pageparse` also takes a string of tags and optionally a DOCTYPE and returns a
 `document` object.
     >>> pageparse('<!DOCTYPE html><html><head><title>Test</title></head><body></body></html>')
-    <pyy_html.document.document html5 "Test">
+    <pyy.html.document.document html5 "Test">
 
 
 Developed By

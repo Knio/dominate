@@ -83,7 +83,7 @@ class document(object):
   __str__ = __unicode__ = render
   
   def __repr__(self):
-    r = '<pyy_html.document.document'
+    r = '<pyy.html.document.document'
     
     if self.doctype:
       r += ' '

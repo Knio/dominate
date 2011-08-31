@@ -22,7 +22,7 @@ import operator
 from pyy.html      import *
 from pyy.html.util import *
 
-class pyy_doc(document):
+class pyy.doc(document):
   def __init__(self, module, **kwargs):
     self.module      = module
     self.description = ''

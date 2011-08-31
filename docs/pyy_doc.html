@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>pyy_doc - Documentation</title>
+    <title>pyy.doc - Documentation</title>
     <link media="screen" href="docs.css" type="text/css" rel="stylesheet" />
   </head>
   <body>
     <div id="module-header">
-      <h1>Module pyy_doc</h1>
+      <h1>Module pyy.doc</h1>
       <pre>About
 =====
-`pyy_doc` uses reflection to generate documentation for modules based on the
+`pyy.doc` uses reflection to generate documentation for modules based on the
 docstrings that they contain.
 
 This documentation is presented as a description for the module as well as
@@ -21,14 +21,14 @@ server of your choice).
 
 Usage
 =====
-`pyy_doc` takes only the module name as a string and will return a
+`pyy.doc` takes only the module name as a string and will return a
 `pyy.html.document` that has be preformatted for output but that also
 contains the module's description and four dictionaries which hold the
 documentation for its submodules, classes, functions, and constants.
 
-Run `pyy_doc` on the `os` module to grab all its documentation and show
+Run `pyy.doc` on the `os` module to grab all its documentation and show
 some of what it parsed:
-    &gt;&gt;&gt; d = pyy_doc('os')
+    &gt;&gt;&gt; d = pyy.doc('os')
     &gt;&gt;&gt; d.description[:50]
     'OS routines for Mac, NT, or Posix depending on wha'
     &gt;&gt;&gt; len(d.submodules)
@@ -93,7 +93,7 @@ License
       <table>
         <tbody>
           <tr>
-            <td><a href="pyy_doc.documenter.html">documenter</a></td>
+            <td><a href="pyy.doc.documenter.html">documenter</a></td>
             <td>None</td>
           </tr>
         </tbody>

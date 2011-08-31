@@ -12,14 +12,14 @@ server of your choice).
 
 Usage
 =====
-`pyy_doc` takes only the module name as a string and will return a
+`pyy.doc` takes only the module name as a string and will return a
 `pyy.html.document` that has be preformatted for output but that also
 contains the module's description and four dictionaries which hold the
 documentation for its submodules, classes, functions, and constants.
 
-Run `pyy_doc` on the `os` module to grab all its documentation and show
+Run `pyy.doc` on the `os` module to grab all its documentation and show
 some of what it parsed:
-    >>> d = pyy_doc('os')
+    >>> d = pyy.doc('os')
     >>> d.description[:50]
     'OS routines for Mac, NT, or Posix depending on wha'
     >>> len(d.submodules)

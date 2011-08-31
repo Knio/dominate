@@ -16,7 +16,7 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from pyy.html.html import frameset, frame, noframes, iframe
+from pyy.html.tags import frameset, frame, noframes, iframe
 from html4strict   import html4strict, CORE, ATTRS, FLOW
 from dtd           import VALID, CHILDREN
 

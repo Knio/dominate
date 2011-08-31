@@ -17,7 +17,7 @@ Public License along with pyy. If not, see
 '''
 
 import unittest
-from pyy.html.html import *
+from pyy.html.tags import *
 from pyy.html.util import *
 
 

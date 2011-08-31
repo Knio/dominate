@@ -16,7 +16,7 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from html import html, body, head, title
+from tags import html, body, head, title
 
 class document(object):
   def __init__(self, title='PYY Page', doctype=None, request=None):

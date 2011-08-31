@@ -18,7 +18,7 @@ Public License along with pyy. If not, see
 
 import unittest
 from pyy.html.document import document
-from pyy.html.html     import body, h1, p, comment
+from pyy.html.tags     import body, h1, p, comment
 from pyy.html.util     import *
 
 

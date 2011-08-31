@@ -4,7 +4,7 @@ CHILDREN = 'children'
 DEFAULT  = 'default'
 CUSTOM   = 'custom'
  
-from pyy.html.html import html_tag, comment
+from pyy.html.tags import html_tag, comment
 
 class dtdmeta(type):
   def __init__(cls, name, bases, dictx):

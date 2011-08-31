@@ -21,7 +21,7 @@ Public License along with pyy.  If not, see
 '''
 
 import re
-import html
+import tags
 import dtd
 from document import document
 
@@ -58,7 +58,7 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
     allow_invalid_attributes = allow_invalid_markup = allow_invalid
   
   #Change comments to fake tags for easy parsing
-  data = html.comment.comments2tags(data)
+  data = tags.comment.comments2tags(data)
   
   if allow_invalid_markup:
     regex_attributes = {
@@ -75,7 +75,7 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
   r_att = re.compile(r'''(?P<name>[%(attribute_name)s]+)\s?=\s?%(attribute_quote)s(?P<value>.*?)%(attribute_quote)s''' % regex_attributes)
   
   #Used to group top-level adjacent elements
-  class dummy(html.html_tag): pass
+  class dummy(tags.html_tag): pass
   
   #Initialize tag tree stack with dummy element
   result = dummy()
@@ -106,11 +106,11 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
     if allow_invalid_markup: name = name.lower()
     
     #Check if it is a special, underscored class
-    if name in html.underscored_classes:
+    if name in tags.underscored_classes:
       name += '_'
     
     #If we are inside a <!--regular--> comment just add tags as text
-    if in_normal_comment and name != html.comment.__name__:
+    if in_normal_comment and name != tags.comment.__name__:
       text = data[match_start:match_end]
       stack[-1] += text
       if debug: print "  ADDED TEXT (2): %r" % text
@@ -131,7 +131,7 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
         preserve_whitespace -= 1
       
       #If we are popping out of a comment indicate such so tag parsing resumes
-      if type(result) == html.comment:
+      if type(result) == tags.comment:
         in_normal_comment = False
         preserve_whitespace -= 1
       
@@ -162,7 +162,7 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
       kwargs = dict(r_att.findall(match.group('attributes') or ''))
       
       #Create new object
-      new = getattr(html, name)(__invalid=allow_invalid_attributes, **kwargs)
+      new = getattr(tags, name)(__invalid=allow_invalid_attributes, **kwargs)
       stack[-1] += new
       
       #Update value of preserve_whitespace
@@ -179,7 +179,7 @@ def parse(data, start=0, debug=False, allow_invalid=False, allow_invalid_attribu
         if debug: print "  PUSHED: %s (%s)" % (name, ','.join(tag(x) for x in stack[:-1]))
         
         #If we are in a <!--regular--> comment indicate such so tag parsing ceases
-        if type(new) == html.comment and html.comment.ATTRIBUTE_CONDITION not in new:
+        if type(new) == tags.comment and tags.comment.ATTRIBUTE_CONDITION not in new:
           in_normal_comment = True
           preserve_whitespace += 1
     

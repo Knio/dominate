@@ -16,7 +16,7 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from pyy.html.html  import *
+from pyy.html.tags  import *
 from dtd            import *
 
 CORE   = set(['class', 'id', 'title'])

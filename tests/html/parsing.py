@@ -18,7 +18,7 @@ Public License along with pyy. If not, see
 
 import unittest
 from pyy.html           import dtd
-from pyy.html.html      import a, b, br, div, hr, p, comment
+from pyy.html.tags      import a, b, br, div, hr, p, comment
 from pyy.html.document  import document
 from pyy.html.parser    import parse, pageparse
 

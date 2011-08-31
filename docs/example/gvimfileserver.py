@@ -16,8 +16,8 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from pyy_httpserver import fileserver
-from pyy_httpserver import threadio
+from pyy.httpserver import fileserver
+from pyy.httpserver import threadio
 import os
 
 class gvimfileserver(fileserver):

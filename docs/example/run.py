@@ -22,7 +22,7 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from pyy_httpserver import *
+from pyy.httpserver import *
 from pyy.web        import httperror
 
 

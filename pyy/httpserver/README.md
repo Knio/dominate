@@ -1,14 +1,14 @@
 About
 =====
-`pyy_httpserver` is a lightweight, highly configurable web server written using
+`pyy.httpserver` is a lightweight, highly configurable web server written using
 stackless python for ultimate effeciency.
 
-__`pyy_httpserver` is still considered highly experimental.__
+__`pyy.httpserver` is still considered highly experimental.__
 
 
 Usage
 =====
-`pyy_httpserver` allows you to serve files with different pluggable modules
+`pyy.httpserver` allows you to serve files with different pluggable modules
 based upon a variety of conditions.
 
 The server is configured with a series of specifiers and handlers arranged in

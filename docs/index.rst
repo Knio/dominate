@@ -1,28 +1,20 @@
-Welcome to pyy
-==============
+.. pyy documentation master file, created by
+   sphinx-quickstart on Tue Sep 13 15:51:40 2011.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
-`pyy`_ is a python library designed to allow for rapid creation of HTML5
-applications through tight integration with your server-side code.
+Welcome to pyy's documentation!
+===============================
 
-.. _pyy: http://pyy.im/
-
-
-Documentation
--------------
+Contents:
 
 .. toctree::
-    :maxdepth: 2
+   :maxdepth: 2
 
-    getting_started
-    features
+Indices and tables
+==================
 
-Modules
--------
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 
-.. toctree::
-    :maxdepth: 2
-
-    module_cgi
-    module_html
-    module_server
-    module_web

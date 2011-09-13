@@ -1,4 +1,4 @@
-`pyy.server` Module
-===================
+`pyy.server`
+============
 
 Coming soon.

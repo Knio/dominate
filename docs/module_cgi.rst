@@ -1,4 +1,4 @@
-`pyy.cgi` Module
-================
+`pyy.cgi`
+=========
 
 Coming soon.

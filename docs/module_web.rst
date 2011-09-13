@@ -1,4 +1,4 @@
-`pyy.web` Module
-================
+`pyy.web`
+=========
 
 Coming soon.

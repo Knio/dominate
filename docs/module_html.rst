@@ -1,4 +1,4 @@
-`pyy.html` module
-=================
+`pyy.html`
+==========
 
 Coming soon.

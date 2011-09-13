@@ -17,7 +17,7 @@ Public License along with pyy.  If not, see
 '''
 
 import os
-from pyy.httpserver import fileserver
+from pyy.server import fileserver
 
 class syntaxfileserver(fileserver):
   def write_file(self, conn, req, res, path, *args):

@@ -1,5 +1,6 @@
-About
-=====
+pyy
+===
+
 `pyy` is a python library for creating and serving of (X)HTML pages.
 
 For an overview of the foundation of `pyy` please read the `README` for
@@ -7,19 +8,21 @@ For an overview of the foundation of `pyy` please read the `README` for
 
 
 Modules
-=======
+-------
+
 *   `pyy.cgi` - CGI gateway.
-*   `pyy.doc` - Automatic documentation generator using docstrings.
 *   `pyy.html` - Markup and document creation, validation, and rendering.
-*   `pyy.httpserver` - A lightweight and __highly experimental__ web server.
+*   `pyy.server` - A lightweight and __highly experimental__ web server.
 *   `pyy.web` - HTTP helper classes and functions.
 
 Each module has a `README` which details and outlines its purpose as well as
 how to properly use it.
 
 
+
 Developed By
 ============
+
 * Tom Flanagan - <theknio@gmail.com>
 * Jake Wharton - <jakewharton@gmail.com>
 
@@ -29,8 +32,7 @@ Git repository located at
 
 License
 =======
-    Copyright 2009 Tom Flanagan, Jake Wharton
-    
+
     This file is part of pyy.
     
     pyy is free software: you can redistribute it and/or modify

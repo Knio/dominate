@@ -94,6 +94,10 @@ class pyy_tag(object):
         obj.parent = self
         obj.setdocument(self.document)
 
+      elif isinstance(obj, dict):
+        for attr, value in obj.items():
+          self.set_attribute(*pyy_tag.clean_pair(attr, value))
+
       elif hasattr(obj, '__iter__'):
         for subobj in obj:
           self.add(subobj)

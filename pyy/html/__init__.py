@@ -232,5 +232,4 @@ License
 
 from html     import *
 from document import document
-from parser   import parse, pageparse
 import dtd

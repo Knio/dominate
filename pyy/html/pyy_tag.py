@@ -83,13 +83,9 @@ class pyy_tag(object):
         obj = str(obj)
 
       if isinstance(obj, basestring):
-        if self.document and self.document.doctype:
-          self.document.doctype.validate(self, obj)
         self.children.append(obj)
 
       elif isinstance(obj, pyy_tag):
-        if self.document and self.document.doctype:
-          self.document.doctype.validate(self, obj)
         self.children.append(obj)
         obj.parent = self
         obj.setdocument(self.document)
@@ -208,7 +204,7 @@ class pyy_tag(object):
 
     # Workaround for python keywords and standard classes/methods
     # (del, object, input)
-    if name[-1] == "_":
+    if name[-1] == '_':
       name = name[:-1]
 
     rendered = ['<', name]
@@ -216,10 +212,9 @@ class pyy_tag(object):
     for attribute, value in self.attributes.items():
       rendered.append(' %s="%s"' % (attribute, escape(str(value), True)))
 
-    if self.is_single:
-      rendered.append(' />')
-    else:
-      rendered.append('>')
+    rendered.append('>')
+
+    if not self.is_single:
       rendered.append(self._render_children(indent, inline))
 
       # if there are no children, or only 1 child that is not an html element,
@@ -235,7 +230,7 @@ class pyy_tag(object):
       rendered.append(name)
       rendered.append('>')
 
-    return ''.join(rendered)
+    return u''.join(rendered)
 
   # String and unicode representations are the same as render()
   def __unicode__(self):

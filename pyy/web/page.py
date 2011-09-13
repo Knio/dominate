@@ -1,5 +1,5 @@
-from pyy.web import *
-from pyy.html import *
+from pyy.html import document
+from pyy.html.tags import *
 
 class page(document):
   prefix  = ''
@@ -9,8 +9,8 @@ class page(document):
 
   def __init__(self, **kwargs):
     document.__init__(self, **kwargs)
-    for i in self.css:
 
+    for i in self.css:
       if self.inline:
         self.head += style(include(i), type="text/css")
       else:
@@ -52,5 +52,3 @@ class page(document):
     h(status, *args)
     res.headers['Content-Type'] = 'text/html'
     res.body = p.render()
-
-

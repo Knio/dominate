@@ -19,7 +19,7 @@ Public License along with pyy.  If not, see
 from tags import html, body, head, title
 
 class document(object):
-  def __init__(self, title='PYY Page', doctype=None, request=None):
+  def __init__(self, title='PYY Page', doctype='<!DOCTYPE html>', request=None):
     '''
     Creates a new document instance. Accepts `title`, `doctype`, and `request` keyword arguments.
     '''
@@ -32,64 +32,52 @@ class document(object):
     self._entry        = self.body
     self.title         = title
     self.request       = request
-  
+
   def add(self, obj):
     '''
     Adding tags to a document appends them to the <body>.
     '''
     return self._entry.add(obj)
-  
+
   def __iadd__(self, obj):
     self._entry += obj
     return self
-  
-  
+
+
   def _get_title(self):
     if title not in self.head:
       self.head += title('PYY Page')
     return self.head.get(title)[0].children[0]
-  
+
   def _set_title(self, value):
     if title in self.head:
       self.head.get(title)[0].children = [value]
     else:
       self.head += title(value)
-  
+
   title = property(_get_title, _set_title, None, 'Document title.')
-  
-  
+
+
   def validate(self):
     '''
-    Validates the tag tree against a DOCTYPE
+    Validates the tag tree structure and its attributes.
     '''
-    if self.doctype:
-      self.doctype.validate(self.html)
-    else:
-      raise ValueError('No DOCTYPE has been assigned.')
-  
+    self.html.validate()
+
   def render(self):
     '''
     Creates a <title> tag if not present and renders the DOCTYPE and tag tree.
     '''
-    r = ''
-    
+    r = []
+
     #Validates the tag tree and adds the doctype if one was set
     if self.doctype:
-      self.validate()
-      r += self.doctype.render() + '\n'
-    
-    r += self.html.render()
-    return r
-  __str__ = __unicode__ = render
-  
-  def __repr__(self):
-    r = '<pyy.html.document.document'
-    
-    if self.doctype:
-      r += ' '
-      r += self.doctype.__name__
-    
-    r += ' "%s">' % self.title
-    
-    return r
+      r.append(self.doctype)
+      r.append('\n')
+    r.append(self.html.render())
 
+    return u''.join(r)
+  __str__ = __unicode__ = render
+
+  def __repr__(self):
+    return '<pyy.html.document "%s">' % self.title

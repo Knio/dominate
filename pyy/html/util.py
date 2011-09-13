@@ -47,7 +47,7 @@ def system(cmd, data='', mode='t'):
 
 def escape(data, quote=True): # stoled from std lib cgi
   '''
-  escapes special characters into their html entities    
+  escapes special characters into their html entities
   Replace special characters "&", "<" and ">" to HTML-safe sequences.
   If the optional flag quote is true, the quotation mark character (")
   is also translated.
@@ -76,7 +76,7 @@ def unescape(data):
   '''
   import re
   cc = re.compile('&(?:(?:#(\d+))|([^;]+));')
-  
+
   result = []
   m = cc.search(data)
   while m:
@@ -88,10 +88,10 @@ def unescape(data):
     else:
       d = _unescape.get(m.group(2), ord('?'))
       result.append(d > 255 and unichr(d) or chr(d))
-    
+
     data = data[m.end():]
     m = cc.search(data)
-  
+
   result.append(data)
   return ''.join(result)
 
@@ -102,11 +102,11 @@ class lazy(pyy_tag):
   '''
   def __init__(self, func, *args, **kwargs):
     pyy_tag.__init__(self)
-    
+
     self.func   = func
     self.args   = args
     self.kwargs = kwargs
-  
+
   def render(self, indent=1, inline=False):
     return self.func(*self.args, **self.kwargs)
 

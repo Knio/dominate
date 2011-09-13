@@ -125,7 +125,7 @@ The `document` class also provides helpers to allow you to access the `html`,
     <pyy.html.html.head: 0 attributes, 0 children>
     >>> d.body
     <pyy.html.html.body: 0 attributes, 0 children>
-    
+
 You should notice that here the `head` tag contains zero children. This is
 because the default `title` tag is only added when the document is rendered
 and the `head` element already does not explicitly contain one.
@@ -212,24 +212,22 @@ Git repository located at
 License
 =======
     Copyright 2009 Tom Flanagan, Jake Wharton
-    
+
     This file is part of pyy.
-    
+
     pyy is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as
     published by the Free Software Foundation, either version 3 of
     the License, or (at your option) any later version.
-    
+
     pyy is distributed in the hope that it will be useful, but
     WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU Lesser General Public License for more details.
-    
+
     You should have received a copy of the GNU Lesser General
     Public License along with pyy.  If not, see
     <http://www.gnu.org/licenses/>.
 '''
 
-from html     import *
 from document import document
-import dtd

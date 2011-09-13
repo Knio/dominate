@@ -1,4 +1,4 @@
 `pyy.web`
 =========
 
-Coming soon.
+.. automodule:: pyy.web

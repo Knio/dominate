@@ -1,4 +1,4 @@
 `pyy.server`
 ============
 
-Coming soon.
+.. automodule:: pyy.server

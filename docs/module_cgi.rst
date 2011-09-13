@@ -1,4 +1,4 @@
 `pyy.cgi`
 =========
 
-Coming soon.
+.. automodule:: pyy.cgi

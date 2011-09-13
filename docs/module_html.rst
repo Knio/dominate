@@ -1,4 +1,4 @@
 `pyy.html`
 ==========
 
-Coming soon.
+.. automodule:: pyy.html

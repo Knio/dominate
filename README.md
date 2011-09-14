@@ -10,7 +10,6 @@ For an overview of the foundation of `pyy` please read the `README` for
 Modules
 -------
 
-*   `pyy.cgi` - CGI gateway.
 *   `pyy.html` - Markup and document creation, validation, and rendering.
 *   `pyy.server` - A lightweight and __highly experimental__ web server.
 *   `pyy.web` - HTTP helper classes and functions.

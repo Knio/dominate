@@ -24,15 +24,13 @@ import sys
 sys.path.insert(0, os.path.split(os.path.dirname(os.path.abspath(__file__)))[0])
 
 from unittest import defaultTestLoader, TestSuite, TextTestRunner
-import tests.cgi, tests.doc, tests.html, tests.server, tests.web
+import tests.html, tests.server, tests.web
 
 #Valid modules to test
-VALID = {'cgi'   : 1,
-         'doc'   : 2,
-         'html'  : 4,
-         'server': 8,
-         'web'   : 16,
-         'all'   : 31}
+VALID = {'html'  : 1,
+         'server': 2,
+         'web'   : 4,
+         'all'   : 7}
 
 #Default to all modules unless any arguments were passed in
 pkgs = 0 if len(sys.argv[1:]) else VALID['all']
@@ -46,8 +44,6 @@ for arg in sys.argv[1:]:
 
 #Assemble individual module tests into array
 suites = []
-if pkgs & VALID['cgi']:    suites += defaultTestLoader.loadTestsFromModule(tests.cgi)
-if pkgs & VALID['doc']:    suites += defaultTestLoader.loadTestsFromModule(tests.doc)
 if pkgs & VALID['html']:   suites += defaultTestLoader.loadTestsFromModule(tests.html)
 if pkgs & VALID['server']: suites += defaultTestLoader.loadTestsFromModule(tests.server)
 if pkgs & VALID['web']:    suites += defaultTestLoader.loadTestsFromModule(tests.web)

@@ -57,6 +57,7 @@ class html_tag(pyy_tag, dom1core):
     '''
     pyy_tag.__init__(self, *args, **kwargs)
 
+
   def validate(self):
     '''
     Validate the tag. This will check the attributes, context, and contents and
@@ -69,7 +70,6 @@ class html_tag(pyy_tag, dom1core):
     errors.extend(self.validate_content())
 
     return errors
-
 
   def validate_attributes(self):
     '''

@@ -25,12 +25,12 @@ from dom1core import dom1core
 underscored_classes = set(['del', 'input', 'map', 'object'])
 
 # Tag attributes
-GLOBAL = set([
+_ATTR_GLOBAL = set([
   'accesskey', 'class', 'class', 'contenteditable', 'contextmenu', 'dir',
   'draggable', 'id', 'item', 'hidden', 'lang', 'itemprop', 'spellcheck',
   'style', 'subject', 'tabindex', 'title'
 ])
-EVENTS = set([
+_ATTR_EVENTS = set([
   'onabort', 'onblur', 'oncanplay', 'oncanplaythrough', 'onchange', 'onclick',
   'oncontextmenu', 'ondblclick', 'ondrag', 'ondragend', 'ondragenter',
   'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'ondurationchange',
@@ -45,6 +45,11 @@ EVENTS = set([
 ])
 
 
+ERR_ATTRIBUTE = 'attributes'
+ERR_CONTEXT = 'context'
+ERR_CONTENT = 'content'
+
+
 class html_tag(pyy_tag, dom1core):
   def __init__(self, *args, **kwargs):
     '''
@@ -54,29 +59,44 @@ class html_tag(pyy_tag, dom1core):
 
   def validate(self):
     '''
-    Validate the tag. This will check the attributes, context, and contents.
+    Validate the tag. This will check the attributes, context, and contents and
+    emit tuples in the form of: element, message.
     '''
-    self.validate_attributes()
-    self.validate_context()
-    self.validate_contents()
+    errors = []
+
+    errors.extend(self.validate_attributes())
+    errors.extend(self.validate_context())
+    errors.extend(self.validate_content())
+
+    return errors
+
 
   def validate_attributes(self):
     '''
     Validate the tag attributes.
     '''
-    pass
+    return []
 
   def validate_context(self):
     '''
     Validate the tag context.
     '''
-    pass
+    return []
 
   def validate_content(self):
     '''
     Validate the content of the tag.
     '''
-    pass
+    return []
+
+  def _check_attributes(self, *attrs):
+    valid = set([])
+    for attr in attrs:
+      if hasattr(attr, '__iter__'):
+        valid |= set(attr)
+      else:
+        valid.add(attr)
+    return set(list(self.attributes.iterkeys())) - valid
 
 
 
@@ -90,7 +110,22 @@ class html(html_tag):
   '''
   The html element represents the root of an HTML document.
   '''
-  pass
+  def validate_attributes(self):
+    errors = []
+    for invalid in self._check_attributes(_ATTR_GLOBAL, 'manifest'):
+      errors.append( (self, ERR_ATTRIBUTE, 'Invalid attribute: "%s"' % invalid) )
+    return errors
+
+  def validate_context(self):
+    if self.parent is not None and not isinstance(self.parent, iframe):
+      return [(self, ERR_CONTEXT, 'Must be root element or child of an <iframe>')]
+    return []
+
+  def validate_content(self):
+    if len(self) != 2 or not isinstance(self[0], head) or not isinstance(self[1], body):
+      return [(self, ERR_CONTENT, 'Children must be <head> and then <body>.')]
+    return []
+
 
 
 # Document metadata

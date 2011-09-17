@@ -59,6 +59,7 @@ class pyy_tag(object):
   def __enter__(self):
     ctx = pyy_tag._with_contexts[threading.current_thread()]
     ctx.append(([], set()))
+    return self
 
   def __exit__(self, type, value, traceback):
     ctx = pyy_tag._with_contexts[threading.current_thread()]

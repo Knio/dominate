@@ -295,7 +295,7 @@ class pyy_tag(object):
     # Workaround for python's reserved words
     if attribute[0] == '_': attribute = attribute[1:]
     # Workaround for inability to use colon in python keywords
-    if attribute in set(['http_equiv']) or attribute.startswith('data-'):
+    if attribute in set(['http_equiv']) or attribute.startswith('data_'):
       return attribute.replace('_', '-').lower()
     return attribute.replace('_', ':').lower()
 

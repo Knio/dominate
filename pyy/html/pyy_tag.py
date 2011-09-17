@@ -17,7 +17,8 @@ Public License along with pyy.  If not, see
 '''
 
 import numbers
-
+from collections import defaultdict
+import threading
 
 class pyy_tag(object):
   TAB = '  '
@@ -49,6 +50,24 @@ class pyy_tag(object):
     for attr, value in kwargs.items():
       self.set_attribute(*pyy_tag.clean_pair(attr, value))
 
+    ctx = pyy_tag._with_contexts[threading.current_thread()]
+    if ctx and ctx[-1]:
+      ctx[-1][0].append(self)
+
+  _with_contexts = defaultdict(list)
+
+  def __enter__(self):
+    ctx = pyy_tag._with_contexts[threading.current_thread()]
+    ctx.append(([], set()))
+
+  def __exit__(self, type, value, traceback):
+    ctx = pyy_tag._with_contexts[threading.current_thread()]
+    items, used = ctx[-1]
+    ctx[-1] = None
+    for item in items:
+      if item in used: continue
+      self.add(items)
+    ctx.pop()
 
   def set_attribute(self, key, value):
     '''
@@ -86,9 +105,13 @@ class pyy_tag(object):
         self.children.append(obj)
 
       elif isinstance(obj, pyy_tag):
+        ctx = pyy_tag._with_contexts[threading.current_thread()]
+        if ctx and ctx[-1]:
+          ctx[-1][1].add(obj)
         self.children.append(obj)
         obj.parent = self
         obj.setdocument(self.document)
+
 
       elif isinstance(obj, dict):
         for attr, value in obj.items():

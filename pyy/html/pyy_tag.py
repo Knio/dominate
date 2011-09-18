@@ -66,7 +66,7 @@ class pyy_tag(object):
     ctx[-1] = None
     for item in items:
       if item in used: continue
-      self.add(items)
+      self.add(item)
     ctx.pop()
 
   def set_attribute(self, key, value):
@@ -283,7 +283,7 @@ class pyy_tag(object):
     children = '%s child' % children_len
     if children_len != 1: children += 'ren'
 
-    return '<%s: %s, %s>' % (name, attributes, children)
+    return '<%s at %x: %s, %s>' % (name, id(self), attributes, children)
 
   @staticmethod
   def clean_attribute(attribute):

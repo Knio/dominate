@@ -59,6 +59,7 @@ class pyy_tag(object):
   def __enter__(self):
     ctx = pyy_tag._with_contexts[threading.current_thread()]
     ctx.append(([], set()))
+    return self
 
   def __exit__(self, type, value, traceback):
     ctx = pyy_tag._with_contexts[threading.current_thread()]
@@ -295,7 +296,7 @@ class pyy_tag(object):
     # Workaround for python's reserved words
     if attribute[0] == '_': attribute = attribute[1:]
     # Workaround for inability to use colon in python keywords
-    if attribute in set(['http_equiv']):
+    if attribute in set(['http_equiv']) or attribute.startswith('data_'):
       return attribute.replace('_', '-').lower()
     return attribute.replace('_', ':').lower()
 

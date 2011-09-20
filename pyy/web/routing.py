@@ -14,6 +14,18 @@ def post(regex):
     return func
   return inner
 
+def put(regex):
+  def inner(func):
+    _routes.append(regex_router(func, regex, 'PUT'))
+    return func
+  return inner
+
+def delete(regex):
+  def inner(func):
+    _routes.append(regex_router(func, regex, 'DELETE'))
+    return func
+  return inner
+
 def directory(root):
   def inner(func):
     _routes.append(directory_router(func, root))

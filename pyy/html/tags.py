@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General
 Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
-from pyy_tag  import pyy_tag
+from pyy_tag  import pyy_tag, attr
 from dom1core import dom1core
 
 

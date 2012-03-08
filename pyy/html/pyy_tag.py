@@ -17,7 +17,7 @@ Public License along with pyy.  If not, see
 '''
 
 import numbers
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 import threading
 
 class pyy_tag(object):
@@ -25,6 +25,8 @@ class pyy_tag(object):
 
   is_single = False #Tag does not require matching end tag (ex. <hr/>)
   is_pretty = True  #Text inside the tag should be left as-is (ex. <pre>)
+
+  frame = namedtuple('frame', ['tag', 'items', 'used'])
 
   def __init__(self, *args, **kwargs):
     '''
@@ -41,7 +43,7 @@ class pyy_tag(object):
     self.parent     = None
     self.document   = None
 
-    #Does not insert newlines on all children if True (recursive attribute)
+    # Does not insert newlines on all children if True (recursive attribute)
     self.do_inline = kwargs.pop('__inline', False)
 
     #Add child elements
@@ -52,18 +54,19 @@ class pyy_tag(object):
 
     ctx = pyy_tag._with_contexts[threading.current_thread()]
     if ctx and ctx[-1]:
-      ctx[-1][0].append(self)
+      ctx[-1].items.append(self)
 
+  # stack of (root_tag, [new_tags], set(used_tags))
   _with_contexts = defaultdict(list)
 
   def __enter__(self):
     ctx = pyy_tag._with_contexts[threading.current_thread()]
-    ctx.append(([], set()))
+    ctx.append(pyy_tag.frame(self, [], set()))
     return self
 
   def __exit__(self, type, value, traceback):
     ctx = pyy_tag._with_contexts[threading.current_thread()]
-    items, used = ctx[-1]
+    slf, items, used = ctx[-1]
     ctx[-1] = None
     for item in items:
       if item in used: continue
@@ -108,7 +111,7 @@ class pyy_tag(object):
       elif isinstance(obj, pyy_tag):
         ctx = pyy_tag._with_contexts[threading.current_thread()]
         if ctx and ctx[-1]:
-          ctx[-1][1].add(obj)
+          ctx[-1].used.add(obj)
         self.children.append(obj)
         obj.parent = self
         obj.setdocument(self.document)
@@ -293,8 +296,14 @@ class pyy_tag(object):
     underscores. Python also does not support colons in keywords so underscores
     mid-attribute are replaced with colons.
     '''
+    # shorthand
+    attribute = {
+      'cls':'class',
+    }.get(attribute, attribute)
+
     # Workaround for python's reserved words
     if attribute[0] == '_': attribute = attribute[1:]
+
     # Workaround for inability to use colon in python keywords
     if attribute in set(['http_equiv']) or attribute.startswith('data_'):
       return attribute.replace('_', '-').lower()
@@ -316,6 +325,19 @@ class pyy_tag(object):
       value = attribute
 
     return (attribute, value)
+
+
+def attr(**kwargs):
+  '''
+  Set attributes on the current active tag context
+  '''
+  ctx = pyy_tag._with_contexts[threading.current_thread()]
+  if ctx and ctx[-1]:
+    for attr, value in kwargs.items():
+      ctx[-1].tag.set_attribute(*pyy_tag.clean_pair(attr, value))
+  else:
+    raise ValueError('not in a tag context')
+
 
 # escape() is used in render
 from util import escape

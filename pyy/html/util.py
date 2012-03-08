@@ -110,3 +110,13 @@ class lazy(pyy_tag):
   def render(self, indent=1, inline=False):
     return self.func(*self.args, **self.kwargs)
 
+class text(pyy_tag):
+  '''
+  Just a string. useful for inside context managers
+  '''
+  def __init__(self, text):
+    pyy_tag.__init__(self)
+    self.text = text
+
+  def render(self, indent, inline):
+    return self.text

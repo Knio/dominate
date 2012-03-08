@@ -57,6 +57,11 @@ class document(object):
 
   title = property(_get_title, _set_title, None, 'Document title.')
 
+  def __enter__(self):
+    return self._entry.__enter__()
+
+  def __exit__(self, *args):
+    return self._entry.__exit__(*args)
 
   def validate(self):
     '''

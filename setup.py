@@ -16,30 +16,18 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-import sys
-import os
-
-try:
-  import ez_setup
-  ez_setup.use_setuptools()
-except ImportError:
-  pass
-
 from setuptools import setup, find_packages
 
 
-#Try to get a more accurate description of the version (mostly used for development)
-try:
-  version = os.popen('git describe').read().strip()
-except:
-  version = '1.0.1'
+version = '1.1.1'
 
 
 setup(
   name    = 'pyy',
   version = version,
   author  = 'Tom Flanagan and Jake Wharton',
-  license = 'LGPL',
+  author_email = 'theknio@gmail.com',
+  license = 'LICENSE.txt',
   
   url          = 'http://github.com/Knio/pyy/',
   download_url = 'http://github.com/Knio/pyy/tarball/'+version,
@@ -55,9 +43,8 @@ setup(
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     'Intended Audience :: Developers',
   ],
-  
   packages   = find_packages(),
-  py_modules = ['ez_setup'],
-  
+  install_requires = [],
   include_package_data = True,
 )
+

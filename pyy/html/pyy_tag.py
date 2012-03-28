@@ -324,6 +324,9 @@ class pyy_tag(object):
     if value is True:
       value = attribute
 
+    if value is False:
+      value = "false"
+
     return (attribute, value)
 
 

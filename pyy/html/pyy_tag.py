@@ -20,11 +20,12 @@ import numbers
 from collections import defaultdict, namedtuple
 import threading
 
+
 class pyy_tag(object):
   TAB = '  '
 
-  is_single = False #Tag does not require matching end tag (ex. <hr/>)
-  is_pretty = True  #Text inside the tag should be left as-is (ex. <pre>)
+  is_single = False  # Tag does not require matching end tag (ex. <hr/>)
+  is_pretty = True   # Text inside the tag should be left as-is (ex. <pre>)
 
   frame = namedtuple('frame', ['tag', 'items', 'used'])
 
@@ -106,7 +107,7 @@ class pyy_tag(object):
         obj = str(obj)
 
       if isinstance(obj, basestring):
-        self.children.append(obj)
+        self.children.append(escape(obj))
 
       elif isinstance(obj, pyy_tag):
         ctx = pyy_tag._with_contexts[threading.current_thread()]
@@ -116,7 +117,6 @@ class pyy_tag(object):
         obj.parent = self
         obj.setdocument(self.document)
 
-
       elif isinstance(obj, dict):
         for attr, value in obj.items():
           self.set_attribute(*pyy_tag.clean_pair(attr, value))
@@ -125,7 +125,7 @@ class pyy_tag(object):
         for subobj in obj:
           self.add(subobj)
 
-      else: # wtf is it?
+      else:  # wtf is it?
         raise ValueError('%r not a tag or string.' % obj)
 
 
@@ -133,6 +133,9 @@ class pyy_tag(object):
       return args[0]
 
     return args
+
+  def add_raw_string(self, s):
+    self.children.append(s)
 
   def clear(self):
     for i in self.children:

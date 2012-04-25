@@ -19,7 +19,7 @@ Public License along with pyy.  If not, see
 from setuptools import setup, find_packages
 
 
-version = '1.1.1'
+version = '1.1.2'
 
 
 setup(
@@ -28,14 +28,14 @@ setup(
   author  = 'Tom Flanagan and Jake Wharton',
   author_email = 'theknio@gmail.com',
   license = 'LICENSE.txt',
-  
+
   url          = 'http://github.com/Knio/pyy/',
   download_url = 'http://github.com/Knio/pyy/tarball/'+version,
-  
+
   description      = 'Python library for creating (X)HTML pages with the use of objects.',
   long_description = 'Python library for creating (X)HTML pages with the use of objects. This allows you to tightly integrate (X)HTML generation into your backend without the need of using an intermediate templating language.',
   keywords         = 'framework templating template html xhtml python html5',
-  
+
   classifiers = [
     'Programming Language :: Python',
     'Operating System :: OS Independent',

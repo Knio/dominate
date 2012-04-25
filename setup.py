@@ -16,10 +16,10 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
+# http://guide.python-distribute.org/creation.html
 from setuptools import setup, find_packages
 
-
-version = '1.1.2'
+version = '1.1.4'
 
 
 setup(
@@ -30,7 +30,7 @@ setup(
   license = 'LICENSE.txt',
 
   url          = 'http://github.com/Knio/pyy/',
-  download_url = 'http://github.com/Knio/pyy/tarball/'+version,
+  download_url = 'http://github.com/Knio/pyy/tarball/' + version,
 
   description      = 'Python library for creating (X)HTML pages with the use of objects.',
   long_description = 'Python library for creating (X)HTML pages with the use of objects. This allows you to tightly integrate (X)HTML generation into your backend without the need of using an intermediate templating language.',
@@ -47,4 +47,3 @@ setup(
   install_requires = [],
   include_package_data = True,
 )
-

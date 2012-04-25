@@ -26,6 +26,8 @@ class pyy_tag(object):
 
   is_single = False  # Tag does not require matching end tag (ex. <hr/>)
   is_pretty = True   # Text inside the tag should be left as-is (ex. <pre>)
+                     # otherwise, text will be escaped() and whitespace may be
+                     # modified
 
   frame = namedtuple('frame', ['tag', 'items', 'used'])
 
@@ -107,7 +109,9 @@ class pyy_tag(object):
         obj = str(obj)
 
       if isinstance(obj, basestring):
-        self.children.append(escape(obj))
+        if self.is_pretty:
+          obj = escape(obj)
+        self.children.append(obj)
 
       elif isinstance(obj, pyy_tag):
         ctx = pyy_tag._with_contexts[threading.current_thread()]

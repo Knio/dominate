@@ -69,7 +69,7 @@ class document(object):
     '''
     self.html.validate()
 
-  def render(self):
+  def render(self, *args, **kwargs):
     '''
     Creates a <title> tag if not present and renders the DOCTYPE and tag tree.
     '''
@@ -79,7 +79,7 @@ class document(object):
     if self.doctype:
       r.append(self.doctype)
       r.append('\n')
-    r.append(self.html.render())
+    r.append(self.html.render(*args, **kwargs))
 
     return u''.join(r)
   __str__ = __unicode__ = render

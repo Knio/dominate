@@ -234,7 +234,8 @@ class pyy_tag(object):
     '''
     inline = self.do_inline or inline
 
-    name = type(self).__name__
+    t = type(self)
+    name = getattr(t, 'tagname', t.__name__)
 
     # Workaround for python keywords and standard classes/methods
     # (del, object, input)

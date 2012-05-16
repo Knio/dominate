@@ -860,6 +860,7 @@ class input(html_tag):
   to allow the user to edit the data.
   '''
   is_single = True
+_input = input_ = input
 
 class button(html_tag):
   '''

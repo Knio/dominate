@@ -20,6 +20,14 @@ import numbers
 from collections import defaultdict, namedtuple
 import threading
 
+def _get_thread_context():
+  context = [threading.current_thread()]
+  try:
+    import greenlet
+    context.append(greenlet.getcurrent())
+  except:
+    pass
+  return hash(tuple(context))
 
 class pyy_tag(object):
   TAB = '  '
@@ -55,7 +63,7 @@ class pyy_tag(object):
     for attr, value in kwargs.items():
       self.set_attribute(*pyy_tag.clean_pair(attr, value))
 
-    ctx = pyy_tag._with_contexts[threading.current_thread()]
+    ctx = pyy_tag._with_contexts[_get_thread_context()]
     if ctx and ctx[-1]:
       ctx[-1].items.append(self)
 
@@ -63,12 +71,12 @@ class pyy_tag(object):
   _with_contexts = defaultdict(list)
 
   def __enter__(self):
-    ctx = pyy_tag._with_contexts[threading.current_thread()]
+    ctx = pyy_tag._with_contexts[_get_thread_context()]
     ctx.append(pyy_tag.frame(self, [], set()))
     return self
 
   def __exit__(self, type, value, traceback):
-    ctx = pyy_tag._with_contexts[threading.current_thread()]
+    ctx = pyy_tag._with_contexts[_get_thread_context()]
     slf, items, used = ctx[-1]
     ctx[-1] = None
     for item in items:
@@ -114,7 +122,7 @@ class pyy_tag(object):
         self.children.append(obj)
 
       elif isinstance(obj, pyy_tag):
-        ctx = pyy_tag._with_contexts[threading.current_thread()]
+        ctx = pyy_tag._with_contexts[_get_thread_context()]
         if ctx and ctx[-1]:
           ctx[-1].used.add(obj)
         self.children.append(obj)
@@ -342,7 +350,7 @@ def attr(**kwargs):
   '''
   Set attributes on the current active tag context
   '''
-  ctx = pyy_tag._with_contexts[threading.current_thread()]
+  ctx = pyy_tag._with_contexts[_get_thread_context()]
   if ctx and ctx[-1]:
     for attr, value in kwargs.items():
       ctx[-1].tag.set_attribute(*pyy_tag.clean_pair(attr, value))

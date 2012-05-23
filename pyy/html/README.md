@@ -37,7 +37,8 @@ Create a simple list:
 
     >>> list = ul()
     >>> for item in range(4):
-    >>>   list += li('Item #', item)
+    ...   list += li('Item #', item)
+    ...
     >>> print list
     <ul>
       <li>Item #0</li>
@@ -99,6 +100,14 @@ You can modify the attributes of tags through a dictionary-like interface:
     >>> print header
     <div id="header"></div>
 
+Or the children of a tag though an array-line interface:
+
+    >>> header = div('Test')
+    >>> header[0] = 'Hello World'
+    >>> print header
+    <div>Hello World</div>
+
+
 Comments can be created using objects too!
 
     >>> print comment('BEGIN HEADER')
@@ -107,6 +116,75 @@ Comments can be created using objects too!
     <!--[if lt IE9]>
     <p>Upgrade to newer IE!</p>
     <![endif]-->
+
+
+Context Managers
+----------------
+
+You can also add child elements using python's `with` statement:
+
+    >>> h = ul()
+    >>> with h:
+    ...   li('One')
+    ...   li('Two')
+    ...   li('Three')
+    ...
+    >>>
+    >>> print h
+    <ul>
+      <li>One</li>
+      <li>Two</li>
+      <li>Three</li>
+    </ul>
+
+
+You can use this along with the other mechanisms of adding children elements,
+including nesting `with` statements, and it works as expected:
+
+    >>> h = html()
+    >>> with h.add(body()).add(div(id='content')):
+    >>>   h1('Hello World!')
+    >>>   p('Lorem ipsum ...')
+    >>>   with table().add(tbody()):
+    ...     l = tr()
+    ...     l += td('One')
+    ...     l.add(td('Two'))
+    ...     with l:
+    ...       td('Three')
+    ...
+    >>>
+    >>> print h
+    <html>
+      <body>
+        <div id="content">
+          <h1>Hello World!</h1>
+          <p>Lorem ipsum ...</p>
+          <table>
+            <tbody>
+              <tr>
+                <td>One</td>
+                <td>Two</td>
+                <td>Three</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </body>
+    </html>
+
+
+When the context is closed, any elements that were not already added to
+something get added to the current context.
+
+Attributes can be added to the current context with the `attr` function:
+
+    >>> d = div()
+    >>> with d:
+    ...   attr(id='header')
+    ...
+    >>>
+    >>> print d
+    <div id="header"></div>
 
 
 Creating Documents
@@ -139,7 +217,7 @@ The `document` class also provides helpers to allow you to access the `html`,
     <pyy.html.tags.head: 0 attributes, 0 children>
     >>> d.body
     <pyy.html.tags.body: 0 attributes, 0 children>
-    
+
 You should notice that here the `head` tag contains zero children. This is
 because the default `title` tag is only added when the document is rendered
 and the `head` element already does not explicitly contain one.
@@ -161,3 +239,4 @@ elements to the `body` tag.
         <p>This is a paragraph.</p>
       </body>
     </html>
+

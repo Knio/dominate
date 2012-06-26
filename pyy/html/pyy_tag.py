@@ -287,7 +287,7 @@ class pyy_tag(object):
     rendered = ['<', name]
 
     for attribute, value in self.attributes.items():
-      rendered.append(' %s="%s"' % (attribute, escape(str(value), True)))
+      rendered.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
 
     rendered.append('>')
 

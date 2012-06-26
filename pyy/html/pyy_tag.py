@@ -18,7 +18,9 @@ Public License along with pyy.  If not, see
 
 import numbers
 from collections import defaultdict, namedtuple
+from functools import wraps
 import threading
+
 
 def _get_thread_context():
   context = [threading.current_thread()]
@@ -29,8 +31,9 @@ def _get_thread_context():
     pass
   return hash(tuple(context))
 
+
 class pyy_tag(object):
-  TAB = '  '
+  TAB = '  '  # TODO make this a parameter to render(), and a tag.
 
   is_single = False  # Tag does not require matching end tag (ex. <hr/>)
   is_pretty = True   # Text inside the tag should be left as-is (ex. <pre>)
@@ -38,6 +41,22 @@ class pyy_tag(object):
                      # modified
 
   frame = namedtuple('frame', ['tag', 'items', 'used'])
+
+  def __new__(_cls, *args, **kwargs):
+    '''
+    Check if bare tag is being used a a decorator.
+    decorate the function and return
+    '''
+    if len(args) == 1 and callable(args[0]) \
+        and not isinstance(args[0], pyy_tag) and not kwargs:
+      wrapped = args[0]
+
+      @wraps(wrapped)
+      def f(*args, **kwargs):
+        with _cls() as _tag:
+          return wrapped(*args, **kwargs) or _tag
+      return f
+    return object.__new__(_cls)
 
   def __init__(self, *args, **kwargs):
     '''
@@ -49,6 +68,7 @@ class pyy_tag(object):
     * `__inline` - Boolean value. If True renders all children tags on the same
                    line.
     '''
+
     self.attributes = {}
     self.children   = []
     self.parent     = None
@@ -84,6 +104,19 @@ class pyy_tag(object):
       self.add(item)
     ctx.pop()
 
+  def __call__(self, func):
+    '''
+    tag instance is being used as a decorator.
+    wrap func to make a copy of this tag
+    '''
+    @wraps(func)
+    def f(*args, **kwargs):
+      with type(self)() as _tag:
+        _tag.children = self.children[:]
+        _tag.attributes = dict(self.attributes)
+        return func(*args, **kwargs) or _tag
+    return f
+
   def set_attribute(self, key, value):
     '''
     Add or update the value of an attribute.
@@ -102,10 +135,12 @@ class pyy_tag(object):
     Creates a reference to the parent document to allow for partial-tree
     validation.
     '''
-    self.document = doc
-    for i in self.children:
-      if not isinstance(i, pyy_tag): return
-      i.setdocument(doc)
+    # assume that a document is correct in the subtree
+    if self.document != doc:
+      self.document = doc
+      for i in self.children:
+        if not isinstance(i, pyy_tag): return
+        i.setdocument(doc)
 
   def add(self, *args):
     '''
@@ -139,7 +174,6 @@ class pyy_tag(object):
 
       else:  # wtf is it?
         raise ValueError('%r not a tag or string.' % obj)
-
 
     if len(args) == 1:
       return args[0]
@@ -181,10 +215,10 @@ class pyy_tag(object):
         results.extend(child.get(tag, **kwargs))
     return results
 
-
   def __getitem__(self, key):
     '''
-    Returns the stored value of the specified attribute or child (if it exists).
+    Returns the stored value of the specified attribute or child
+    (if it exists).
     '''
     if isinstance(key, int):
       # Children are accessed using integers
@@ -314,7 +348,7 @@ class pyy_tag(object):
     '''
     # shorthand
     attribute = {
-      'cls':'class',
+      'cls': 'class',
     }.get(attribute, attribute)
 
     # Workaround for python's reserved words
@@ -360,4 +394,3 @@ def attr(**kwargs):
 
 # escape() is used in render
 from util import escape
-

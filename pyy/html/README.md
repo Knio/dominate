@@ -143,9 +143,9 @@ including nesting `with` statements, and it works as expected:
 
     >>> h = html()
     >>> with h.add(body()).add(div(id='content')):
-    >>>   h1('Hello World!')
-    >>>   p('Lorem ipsum ...')
-    >>>   with table().add(tbody()):
+    ...   h1('Hello World!')
+    ...   p('Lorem ipsum ...')
+    ...   with table().add(tbody()):
     ...     l = tr()
     ...     l += td('One')
     ...     l.add(td('Two'))
@@ -185,6 +185,62 @@ Attributes can be added to the current context with the `attr` function:
     >>>
     >>> print d
     <div id="header"></div>
+
+
+Decorators
+----------
+
+Pyy is great for creating reusable widgets for parts of your page. Consider
+this example:
+
+    >>> def greeting(name):
+    ...     with div() as d
+    ...         p('Hello, %s' % name)
+    ...     return d
+    ...
+    ...
+    >>> print greeting('Bob')
+    <div>
+      <p>Hello, Bob</p>
+    </div>
+    >>>
+
+You can see the following pattern being repeated here:
+
+    def widget(parameters):
+      with tag() as t:
+          ...
+      return t
+
+This boilerplate can be avoided by using tags (objects and instances)
+as decorators
+
+    >>> @div
+    ... def greeting(name):
+    ...     p('Hello %s' % name)
+    ...
+    ...
+    >>> print greeting('Bob')
+    <div>
+      <p>Hello Bob</p>
+    </div>
+    >>>
+
+
+You can also use instances of tags as decorators:
+
+    >>> @div(h2('Welcome'), cls='greeting')
+    ... def greeting(name):
+    ...     p('Hello %s' % name)
+    ...
+    ...
+    >>> print greeting('Bob')
+    <div class="greeting">
+      <h2>Welcome</h2>
+      <p>Hello Bob</p>
+    </div>
+    >>>
+
 
 
 Creating Documents

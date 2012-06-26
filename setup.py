@@ -19,7 +19,7 @@ Public License along with pyy.  If not, see
 # http://guide.python-distribute.org/creation.html
 from setuptools import setup, find_packages
 
-version = '1.1.8'
+version = '1.1.9'
 
 
 setup(

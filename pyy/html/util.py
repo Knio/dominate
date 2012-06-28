@@ -20,6 +20,7 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
+import re
 from pyy_tag import pyy_tag
 
 
@@ -45,36 +46,39 @@ def system(cmd, data='', mode='t'):
   return fout.read()
 
 
-def escape(data, quote=True): # stoled from std lib cgi
+def escape(data, quote=True):  # stoled from std lib cgi
   '''
-  escapes special characters into their html entities
+  Escapes special characters into their html entities
   Replace special characters "&", "<" and ">" to HTML-safe sequences.
   If the optional flag quote is true, the quotation mark character (")
   is also translated.
+
+  This is used to escape content that appears in the body of an HTML cocument
   '''
-  data = data.replace("&", "&amp;") # Must be done first!
+  data = data.replace("&", "&amp;")  # Must be done first!
   data = data.replace("<", "&lt;")
   data = data.replace(">", "&gt;")
   if quote:
     data = data.replace('"', "&quot;")
   return data
 
-_unescape = {'quot' :34,
-             'amp'  :38,
-             'lt'   :60,
-             'gt'   :62,
-             'nbsp' :32,
-             # more here
-             # http://www.w3.org/TR/html4/sgml/entities.html
-             'yuml' :255
-             }
+
+_unescape = {
+  'quot': 34,
+  'amp':  38,
+  'lt':   60,
+  'gt':   62,
+  'nbsp': 32,
+  # more here
+  # http://www.w3.org/TR/html4/sgml/entities.html
+  'yuml': 255,
+}
 
 
 def unescape(data):
   '''
   unescapes html entities. the opposite of escape.
   '''
-  import re
   cc = re.compile('&(?:(?:#(\d+))|([^;]+));')
 
   result = []
@@ -96,6 +100,19 @@ def unescape(data):
   return ''.join(result)
 
 
+_reserved = ";/?:@&=+$, "
+_replace_map = dict((c, '%%%2X' % ord(c)) for c in _reserved)
+
+
+def url_escape(data):
+  return ''.join(_replace_map.get(c, c) for c in data)
+
+
+def url_unescape(data):
+  return re.sub('%([0-9a-fA-F]{2})',
+    lambda m: chr(int(m.group(1), 16)), data)
+
+
 class lazy(pyy_tag):
   '''
   delays function execution until rendered
@@ -109,6 +126,7 @@ class lazy(pyy_tag):
 
   def render(self, indent=1, inline=False):
     return self.func(*self.args, **self.kwargs)
+
 
 class text(pyy_tag):
   '''

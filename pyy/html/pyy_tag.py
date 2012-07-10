@@ -223,13 +223,13 @@ class pyy_tag(object):
     if isinstance(key, int):
       # Children are accessed using integers
       try:
-        return self.children[key]
+        return object.__getattribute__(self, 'children')[key]
       except KeyError:
         raise IndexError('Child with index "%s" does not exist.' % key)
     elif isinstance(key, basestring):
       # Attributes are accessed using strings
       try:
-        return self.attributes[key]
+        return object.__getattribute__(self, 'attributes')[key]
       except KeyError:
         raise AttributeError('Attribute "%s" does not exist.' % key)
     else:

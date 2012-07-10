@@ -680,13 +680,14 @@ class embed(html_tag):
   '''
   is_single = True
 
-class object(html_tag):
+class object_(html_tag):
   '''
   The object element can represent an external resource, which, depending on
   the type of the resource, will either be treated as an image, as a nested
   browsing context, or as an external resource to be processed by a plugin.
   '''
   pass
+_object = object_
 
 class param(html_tag):
   '''
@@ -854,13 +855,13 @@ class label(html_tag):
   '''
   pass
 
-class input(html_tag):
+class input_(html_tag):
   '''
   The input element represents a typed data field, usually with a form control
   to allow the user to edit the data.
   '''
   is_single = True
-_input = input_ = input
+input = _input = input_
 
 class button(html_tag):
   '''

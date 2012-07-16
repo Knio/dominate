@@ -156,3 +156,4 @@ Public License along with pyy. If not, see
 
 from httpmessage import *
 from page import page
+from url import url

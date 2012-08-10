@@ -1,66 +1,40 @@
 import re
+import os
+import imp
 
-_routes = []
+'''
+Recursive routing utility
 
-def get(regex):
-  def inner(func):
-    _routes.append(regex_router(func, regex, 'GET'))
-    return func
-  return inner
+A config object is a list of (key, handler) tuples
 
-def post(regex):
-  def inner(func):
-    _routes.append(regex_router(func, regex, 'POST'))
-    return func
-  return inner
+If multiple handlers would match, the last one is chosen
 
-def put(regex):
-  def inner(func):
-    _routes.append(regex_router(func, regex, 'PUT'))
-    return func
-  return inner
+A key can be:
 
-def delete(regex):
-  def inner(func):
-    _routes.append(regex_router(func, regex, 'DELETE'))
-    return func
-  return inner
+  1) A regex
+      The key matches if the regex matches the URL given
 
-def directory(root):
-  def inner(func):
-    _routes.append(directory_router(func, root))
-    return func
-  return inner
+  2) An httperror instance
 
 
-class router(object):
-  def match(self, uri, method):
-    return False
 
-class regex_router(router):
-  def __init__(self, func, regex, method=None):
-    self.func = func
-    self.regex = re.compile(regex)
-    self.method = method
+A handler object can be:
 
-  def match(self, uri, method):
-    if self.method is None or method is self.method:
-      return bool(self.regex.match(uri))
-    return False
-
-class directory_router(router):
-  def __init__(self, func, root):
-    self.func = func
-    self.root = root
+  1) An array
+      The part of the URL that matches the regex will be stripped off,
+      and the router will search recursively on the rest using the array
+      as the new config object
 
 
-def match(uri, method):
-  for route in _routes:
-    #TODO handle non-router instances
-    if route.match(uri, method) and route.func:
-        return route.func
-  return _default
+
+'''
 
 
-def _default(*args):
-  return 'No routes specified'
+route = [
+  ('^/')
+
+]
+
+def route(config, url):
+  pass
+

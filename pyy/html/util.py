@@ -128,9 +128,11 @@ class lazy(pyy_tag):
     return self.func(*self.args, **self.kwargs)
 
 
+# TODO rename this to raw?
 class text(pyy_tag):
   '''
   Just a string. useful for inside context managers
+  Note: this will not escape HTML, it is a raw passthrough
   '''
   def __init__(self, text):
     pyy_tag.__init__(self)

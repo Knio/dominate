@@ -488,13 +488,14 @@ class abbr(html_tag):
   '''
   pass
 
-class time(html_tag):
+class time_(html_tag):
   '''
   The time element represents either a time on a 24 hour clock, or a precise
   date in the proleptic Gregorian calendar, optionally with a time and a
   time-zone offset.
   '''
   pass
+_time = time_
 
 class code(html_tag):
   '''

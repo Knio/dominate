@@ -16,5 +16,5 @@ Public License along with pyy. If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from resolvers import ResolverTests
+# from resolvers import ResolverTests
 from cookies   import CookieTests

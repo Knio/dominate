@@ -1,9 +1,12 @@
+import logging
+import random
+
 import tornado.web
 import tornado
 
-import logging
 
-log = logging.getLogger('server')
+log = logging.getLogger('pyy.tornado_simple_server')
+log.addHandler(logging.NullHandler())
 
 __all__ = ['Server', 'get', 'post', 'add_route', 'server']
 
@@ -11,6 +14,7 @@ class Server(object):
     def __init__(self):
         self.routes = [];
         self.port = 8888
+        self.cookie_secret = '%x' % random.getrandbits(256)
 
     def make_handler(self, method, func):
         class TornadoHandler(tornado.web.RequestHandler):
@@ -30,7 +34,15 @@ class Server(object):
         return TornadoHandler
 
     def add_route(self, *args):
+        '''
+        Add a
+        '''
         self.routes.append(args)
+
+    def add_static_route(self, route, path):
+        self.add_route(route,
+            tornado.web.StaticFileHandler,
+            dict(path=path))
 
     def get(self, url):
         def f(func):
@@ -50,20 +62,23 @@ class Server(object):
         self.application = tornado.web.Application(
             self.routes,
             gzip=True, debug=False,
-            cookie_secret='asddfsdfs',
+            cookie_secret=self.cookie_secret,
         )
 
         self.application.listen(self.port)
-        log.info('Server started')
+        log.info('Server listening on :%d' % self.port)
 
     def run(self):
         self.start()
-        tornado.ioloop.IOLoop.instance().start()
+        log.info('Running mainloop. Press ^C to exit')
 
-    def add_static_route(self, route, path):
-        self.add_route(route,
-            tornado.web.StaticFileHandler,
-            dict(path=path))
+        # for windows, since ^C won't interrupt the loop
+        tornado.ioloop.PeriodicCallback(lambda:None, 1000).start()
+
+        try:
+            tornado.ioloop.IOLoop.instance().start()
+        except KeyboardInterrupt:
+            log.info('Exiting')
 
 
 server  = Server()
@@ -72,6 +87,8 @@ post    = server.post
 add_route = server.add_route
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
+
     # Example usage
     @get('^/$')
     def index(request):
@@ -81,5 +98,5 @@ if __name__ == '__main__':
     def user(request, username):
         return 'Hi, %s' % username
 
-    run()
+    server.run()
 

@@ -263,6 +263,10 @@ you.
       <body></body>
     </html>
 
+The `document` class accepts `title`, `doctype`, and `request` keyword 
+arguments. The default values for these arguments are `PYY Page`, 
+`<!DOCTYPE html>`, and `None` respectively.
+
 The `document` class also provides helpers to allow you to access the `html`,
 `head`, and `body` elements directly.
 

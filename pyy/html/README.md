@@ -27,6 +27,27 @@ Constructing a "Hello, World!"-style example is as easy as this:
     </html>
 
 
+Attributes
+-----------
+
+Pyy uses keyword arguments to append attributes onto your tags. Most of the attributes
+are a direct copy from the HTML spec with a few variations.
+
+Use `cls` for class names. `cls` is used because `class` in python is a [reserved keyword](http://docs.python.org/2/reference/lexical_analysis.html#keywords "Reserved Keywords").
+
+    >>> test = div(cls='classname anothername')
+    >>> print test
+    <div class="classname anothername">
+    </div>
+
+Use `data_*` for [custom HTML5 data attributes](http://www.w3.org/html/wg/drafts/html/master/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes "HTML5 Data Attributes").
+
+    >>> test = div(data_employee='101011')
+    >>> print test
+    <div data-employee="101011">
+    </div>
+
+
 Complex Structures
 ------------------
 

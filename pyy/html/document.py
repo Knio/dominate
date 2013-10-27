@@ -16,59 +16,41 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-from tags import html, body, head, title
+import tags
 
-class document(object):
-  def __init__(self, title='PYY Page', doctype='<!DOCTYPE html>', request=None):
+class document(tags.html):
+  tagname = 'html'
+  def __init__(self, title='pyy page', doctype='<!DOCTYPE html>', request=None):
     '''
     Creates a new document instance. Accepts `title`, `doctype`, and `request` keyword arguments.
     '''
-    self.cookies       = {}
+    super(document, self).__init__()
     self.doctype       = doctype
-    self.html          = html()
-    self.html.document = self
-    self.head          = self.html.add(head())
-    self.body          = self.html.add(body())
+    self.head         = super(document, self).add(tags.head())
+    self.body         = super(document, self).add(tags.body())
+    self.title_node   = self.head.add(tags.title(title))
     self._entry        = self.body
-    self.title         = title
-    self.request       = request
+    print 'document'
 
-  def add(self, obj):
+  def get_title(self):
+    return self.title_node.text
+
+  def set_title(self, title):
+    if isinstance(title, basestring):
+      self.title_node.text = title
+    else:
+      self.head.remove(self.title_node)
+      self.head.add(title)
+      self.title_node = title
+
+  title = property(get_title, set_title)
+
+  def add(self, *args):
     '''
     Adding tags to a document appends them to the <body>.
     '''
-    return self._entry.add(obj)
-
-  def __iadd__(self, obj):
-    self._entry += obj
-    return self
-
-
-  def _get_title(self):
-    if title not in self.head:
-      self.head += title('PYY Page')
-    return self.head.get(title)[0].children[0]
-
-  def _set_title(self, value):
-    if title in self.head:
-      self.head.get(title)[0].children = [value]
-    else:
-      self.head += title(value)
-
-  title = property(_get_title, _set_title, None, 'Document title.')
-
-  def __enter__(self):
-    self._entry.__enter__()
-    return self
-
-  def __exit__(self, *args):
-    return self._entry.__exit__(*args)
-
-  def validate(self):
-    '''
-    Validates the tag tree structure and its attributes.
-    '''
-    self.html.validate()
+    print 'add', args
+    return self._entry.add(*args)
 
   def render(self, *args, **kwargs):
     '''
@@ -80,7 +62,7 @@ class document(object):
     if self.doctype:
       r.append(self.doctype)
       r.append('\n')
-    r.append(self.html.render(*args, **kwargs))
+    r.append(super(document, self).render(*args, **kwargs))
 
     return u''.join(r)
   __str__ = __unicode__ = render

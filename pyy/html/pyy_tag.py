@@ -16,6 +16,7 @@ Public License along with pyy.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
+import copy
 import numbers
 from collections import defaultdict, namedtuple
 from functools import wraps
@@ -78,7 +79,8 @@ class pyy_tag(object):
     self.do_inline = kwargs.pop('__inline', False)
 
     #Add child elements
-    self.add(*args)
+    if args:
+      self.add(*args)
 
     for attr, value in kwargs.items():
       self.set_attribute(*pyy_tag.clean_pair(attr, value))
@@ -111,9 +113,7 @@ class pyy_tag(object):
     '''
     @wraps(func)
     def f(*args, **kwargs):
-      with type(self)() as _tag:
-        _tag.children = self.children[:]
-        _tag.attributes = dict(self.attributes)
+      with copy.deepcopy(self) as _tag:
         return func(*args, **kwargs) or _tag
     return f
 
@@ -182,6 +182,9 @@ class pyy_tag(object):
 
   def add_raw_string(self, s):
     self.children.append(s)
+
+  def remove(self, obj):
+    self.children.remove(obj)
 
   def clear(self):
     for i in self.children:

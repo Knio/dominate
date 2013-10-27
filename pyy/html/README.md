@@ -30,7 +30,17 @@ Constructing a "Hello, World!"-style example is as easy as this:
 Attributes
 -----------
 
-Pyy uses keyword arguments to append attributes onto your tags. Most of the attributes
+Attributes can be added to the current context with the `attr` function:
+
+    >>> d = div()
+    >>> with d:
+    ...   attr(id='header')
+    ...
+    >>>
+    >>> print d
+    <div id="header"></div>
+
+Pyy can also use keyword arguments to append attributes onto your tags. Most of the attributes
 are a direct copy from the HTML spec with a few variations.
 
 Use `cls` for class names. `cls` is used because `class` in python is a [reserved keyword](http://docs.python.org/2/reference/lexical_analysis.html#keywords "Reserved Keywords").
@@ -46,6 +56,13 @@ Use `data_*` for [custom HTML5 data attributes](http://www.w3.org/html/wg/drafts
     >>> print test
     <div data-employee="101011">
     </div>
+
+You can also modify the attributes of tags through a dictionary-like interface:
+
+    >>> header = div()
+    >>> header['id'] = 'header'
+    >>> print header
+    <div id="header"></div>
 
 
 Complex Structures
@@ -113,13 +130,6 @@ example can be cleaned up and expanded like this:
         <div id="footer"></div>
       </body>
     </html>
-
-You can modify the attributes of tags through a dictionary-like interface:
-
-    >>> header = div()
-    >>> header['id'] = 'header'
-    >>> print header
-    <div id="header"></div>
 
 Or the children of a tag though an array-line interface:
 
@@ -196,16 +206,6 @@ including nesting `with` statements, and it works as expected:
 
 When the context is closed, any elements that were not already added to
 something get added to the current context.
-
-Attributes can be added to the current context with the `attr` function:
-
-    >>> d = div()
-    >>> with d:
-    ...   attr(id='header')
-    ...
-    >>>
-    >>> print d
-    <div id="header"></div>
 
 
 Decorators

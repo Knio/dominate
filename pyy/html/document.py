@@ -25,12 +25,11 @@ class document(tags.html):
     Creates a new document instance. Accepts `title`, `doctype`, and `request` keyword arguments.
     '''
     super(document, self).__init__()
-    self.doctype       = doctype
-    self.head         = super(document, self).add(tags.head())
-    self.body         = super(document, self).add(tags.body())
-    self.title_node   = self.head.add(tags.title(title))
-    self._entry        = self.body
-    print 'document'
+    self.doctype    = doctype
+    self.head       = super(document, self).add(tags.head())
+    self.body       = super(document, self).add(tags.body())
+    self.title_node = self.head.add(tags.title(title))
+    self._entry     = self.body
 
   def get_title(self):
     return self.title_node.text
@@ -49,7 +48,6 @@ class document(tags.html):
     '''
     Adding tags to a document appends them to the <body>.
     '''
-    print 'add', args
     return self._entry.add(*args)
 
   def render(self, *args, **kwargs):

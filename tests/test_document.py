@@ -1,5 +1,5 @@
-from pyy.html import document
-from pyy.html.tags import *
+from dominate import document
+from dominate.tags import *
 
 def test_doc():
   d = document()
@@ -7,7 +7,7 @@ def test_doc():
 '''<!DOCTYPE html>
 <html>
   <head>
-    <title>pyy page</title>
+    <title>Dominate</title>
   </head>
   <body></body>
 </html>'''
@@ -23,7 +23,7 @@ def test_decorator():
 '''<!DOCTYPE html>
 <html>
   <head>
-    <title>pyy page</title>
+    <title>Dominate</title>
   </head>
   <body>
     <p>Hello World</p>
@@ -40,7 +40,7 @@ def test_bare_decorator():
 '''<!DOCTYPE html>
 <html>
   <head>
-    <title>pyy page</title>
+    <title>Dominate</title>
   </head>
   <body>
     <p>Hello World</p>
@@ -50,7 +50,7 @@ def test_bare_decorator():
 
 def test_title():
   d = document()
-  assert d.title == 'pyy page'
+  assert d.title == 'Dominate'
 
   d = document(title='foobar')
   assert d.title == 'foobar'

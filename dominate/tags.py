@@ -2,23 +2,23 @@
 HTML tag classes.
 '''
 __license__ = '''
-This file is part of pyy.
+This file is part of Dominate.
 
-pyy is free software: you can redistribute it and/or modify
+Dominate is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as
 published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
 
-pyy is distributed in the hope that it will be useful, but
+Dominate is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General
-Public License along with pyy.  If not, see
+Public License along with Dominate.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
-from pyy_tag  import pyy_tag, attr
+from dom_tag  import dom_tag, attr
 from dom1core import dom1core
 
 
@@ -50,12 +50,12 @@ ERR_CONTEXT = 'context'
 ERR_CONTENT = 'content'
 
 
-class html_tag(pyy_tag, dom1core):
+class html_tag(dom_tag, dom1core):
   def __init__(self, *args, **kwargs):
     '''
     Creates a new html tag instance.
     '''
-    pyy_tag.__init__(self, *args, **kwargs)
+    super(html_tag, self).__init__(*args, **kwargs)
 
 
   # def validate(self):
@@ -1014,7 +1014,7 @@ class comment(html_tag):
     rendered += self._render_children(indent - 1, inline)
 
     # if len(self.children) > 1:
-    if any(isinstance(child, pyy_tag) for child in self):
+    if any(isinstance(child, dom_tag) for child in self):
       rendered += '\n'
       rendered += html_tag.TAB * (indent - 1)
 

@@ -1,6 +1,4 @@
-
-
-from pyy.html.tags import *
+from dominate.tags import *
 
 def test_arguments():
   assert html(body(h1('Hello, pyy!'))).render() == \

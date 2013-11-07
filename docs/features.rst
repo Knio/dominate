@@ -1,4 +1,0 @@
-Features
-========
-
-Coming very soon.

@@ -1,18 +1,18 @@
 __license__ = '''
-This file is part of pyy.
+This file is part of Dominate.
 
-pyy is free software: you can redistribute it and/or modify
+Dominate is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as
 published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
 
-pyy is distributed in the hope that it will be useful, but
+Dominate is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General
-Public License along with pyy.  If not, see
+Public License along with Dominate.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
@@ -33,7 +33,7 @@ def _get_thread_context():
   return hash(tuple(context))
 
 
-class pyy_tag(object):
+class dom_tag(object):
   TAB = '  '  # TODO make this a parameter to render(), and a tag.
 
   is_single = False  # Tag does not require matching end tag (ex. <hr/>)
@@ -49,7 +49,7 @@ class pyy_tag(object):
     decorate the function and return
     '''
     if len(args) == 1 and callable(args[0]) \
-        and not isinstance(args[0], pyy_tag) and not kwargs:
+        and not isinstance(args[0], dom_tag) and not kwargs:
       wrapped = args[0]
 
       @wraps(wrapped)
@@ -83,9 +83,9 @@ class pyy_tag(object):
       self.add(*args)
 
     for attr, value in kwargs.items():
-      self.set_attribute(*pyy_tag.clean_pair(attr, value))
+      self.set_attribute(*dom_tag.clean_pair(attr, value))
 
-    ctx = pyy_tag._with_contexts[_get_thread_context()]
+    ctx = dom_tag._with_contexts[_get_thread_context()]
     if ctx and ctx[-1]:
       ctx[-1].items.append(self)
 
@@ -93,12 +93,12 @@ class pyy_tag(object):
   _with_contexts = defaultdict(list)
 
   def __enter__(self):
-    ctx = pyy_tag._with_contexts[_get_thread_context()]
-    ctx.append(pyy_tag.frame(self, [], set()))
+    ctx = dom_tag._with_contexts[_get_thread_context()]
+    ctx.append(dom_tag.frame(self, [], set()))
     return self
 
   def __exit__(self, type, value, traceback):
-    ctx = pyy_tag._with_contexts[_get_thread_context()]
+    ctx = dom_tag._with_contexts[_get_thread_context()]
     slf, items, used = ctx[-1]
     ctx[-1] = None
     for item in items:
@@ -139,7 +139,7 @@ class pyy_tag(object):
     if self.document != doc:
       self.document = doc
       for i in self.children:
-        if not isinstance(i, pyy_tag): return
+        if not isinstance(i, dom_tag): return
         i.setdocument(doc)
 
   def add(self, *args):
@@ -156,8 +156,8 @@ class pyy_tag(object):
           obj = escape(obj)
         self.children.append(obj)
 
-      elif isinstance(obj, pyy_tag):
-        ctx = pyy_tag._with_contexts[_get_thread_context()]
+      elif isinstance(obj, dom_tag):
+        ctx = dom_tag._with_contexts[_get_thread_context()]
         if ctx and ctx[-1]:
           ctx[-1].used.add(obj)
         self.children.append(obj)
@@ -166,7 +166,7 @@ class pyy_tag(object):
 
       elif isinstance(obj, dict):
         for attr, value in obj.items():
-          self.set_attribute(*pyy_tag.clean_pair(attr, value))
+          self.set_attribute(*dom_tag.clean_pair(attr, value))
 
       elif hasattr(obj, '__iter__'):
         for subobj in obj:
@@ -188,7 +188,7 @@ class pyy_tag(object):
 
   def clear(self):
     for i in self.children:
-      if isinstance(i, pyy_tag) and i.parent is self:
+      if isinstance(i, dom_tag) and i.parent is self:
         i.parent = None
     self.children = []
 
@@ -197,10 +197,10 @@ class pyy_tag(object):
     Recursively searches children for tags of a certain
     type with matching attributes.
     '''
-    # Stupid workaround since we can not use pyy_tag in the method declaration
-    if tag is None: tag = pyy_tag
+    # Stupid workaround since we can not use dom_tag in the method declaration
+    if tag is None: tag = dom_tag
 
-    attrs = [(pyy_tag.clean_attribute(attr), value)
+    attrs = [(dom_tag.clean_attribute(attr), value)
         for attr, value in kwargs.items()]
 
     results = []
@@ -213,8 +213,8 @@ class pyy_tag(object):
           # If the child is of correct type and has all attributes and values
           # in kwargs add as a result
           results.append(child)
-      if isinstance(child, pyy_tag):
-        # If the child is a pyy_tag extend the search down through its children
+      if isinstance(child, dom_tag):
+        # If the child is a dom_tag extend the search down through its children
         results.extend(child.get(tag, **kwargs))
     return results
 
@@ -300,11 +300,11 @@ class pyy_tag(object):
       # if there are no children, or only 1 child that is not an html element,
       # do not add tabs and newlines
       no_children = self.is_pretty and self.children and \
-          (not (len(self.children) == 1 and not isinstance(self[0], pyy_tag)))
+          (not (len(self.children) == 1 and not isinstance(self[0], dom_tag)))
 
       if no_children and not inline:
         rendered.append('\n')
-        rendered.append(pyy_tag.TAB * (indent - 1))
+        rendered.append(dom_tag.TAB * (indent - 1))
 
       rendered.append('</')
       rendered.append(name)
@@ -320,10 +320,10 @@ class pyy_tag(object):
   def _render_children(self, indent=1, inline=False):
     children = []
     for child in self.children:
-      if isinstance(child, pyy_tag):
+      if isinstance(child, dom_tag):
         if not inline and self.is_pretty:
           children.append('\n')
-          children.append(pyy_tag.TAB * indent)
+          children.append(dom_tag.TAB * indent)
         children.append(child.render(indent + 1, inline))
       else:
         children.append(unicode(child))
@@ -362,15 +362,15 @@ class pyy_tag(object):
       return attribute.replace('_', '-').lower()
     return attribute.replace('_', ':').lower()
 
-  @staticmethod
-  def clean_pair(attribute, value):
+  @classmethod
+  def clean_pair(cls, attribute, value):
     '''
     This will call `clean_attribute` on the attribute and also allows for the
     creation of boolean attributes.
 
     Ex. input(selected=True) is equivalent to input(selected="selected")
     '''
-    attribute = pyy_tag.clean_attribute(attribute)
+    attribute = cls.clean_attribute(attribute)
 
     # Check for boolean attributes
     # (i.e. selected=True becomes selected="selected")
@@ -387,12 +387,12 @@ def attr(*args, **kwargs):
   '''
   Set attributes on the current active tag context
   '''
-  ctx = pyy_tag._with_contexts[_get_thread_context()]
+  ctx = dom_tag._with_contexts[_get_thread_context()]
   if ctx and ctx[-1]:
     dicts = args + (kwargs,)
     for d in dicts:
       for attr, value in d.items():
-        ctx[-1].tag.set_attribute(*pyy_tag.clean_pair(attr, value))
+        ctx[-1].tag.set_attribute(*dom_tag.clean_pair(attr, value))
   else:
     raise ValueError('not in a tag context')
 

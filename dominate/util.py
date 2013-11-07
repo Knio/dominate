@@ -3,25 +3,25 @@ Utility classes for creating dynamic html documents
 '''
 
 __license__ = '''
-This file is part of pyy.
+This file is part of Dominate.
 
-pyy is free software: you can redistribute it and/or modify
+Dominate is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as
 published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
 
-pyy is distributed in the hope that it will be useful, but
+Dominate is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General
-Public License along with pyy.  If not, see
+Public License along with Dominate.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
 import re
-from pyy_tag import pyy_tag
+from dom_tag import dom_tag
 
 
 def include(f):
@@ -113,13 +113,12 @@ def url_unescape(data):
     lambda m: chr(int(m.group(1), 16)), data)
 
 
-class lazy(pyy_tag):
+class lazy(dom_tag):
   '''
   delays function execution until rendered
   '''
   def __init__(self, func, *args, **kwargs):
-    pyy_tag.__init__(self)
-
+    super(lazy, self).__init__()
     self.func   = func
     self.args   = args
     self.kwargs = kwargs
@@ -129,13 +128,13 @@ class lazy(pyy_tag):
 
 
 # TODO rename this to raw?
-class text(pyy_tag):
+class text(dom_tag):
   '''
   Just a string. useful for inside context managers
   Note: this will not escape HTML, it is a raw passthrough
   '''
   def __init__(self, text):
-    pyy_tag.__init__(self)
+    super(text, self).__init__(self)
     self.text = text
 
   def render(self, indent, inline):

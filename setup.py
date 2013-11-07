@@ -1,48 +1,48 @@
 __license__ = '''
-This file is part of pyy.
+This file is part of Dominate.
 
-pyy is free software: you can redistribute it and/or modify
+Dominate is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as
 published by the Free Software Foundation, either version 3 of
 the License, or (at your option) any later version.
 
-pyy is distributed in the hope that it will be useful, but
+Dominate is distributed in the hope that it will be useful, but
 WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
 You should have received a copy of the GNU Lesser General
-Public License along with pyy.  If not, see
+Public License along with dominate.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
 # http://guide.python-distribute.org/creation.html
-from setuptools import setup, find_packages
+import dominate
 
-version = '1.1.16'
+from setuptools import setup
 
 setup(
-  name    = 'pyy',
-  version = version,
+  name    = 'dominate',
+  version = dominate.__version__,
   author  = 'Tom Flanagan and Jake Wharton',
-  author_email = 'theknio@gmail.com',
+  author_email = 'tom@zkpq.ca',
   license = 'LICENSE.txt',
+  url          = 'http://github.com/Knio/dominate/',
 
-  url          = 'http://github.com/Knio/pyy/',
-  # download_url = 'http://github.com/Knio/pyy/tarball/' + version,
-
-  description      = 'Python library for creating (X)HTML pages with the use of objects.',
-  long_description = 'Python library for creating (X)HTML pages with the use of objects. This allows you to tightly integrate (X)HTML generation into your backend without the need of using an intermediate templating language.',
+  description      = 'Dominate is a Python library for creating and manipulating HTML documents using an elegant DOM API.',
+  long_description = open('README.md').read(),
   keywords         = 'framework templating template html xhtml python html5',
 
   classifiers = [
-    'Programming Language :: Python',
-    'Operating System :: OS Independent',
-    'Topic :: Software Development :: Libraries :: Application Frameworks',
-    'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     'Intended Audience :: Developers',
+    'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+    'Topic :: Text Processing :: Markup :: HTML',
   ],
-  packages   = find_packages(),
+  packages = ['dominate'],
   install_requires = [],
   include_package_data = True,
 )

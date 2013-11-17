@@ -27,7 +27,7 @@ setup(
   author  = 'Tom Flanagan and Jake Wharton',
   author_email = 'tom@zkpq.ca',
   license = 'LICENSE.txt',
-  url          = 'http://github.com/Knio/dominate/',
+  url     = 'http://github.com/Knio/dominate/',
 
   description      = 'Dominate is a Python library for creating and manipulating HTML documents using an elegant DOM API.',
   long_description = open('README.md').read(),
@@ -43,6 +43,5 @@ setup(
     'Topic :: Text Processing :: Markup :: HTML',
   ],
   packages = ['dominate'],
-  install_requires = [],
   include_package_data = True,
 )

@@ -279,6 +279,10 @@ class dom_tag(object):
     return self
 
   def render(self, indent=1, inline=False):
+    data = self._render([], indent, inline)
+    return u''.join(data)
+
+  def _render(self, rendered, indent=1, inline=False):
     '''
     Returns a well-formatted string representation of the tag and renderings
     of all its child tags.
@@ -293,7 +297,7 @@ class dom_tag(object):
     if name[-1] == '_':
       name = name[:-1]
 
-    rendered = ['<', name]
+    rendered.extend(['<', name])
 
     for attribute, value in sorted(self.attributes.items()):
       rendered.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
@@ -301,7 +305,7 @@ class dom_tag(object):
     rendered.append('>')
 
     if not self.is_single:
-      rendered.append(self._render_children(indent, inline))
+      self._render_children(rendered, indent, inline)
 
       # if there are no children, or only 1 child that is not an html element,
       # do not add tabs and newlines
@@ -316,24 +320,22 @@ class dom_tag(object):
       rendered.append(name)
       rendered.append('>')
 
-    return u''.join(rendered)
+    return rendered
 
   # String and unicode representations are the same as render()
   def __unicode__(self):
     return self.render()
   __str__ = __unicode__
 
-  def _render_children(self, indent=1, inline=False):
-    children = []
+  def _render_children(self, rendered, indent=1, inline=False):
     for child in self.children:
       if isinstance(child, dom_tag):
         if not inline and self.is_pretty:
-          children.append('\n')
-          children.append(dom_tag.TAB * indent)
-        children.append(child.render(indent + 1, inline))
+          rendered.append('\n')
+          rendered.append(dom_tag.TAB * indent)
+        child._render(rendered, indent + 1, inline)
       else:
-        children.append(unicode(child))
-    return ''.join(children)
+        rendered.append(unicode(child))
 
   def __repr__(self):
     name = '%s.%s' % (self.__module__, type(self).__name__)

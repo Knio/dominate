@@ -21,8 +21,14 @@ Public License along with Dominate.  If not, see
 '''
 
 import re
-from dom_tag import dom_tag
+from .dom_tag import dom_tag
 
+
+try:
+  basestring = basestring
+except NameError:
+  basestring = str
+  unichr = chr
 
 def include(f):
   '''
@@ -88,10 +94,10 @@ def unescape(data):
     d = m.group(1)
     if d:
       d = int(d)
-      result.append(d > 255 and unichr(d) or chr(d))
+      result.append(unichr(d))
     else:
       d = _unescape.get(m.group(2), ord('?'))
-      result.append(d > 255 and unichr(d) or chr(d))
+      result.append(unichr(d))
 
     data = data[m.end():]
     m = cc.search(data)

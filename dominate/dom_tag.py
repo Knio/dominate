@@ -18,10 +18,15 @@ Public License along with Dominate.  If not, see
 
 import copy
 import numbers
-from collections import defaultdict, namedtuple
+from collections import defaultdict, namedtuple, Callable
 from functools import wraps
 import threading
 
+try:
+  basestring = basestring
+except NameError: # py3
+  basestring = str
+  unicode = str
 
 def _get_thread_context():
   context = [threading.current_thread()]
@@ -48,7 +53,7 @@ class dom_tag(object):
     Check if bare tag is being used a a decorator.
     decorate the function and return
     '''
-    if len(args) == 1 and callable(args[0]) \
+    if len(args) == 1 and isinstance(args[0], Callable) \
         and not isinstance(args[0], dom_tag) and not kwargs:
       wrapped = args[0]
 
@@ -246,11 +251,12 @@ class dom_tag(object):
     '''
     return len(self.children)
 
-  def __nonzero__(self):
+  def __bool__(self):
     '''
     Hack for "if x" and __len__
     '''
     return True
+  __nonzero__ = __bool__
 
   def __iter__(self):
     '''
@@ -289,7 +295,7 @@ class dom_tag(object):
 
     rendered = ['<', name]
 
-    for attribute, value in self.attributes.items():
+    for attribute, value in sorted(self.attributes.items()):
       rendered.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
 
     rendered.append('>')
@@ -398,4 +404,4 @@ def attr(*args, **kwargs):
 
 
 # escape() is used in render
-from util import escape
+from .util import escape

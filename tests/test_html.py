@@ -8,6 +8,11 @@ def test_arguments():
   </body>
 </html>'''
 
+
+def test_kwargs():
+  assert div(id=4, checked=True, cls="mydiv", data_name='foo', onclick='alert(1);').render() == \
+'''<div checked="checked" class="mydiv" data-name="foo" id="4" onclick="alert(1);"></div>'''
+
 def test_iadd():
   list = ul()
   for item in range(4):
@@ -43,3 +48,25 @@ def test_context_manager():
   <li>Two</li>
   <li>Three</li>
 </ul>'''
+
+
+def test_decorator():
+  @div
+  def f():
+    p('Hello')
+
+  assert f().render() == \
+'''<div>
+  <p>Hello</p>
+</div>'''
+
+  d = div()
+  @d
+  def f2():
+    p('Hello')
+
+  assert f2().render() == \
+'''<div>
+  <p>Hello</p>
+</div>'''
+

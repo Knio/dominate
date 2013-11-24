@@ -23,7 +23,7 @@ from setuptools import setup
 
 setup(
   name    = 'dominate',
-  version = dominate.__version__,
+  version = dominate.version,
   author  = 'Tom Flanagan and Jake Wharton',
   author_email = 'tom@zkpq.ca',
   license = 'LICENSE.txt',
@@ -38,6 +38,7 @@ setup(
     'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
     'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     'Topic :: Software Development :: Libraries :: Python Modules',
     'Topic :: Text Processing :: Markup :: HTML',

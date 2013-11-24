@@ -22,6 +22,11 @@ from collections import defaultdict, namedtuple
 from functools import wraps
 import threading
 
+try:
+  basestring = basestring
+except NameError: # py3
+  basestring = str
+  unicode = str
 
 def _get_thread_context():
   context = [threading.current_thread()]
@@ -398,4 +403,4 @@ def attr(*args, **kwargs):
 
 
 # escape() is used in render
-from util import escape
+from .util import escape

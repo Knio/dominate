@@ -16,7 +16,13 @@ Public License along with Dominate.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
-import tags
+from . import tags
+
+try:
+  basestring = basestring
+except NameError: # py3
+  basestring = str
+  unicode = str
 
 class document(tags.html):
   tagname = 'html'

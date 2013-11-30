@@ -5,6 +5,11 @@ Dominate
 It allows you to write HTML pages in pure Python very concisely, which eliminate the need to learn another template language, and to take advantage of the more powerful features of Python.
 
 
+Compatability
+-------------
+
+`Dominate` is compatable with both Python 2.7 and Python 3.3. There are known issues with Python 3.2 and below.
+
 Installation
 ------------
 

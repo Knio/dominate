@@ -1,5 +1,11 @@
 from dominate.tags import *
 
+def test_version():
+  import dominate
+  version = '2.1.2'
+  assert dominate.version == version
+  assert dominate.__version__ == version
+
 def test_arguments():
   assert html(body(h1('Hello, pyy!'))).render() == \
 '''<html>
@@ -70,3 +76,43 @@ def test_decorator():
   <p>Hello</p>
 </div>'''
 
+  @div(cls='three')
+  def f3():
+    p('Hello')
+  assert f3().render() == \
+'''<div class="three">
+  <p>Hello</p>
+</div>'''
+
+
+def test_nested_decorator():
+  @div
+  def f1():
+    p('hello')
+
+  d = div()
+  with d:
+    f1()
+
+  assert d.render() == \
+'''<div>
+  <div>
+    <p>hello</p>
+  </div>
+</div>'''
+
+
+  @div()
+  def f2():
+    p('hello')
+
+  d = div()
+  with d:
+    f2()
+
+  assert d.render() == \
+'''<div>
+  <div>
+    <p>hello</p>
+  </div>
+</div>'''

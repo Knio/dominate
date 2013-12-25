@@ -139,9 +139,14 @@ class text(dom_tag):
   Just a string. useful for inside context managers
   Note: this will not escape HTML, it is a raw passthrough
   '''
-  def __init__(self, text):
-    super(text, self).__init__(self)
-    self.text = text
+  def __init__(self, _text, escape=True):
+    super(text, self).__init__()
+    if escape:
+      from . import util
+      self.text = util.escape(_text)
+    else:
+      self.text = _text
 
-  def render(self, indent, inline):
-    return self.text
+  def _render(self, rendered, indent, inline):
+    rendered.append(self.text)
+    return rendered

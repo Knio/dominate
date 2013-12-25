@@ -2,7 +2,7 @@ from dominate.tags import *
 
 def test_version():
   import dominate
-  version = '2.1.2'
+  version = '2.1.3'
   assert dominate.version == version
   assert dominate.__version__ == version
 
@@ -116,3 +116,25 @@ def test_nested_decorator():
     <p>hello</p>
   </div>
 </div>'''
+
+def test_text():
+  from dominate.util import *
+  d = div()
+  with d:
+    text('Hello World')
+
+  assert d.render() == \
+  '''<div>
+  Hello World
+</div>'''
+
+  assert div(text('<>', escape=False)).render() == '''\
+<div>
+  <>
+</div>'''
+
+  assert div(text('<>')).render() == '''\
+<div>
+  &lt;&gt;
+</div>'''
+

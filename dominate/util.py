@@ -150,3 +150,9 @@ class text(dom_tag):
   def _render(self, rendered, indent, inline):
     rendered.append(self.text)
     return rendered
+
+def raw(s):
+  '''
+  Inserts a raw string into the DOM. Unsafe.
+  '''
+  return text(s, escape=False)

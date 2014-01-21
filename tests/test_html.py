@@ -2,7 +2,7 @@ from dominate.tags import *
 
 def test_version():
   import dominate
-  version = '2.1.3'
+  version = '2.1.4'
   assert dominate.version == version
   assert dominate.__version__ == version
 
@@ -138,3 +138,13 @@ def test_text():
   &lt;&gt;
 </div>'''
 
+def test_raw():
+  from dominate.util import *
+  d = div()
+  with d:
+    raw('Hello World<br />')
+
+  assert d.render() == \
+  '''<div>
+  Hello World<br />
+</div>'''

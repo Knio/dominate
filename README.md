@@ -50,12 +50,12 @@ Attributes
 
 `Dominate` can also use keyword arguments to append attributes onto your tags. Most of the attributes are a direct copy from the HTML spec with a few variations.
 
-Use `cls` for class names. `cls` is used because `class` in python is a [reserved keyword](http://docs.python.org/2/reference/lexical_analysis.html#keywords "Reserved Keywords").
+Use `cls` for class names and `fr` for `for` in label elements. `cls` and `fr` are used because `class` and `for` in python are [reserved keyword](http://docs.python.org/2/reference/lexical_analysis.html#keywords "Reserved Keywords").
 
-    >>> test = div(cls='classname anothername')
+    >>> test = label(cls='classname anothername', fr='someinput')
     >>> print test
-    <div class="classname anothername">
-    </div>
+    <label class="classname anothername" for="someinput">
+    </label>
 
 Use `data_*` for [custom HTML5 data attributes](http://www.w3.org/html/wg/drafts/html/master/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes "HTML5 Data Attributes").
 

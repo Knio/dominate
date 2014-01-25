@@ -360,6 +360,7 @@ class dom_tag(object):
     # shorthand
     attribute = {
       'cls': 'class',
+      'fr': 'for',
     }.get(attribute, attribute)
 
     # Workaround for python's reserved words

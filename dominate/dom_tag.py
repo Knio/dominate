@@ -90,8 +90,13 @@ class dom_tag(object):
     for attr, value in kwargs.items():
       self.set_attribute(*dom_tag.clean_pair(attr, value))
 
+    self._ctx = None
+    self._add_to_ctx()
+
+  def _add_to_ctx(self):
     ctx = dom_tag._with_contexts[_get_thread_context()]
     if ctx and ctx[-1]:
+      self._ctx = ctx[-1]
       ctx[-1].items.append(self)
 
   # stack of (root_tag, [new_tags], set(used_tags))
@@ -116,10 +121,18 @@ class dom_tag(object):
     tag instance is being used as a decorator.
     wrap func to make a copy of this tag
     '''
+    # remove decorator from its context so it doesn't
+    # get added in where it was defined
+    if self._ctx:
+      assert False, self._ctx
+      self._ctx.used.add(self)
+
     @wraps(func)
     def f(*args, **kwargs):
-      with copy.deepcopy(self) as _tag:
-        return func(*args, **kwargs) or _tag
+      tag = copy.deepcopy(self)
+      tag._add_to_ctx()
+      with tag:
+        return func(*args, **kwargs) or tag
     return f
 
   def set_attribute(self, key, value):

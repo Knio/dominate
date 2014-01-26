@@ -325,7 +325,7 @@ The `document` class also provides helpers to allow you to directly add nodes to
 
     >>> d = document()
     >>> d += h1('Hello, World!')
-    >>> p += p('This is a paragraph.')
+    >>> d += p('This is a paragraph.')
     >>> print d
     <!DOCTYPE html>
     <html>

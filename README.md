@@ -24,9 +24,10 @@ Developed By
 
 * Tom Flanagan - <tom@zkpq.ca>
 * Jake Wharton - <jakewharton@gmail.com>
+* [Brad Janke](//github.com/bradj)
 
 Git repository located at
-[github.com/Knio/dominate](http://github.com/Knio/dominate)
+[github.com/Knio/dominate](//github.com/Knio/dominate)
 
 
 Examples

@@ -45,7 +45,7 @@ from the `__str__`, `__unicode__`, and `render()` methods.
     >>> print html(body(h1('Hello, World!')))
     <html>
       <body>
-        <h1>Hello, pyy!</h1>
+        <h1>Hello, World!</h1>
       </body>
     </html>
 

@@ -300,7 +300,7 @@ When you create a new document, the basic HTML tag structure is created for you.
     <!DOCTYPE html>
     <html>
       <head>
-        <title>PYY Page</title>
+        <title>Dominate</title>
       </head>
       <body></body>
     </html>
@@ -330,7 +330,7 @@ The `document` class also provides helpers to allow you to directly add nodes to
     <!DOCTYPE html>
     <html>
       <head>
-        <title>PYY Page</title>
+        <title>Dominate</title>
       </head>
       <body>
         <h1>Hello, World!</h1>

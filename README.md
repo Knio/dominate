@@ -239,7 +239,7 @@ Decorators
 `Dominate` is great for creating reusable widgets for parts of your page. Consider this example:
 
     >>> def greeting(name):
-    ...     with div() as d
+    ...     with div() as d:
     ...         p('Hello, %s' % name)
     ...     return d
     ...

@@ -2,7 +2,7 @@ from dominate.tags import *
 
 def test_version():
   import dominate
-  version = '2.1.4'
+  version = '2.1.5'
   assert dominate.version == version
   assert dominate.__version__ == version
 

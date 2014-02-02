@@ -16,6 +16,13 @@ Public License along with Dominate.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
+try:
+  basestring = basestring
+except NameError: # py3
+  basestring = str
+  unicode = str
+
+
 class dom1core(object):
   '''
   Implements the Document Object Model (Core) Level 1
@@ -47,7 +54,7 @@ class dom1core(object):
     DOM API: Returns all tags that match name.
     '''
     if isinstance(name, basestring):
-      return self.get(name)
+      return self.get(name.lower())
     else:
       return None
 

@@ -118,7 +118,7 @@ def test_nested_decorator():
 </div>'''
 
 def test_text():
-  from dominate.util import *
+  from dominate.util import text
   d = div()
   with d:
     text('Hello World')
@@ -139,7 +139,7 @@ def test_text():
 </div>'''
 
 def test_raw():
-  from dominate.util import *
+  from dominate.util import raw
   d = div()
   with d:
     raw('Hello World<br />')

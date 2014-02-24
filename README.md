@@ -2,13 +2,13 @@ Dominate
 ========
 
 `Dominate` is a Python library for creating and manipulating HTML documents using an elegant DOM API.
-It allows you to write HTML pages in pure Python very concisely, which eliminate the need to learn another template language, and to take advantage of the more powerful features of Python.
+It allows you to write HTML pages in pure Python very concisely, which eliminates the need to learn another template language, and lets you take advantage of the more powerful features of Python.
 
 
 Compatibility
 -------------
 
-`Dominate` is compatable with both Python 2.7 and Python 3.3. There are known issues with Python 3.2 and below.
+`Dominate` is compatible with both Python 2.7 and Python 3.3. There are known issues with Python 3.2 and below.
 
 Installation
 ------------
@@ -292,7 +292,7 @@ Each call to the decorated function will return a copy of the node used to decor
 Creating Documents
 ------------------
 
-Since creating the common structure of an HTML document everytime would be excessively tedious dominate provides a class to create an manage them for you, `document`.
+Since creating the common structure of an HTML document everytime would be excessively tedious dominate provides a class to create and manage them for you: `document`.
 
 When you create a new document, the basic HTML tag structure is created for you.
 
@@ -320,7 +320,7 @@ The `document` class also provides helpers to allow you to access the `html`, `h
     <dominate.tags.body: 0 attributes, 0 children>
 
 You should notice that here the `head` tag contains zero children.
-This is because the default `title` tag is only added when the document is rendered and the `head` element already does not explicitly contain one.
+This is because the default `title` tag is only added when the document is rendered and the `head` element does not explicitly contain one.
 
 The `document` class also provides helpers to allow you to directly add nodes to the `body` tag.
 

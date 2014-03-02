@@ -1,8 +1,9 @@
 from dominate.tags import *
+import pytest
 
 def test_version():
   import dominate
-  version = '2.1.5'
+  version = '2.1.6'
   assert dominate.version == version
   assert dominate.__version__ == version
 
@@ -13,7 +14,6 @@ def test_arguments():
     <h1>Hello, pyy!</h1>
   </body>
 </html>'''
-
 
 def test_kwargs():
   assert div(id=4, checked=True, cls="mydiv", data_name='foo', onclick='alert(1);').render() == \
@@ -84,7 +84,6 @@ def test_decorator():
   <p>Hello</p>
 </div>'''
 
-
 def test_nested_decorator():
   @div
   def f1():
@@ -100,7 +99,6 @@ def test_nested_decorator():
     <p>hello</p>
   </div>
 </div>'''
-
 
   @div()
   def f2():
@@ -148,3 +146,17 @@ def test_raw():
   '''<div>
   Hello World<br />
 </div>'''
+
+def test_escape():
+  assert pre('<>').render() == '''\
+<pre>&lt;&gt;</pre>'''
+
+def test_attributes():
+  d = div()
+  d['id'] = 'foo'
+  assert d['id'] == 'foo'
+  del d['id']
+  with pytest.raises(KeyError):
+    del d['id']
+  with pytest.raises(AttributeError):
+    x = d['id']

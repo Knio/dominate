@@ -148,6 +148,13 @@ class dom_tag(object):
           'child tags and attributes, respectively.')
   __setitem__ = set_attribute
 
+  def delete_attribute(self, key):
+    if isinstance(key, int):
+      del self.children[i:i+1]
+    else:
+      del self.attributes[key]
+  __delitem__ = delete_attribute
+
   def setdocument(self, doc):
     '''
     Creates a reference to the parent document to allow for partial-tree
@@ -170,8 +177,7 @@ class dom_tag(object):
         obj = str(obj)
 
       if isinstance(obj, basestring):
-        if self.is_pretty:
-          obj = escape(obj)
+        obj = escape(obj)
         self.children.append(obj)
 
       elif isinstance(obj, dom_tag):

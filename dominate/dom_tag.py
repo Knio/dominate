@@ -28,13 +28,16 @@ except NameError: # py3
   basestring = str
   unicode = str
 
+
+try:
+  import greenlet
+except ImportError:
+  greenlet = None
+
 def _get_thread_context():
   context = [threading.current_thread()]
-  try:
-    import greenlet
+  if greenlet:
     context.append(greenlet.getcurrent())
-  except:
-    pass
   return hash(tuple(context))
 
 

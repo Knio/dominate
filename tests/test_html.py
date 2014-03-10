@@ -3,7 +3,7 @@ import pytest
 
 def test_version():
   import dominate
-  version = '2.1.6'
+  version = '2.1.7'
   assert dominate.version == version
   assert dominate.__version__ == version
 

@@ -75,6 +75,8 @@ The recommended way to install `dominate` is with
 
     sudo pip install dominate
 
+[![PyPI version](https://badge.fury.io/py/dominate.png)](http://badge.fury.io/py/dominate)
+
 
 Developed By
 ------------

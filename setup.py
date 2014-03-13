@@ -25,13 +25,17 @@ import imp
 _version = imp.load_source("dominate._version", "dominate/_version.py")
 
 long_description = open('README.md').read()
-try:
-  import pypandoc
-  long_description = pypandoc.convert(
-    long_description, 'rst', format='markdown_github')
-except:
-  import traceback
-  traceback.print_exc()
+
+# PyPI only supports (an old version of?) ReST.
+# Doesn't seem to be compatable with Pandoc. Shame on you.
+
+# try:
+#   import pypandoc
+#   long_description = pypandoc.convert(
+#     long_description, 'rst', format='markdown_github')
+# except:
+#   import traceback
+#   traceback.print_exc()
 
 setup(
   name    = 'dominate',

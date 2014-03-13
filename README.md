@@ -65,6 +65,8 @@ Compatibility
 
 `Dominate` is compatible with both Python 2.7 and Python 3.3. There are known issues with Python 3.2 and below.
 
+[![Build Status](https://travis-ci.org/Knio/dominate.png?branch=master)](https://travis-ci.org/Knio/dominate)
+
 Installation
 ------------
 
@@ -348,7 +350,7 @@ Attributes can be added to the current context with the `attr` function:
 d = div()
 with d:
     attr(id='header')
- 
+
  print d
  ```
 
@@ -367,7 +369,7 @@ def greeting(name):
     with div() as d:
         p('Hello, %s' % name)
     return d
- 
+
 print greeting('Bob')
 ```
 

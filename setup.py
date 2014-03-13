@@ -15,22 +15,34 @@ You should have received a copy of the GNU Lesser General
 Public License along with dominate.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
+# pylint: disable=bad-whitespace
 
 # http://guide.python-distribute.org/creation.html
-import dominate
 
 from setuptools import setup
 
+import imp
+_version = imp.load_source("dominate._version", "dominate/_version.py")
+
+long_description = open('README.md').read()
+try:
+  import pypandoc
+  long_description = pypandoc.convert(
+    long_description, 'rst', format='markdown_github')
+except:
+  import traceback
+  traceback.print_exc()
+
 setup(
   name    = 'dominate',
-  version = dominate.version,
+  version = _version.__version__,
   author  = 'Tom Flanagan and Jake Wharton',
   author_email = 'tom@zkpq.ca',
   license = 'LICENSE.txt',
   url     = 'http://github.com/Knio/dominate/',
 
   description      = 'Dominate is a Python library for creating and manipulating HTML documents using an elegant DOM API.',
-  long_description = open('README.md').read(),
+  long_description = long_description,
   keywords         = 'framework templating template html xhtml python html5',
 
   classifiers = [
@@ -43,6 +55,7 @@ setup(
     'Topic :: Software Development :: Libraries :: Python Modules',
     'Topic :: Text Processing :: Markup :: HTML',
   ],
+
   packages = ['dominate'],
   include_package_data = True,
 )

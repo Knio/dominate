@@ -13,3 +13,9 @@ install:
 # command to run tests, e.g. python setup.py test
 script:
     - PYTHONPATH=. py.test
+
+after_success:
+    - pip install coveralls coverage
+    - PYTHONPATH=. coverage run --source=dominate -m pytest
+    - coverage report
+    - coveralls

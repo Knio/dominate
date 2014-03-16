@@ -155,7 +155,7 @@ class dom_tag(object):
 
   def delete_attribute(self, key):
     if isinstance(key, int):
-      del self.children[i:i+1]
+      del self.children[key:key+1]
     else:
       del self.attributes[key]
   __delitem__ = delete_attribute

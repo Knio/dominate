@@ -1,11 +1,17 @@
 from dominate.tags import *
 import pytest
 
+try:
+  xrange = xrange
+except NameError:
+  xrange = range
+
 def test_version():
   import dominate
   version = '2.1.9'
   assert dominate.version == version
   assert dominate.__version__ == version
+
 
 def test_arguments():
   assert html(body(h1('Hello, pyy!'))).render() == \
@@ -15,9 +21,46 @@ def test_arguments():
   </body>
 </html>'''
 
+
 def test_kwargs():
-  assert div(id=4, checked=True, cls="mydiv", data_name='foo', onclick='alert(1);').render() == \
+  assert div(
+    id=4, 
+    checked=True, 
+    cls="mydiv", 
+    data_name='foo', 
+    onclick='alert(1);').render() == \
 '''<div checked="checked" class="mydiv" data-name="foo" id="4" onclick="alert(1);"></div>'''
+
+
+def test_repr():
+  import re
+  d = div()
+  assert repr(d).startswith('<dominate.tags.div at ')
+  assert repr(d).endswith(' 0 attributes, 0 children>')
+  d += [1, {'id':'foo'}]
+  assert repr(d).startswith('<dominate.tags.div at ')
+  assert repr(d).endswith(' 1 attribute, 1 child>')
+
+
+def test_add():
+  d = div()
+  with pytest.raises(ValueError):
+    d += None
+  d += 1
+  d += xrange(2,3)
+  d += {'id': 'foo'}
+  assert d.render() == '<div id="foo">12\n</div>'
+  assert len(d) == 2
+  assert d
+  with pytest.raises(IndexError):
+    d[2]
+  
+  with pytest.raises(TypeError):
+    d[None]
+
+  del d[0]
+  assert len(d) == 1
+
 
 def test_iadd():
   list = ul()
@@ -84,6 +127,7 @@ def test_decorator():
   <p>Hello</p>
 </div>'''
 
+
 def test_nested_decorator():
   @div
   def f1():
@@ -115,6 +159,7 @@ def test_nested_decorator():
   </div>
 </div>'''
 
+
 def test_text():
   from dominate.util import text
   d = div()
@@ -136,6 +181,7 @@ def test_text():
   &lt;&gt;
 </div>'''
 
+
 def test_raw():
   from dominate.util import raw
   d = div()
@@ -147,9 +193,11 @@ def test_raw():
   Hello World<br />
 </div>'''
 
+
 def test_escape():
   assert pre('<>').render() == '''\
 <pre>&lt;&gt;</pre>'''
+
 
 def test_attributes():
   d = div()
@@ -161,8 +209,12 @@ def test_attributes():
   with pytest.raises(AttributeError):
     x = d['id']
   with d:
-    attr(id='bar')
-  assert d['id'] == 'bar'
+    attr(data_test=False)
+  assert d['data-test'] == 'false'
+
+  with pytest.raises(ValueError):
+    attr(id='moo')
+
 
 def test_lazy():
   from dominate import util

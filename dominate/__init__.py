@@ -1,3 +1,4 @@
-version = __version__ = '2.1.6'
+from ._version import __version__
+version = __version__
 
 from .document import document

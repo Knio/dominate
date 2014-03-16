@@ -16,6 +16,8 @@ Public License along with Dominate.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
 
+# pylint: disable=bad-indentation, bad-whitespace, missing-docstring
+
 import copy
 import numbers
 from collections import defaultdict, namedtuple, Callable
@@ -28,13 +30,16 @@ except NameError: # py3
   basestring = str
   unicode = str
 
+
+try:
+  import greenlet
+except ImportError:
+  greenlet = None
+
 def _get_thread_context():
   context = [threading.current_thread()]
-  try:
-    import greenlet
+  if greenlet:
     context.append(greenlet.getcurrent())
-  except:
-    pass
   return hash(tuple(context))
 
 

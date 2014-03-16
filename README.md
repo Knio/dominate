@@ -65,6 +65,11 @@ Compatibility
 
 `Dominate` is compatible with both Python 2.7 and Python 3.3. There are known issues with Python 3.2 and below.
 
+[![Build Status](https://travis-ci.org/Knio/dominate.png?branch=master)](https://travis-ci.org/Knio/dominate)
+[![Coverage Status](https://coveralls.io/repos/Knio/dominate/badge.png?branch=master)](https://coveralls.io/r/Knio/dominate?branch=master)
+
+
+
 Installation
 ------------
 
@@ -72,6 +77,8 @@ The recommended way to install `dominate` is with
 [`pip`](http://pypi.python.org/pypi/pip/):
 
     sudo pip install dominate
+
+[![PyPI version](https://badge.fury.io/py/dominate.png)](http://badge.fury.io/py/dominate)
 
 
 Developed By
@@ -348,7 +355,7 @@ Attributes can be added to the current context with the `attr` function:
 d = div()
 with d:
     attr(id='header')
- 
+
  print d
  ```
 
@@ -367,7 +374,7 @@ def greeting(name):
     with div() as d:
         p('Hello, %s' % name)
     return d
- 
+
 print greeting('Bob')
 ```
 

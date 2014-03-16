@@ -35,21 +35,20 @@ def include(f):
   includes the contents of a file on disk.
   takes a filename
   '''
-  fl = file(f, 'rb')
+  fl = open(f, 'r')
   data = fl.read()
   fl.close()
   return data
 
 
-def system(cmd, data='', mode='t'):
+def system(cmd, data=None):
   '''
   pipes the output of a program
   '''
-  import os
-  fin, fout = os.popen4(cmd, mode)
-  fin.write(data)
-  fin.close()
-  return fout.read()
+  import subprocess
+  s = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+  out, err = s.communicate(data)
+  return out.decode('utf8')
 
 
 def escape(data, quote=True):  # stoled from std lib cgi
@@ -116,7 +115,7 @@ def url_escape(data):
 
 def url_unescape(data):
   return re.sub('%([0-9a-fA-F]{2})',
-    lambda m: chr(int(m.group(1), 16)), data)
+    lambda m: unichr(int(m.group(1), 16)), data)
 
 
 class lazy(dom_tag):
@@ -142,7 +141,7 @@ class lazy(dom_tag):
 
   def _render(self, rendered, indent=1, inline=False):
     r = self.func(*self.args, **self.kwargs)
-    rendered.append(unicode(r))
+    rendered.append(str(r))
 
 
 # TODO rename this to raw?

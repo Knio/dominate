@@ -123,14 +123,26 @@ class lazy(dom_tag):
   '''
   delays function execution until rendered
   '''
+  def __new__(_cls, *args, **kwargs):
+    '''
+    Need to reset this special method or else
+    dom_tag will think it's being used as a dectorator.
+
+    This means lazy() can't be used as a dectorator, but
+    thinking about when you might want that just confuses me.
+    '''
+    return object.__new__(_cls)
+
   def __init__(self, func, *args, **kwargs):
     super(lazy, self).__init__()
     self.func   = func
     self.args   = args
     self.kwargs = kwargs
 
-  def render(self, indent=1, inline=False):
-    return self.func(*self.args, **self.kwargs)
+
+  def _render(self, rendered, indent=1, inline=False):
+    r = self.func(*self.args, **self.kwargs)
+    rendered.append(unicode(r))
 
 
 # TODO rename this to raw?

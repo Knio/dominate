@@ -160,3 +160,26 @@ def test_attributes():
     del d['id']
   with pytest.raises(AttributeError):
     x = d['id']
+  with d:
+    attr(id='bar')
+  assert d['id'] == 'bar'
+
+def test_lazy():
+  from dominate import util
+  executed = [False]
+  def _lazy():
+    executed[0] = True
+    return span('Hi')
+
+  d = div()
+  s = util.lazy(_lazy)
+  print type(s)
+  d += s
+
+  assert executed[0] == False
+  assert d.render() == '<div>\n  <span>Hi</span>\n</div>'
+  assert executed[0] == True
+
+
+
+

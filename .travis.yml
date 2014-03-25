@@ -4,7 +4,7 @@ python:
   - "2.7"
   - "3.3"
   # - "3.4"
-  # - "pypy"
+  - "pypy"
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
@@ -12,7 +12,9 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script:
-    - PYTHONPATH=. py.test
+    - python setup.py sdist --format=zip
+    - pip install dist/dominate*.zip
+    - py.test
 
 after_success:
     - pip install coveralls coverage

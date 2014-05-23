@@ -8,7 +8,7 @@ except NameError:
 
 def test_version():
   import dominate
-  version = '2.1.9'
+  version = '2.1.10'
   assert dominate.version == version
   assert dominate.__version__ == version
 
@@ -232,5 +232,11 @@ def test_lazy():
   assert executed[0] == True
 
 
+def test_keyword_attributes():
+  expected = '<div class="foo" for="bar"></div>'
+  assert div(cls='foo', fr='bar').render() == expected
+  assert div(_class='foo', _for='bar').render() == expected
+  assert div(className='foo', htmlFor='bar').render() == expected
+  assert div(class_name='foo', html_for='bar').render() == expected
 
 

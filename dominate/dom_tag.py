@@ -384,7 +384,11 @@ class dom_tag(object):
     # shorthand
     attribute = {
       'cls': 'class',
+      'className': 'class',
+      'class_name': 'class',
       'fr': 'for',
+      'html_for': 'for',
+      'htmlFor': 'for',
     }.get(attribute, attribute)
 
     # Workaround for python's reserved words

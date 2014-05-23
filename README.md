@@ -126,7 +126,15 @@ Attributes
 
 `Dominate` can also use keyword arguments to append attributes onto your tags. Most of the attributes are a direct copy from the HTML spec with a few variations.
 
-Use `cls` for class names and `fr` for `for` in label elements. `cls` and `fr` are used because `class` and `for` in python are [reserved keyword](http://docs.python.org/2/reference/lexical_analysis.html#keywords "Reserved Keywords").
+For attributes `class` and `for` which conflict with Python's [reserved keywords](http://docs.python.org/2/reference/lexical_analysis.html#keywords "Reserved Keywords"), you can use the following aliases:
+
+| class | for |
+|-------|-----|
+|_class | _for |
+|cls | fr |
+|className|htmlFor|
+|class_name|html_for|
+
 
 ```python
 test = label(cls='classname anothername', fr='someinput')

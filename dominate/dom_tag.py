@@ -329,17 +329,14 @@ class dom_tag(object):
     rendered.append('>')
 
     if not self.is_single:
-      self._render_children(rendered, indent, inline)
+      pretty = self._render_children(rendered, indent, inline)
 
-      # if there are no children, or only 1 child that is not an html element,
-      # do not add tabs and newlines
-      no_children = self.is_pretty and self.children and \
-          (not (len(self.children) == 1 and not isinstance(self[0], dom_tag)))
-
-      if no_children and not inline:
+      # don't add trailing whitespace after whitespace-sensitive elements
+      if pretty:
         rendered.append('\n')
         rendered.append(dom_tag.TAB * (indent - 1))
 
+      # close tag
       rendered.append('</')
       rendered.append(name)
       rendered.append('>')
@@ -352,14 +349,19 @@ class dom_tag(object):
   __str__ = __unicode__
 
   def _render_children(self, rendered, indent=1, inline=False):
+    pretty = False
     for child in self.children:
+      pretty = False
       if isinstance(child, dom_tag):
-        if not inline and self.is_pretty:
+        if not inline and self.is_pretty and child.is_pretty:
+          pretty = True
           rendered.append('\n')
           rendered.append(dom_tag.TAB * indent)
         child._render(rendered, indent + 1, inline)
       else:
         rendered.append(unicode(child))
+
+    return pretty
 
   def __repr__(self):
     name = '%s.%s' % (self.__module__, type(self).__name__)

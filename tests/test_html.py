@@ -8,7 +8,7 @@ except NameError:
 
 def test_version():
   import dominate
-  version = '2.1.10'
+  version = '2.1.11'
   assert dominate.version == version
   assert dominate.__version__ == version
 
@@ -24,10 +24,10 @@ def test_arguments():
 
 def test_kwargs():
   assert div(
-    id=4, 
-    checked=True, 
-    cls="mydiv", 
-    data_name='foo', 
+    id=4,
+    checked=True,
+    cls="mydiv",
+    data_name='foo',
     onclick='alert(1);').render() == \
 '''<div checked="checked" class="mydiv" data-name="foo" id="4" onclick="alert(1);"></div>'''
 
@@ -49,12 +49,12 @@ def test_add():
   d += 1
   d += xrange(2,3)
   d += {'id': 'foo'}
-  assert d.render() == '<div id="foo">12\n</div>'
+  assert d.render() == '<div id="foo">12</div>'
   assert len(d) == 2
   assert d
   with pytest.raises(IndexError):
     d[2]
-  
+
   with pytest.raises(TypeError):
     d[None]
 
@@ -70,14 +70,10 @@ def test_iadd():
   # 2 children so doesn't render inline
   assert list.render() == \
 '''<ul>
-  <li>Item #0
-  </li>
-  <li>Item #1
-  </li>
-  <li>Item #2
-  </li>
-  <li>Item #3
-  </li>
+  <li>Item #0</li>
+  <li>Item #1</li>
+  <li>Item #2</li>
+  <li>Item #3</li>
 </ul>'''
 
 
@@ -167,19 +163,13 @@ def test_text():
     text('Hello World')
 
   assert d.render() == \
-  '''<div>
-  Hello World
-</div>'''
+    '''<div>Hello World</div>'''
 
-  assert div(text('<>', escape=False)).render() == '''\
-<div>
-  <>
-</div>'''
+  assert div(text('<>', escape=False)).render() == \
+    '''<div><></div>'''
 
-  assert div(text('<>')).render() == '''\
-<div>
-  &lt;&gt;
-</div>'''
+  assert div(text('<>')).render() == \
+    '''<div>&lt;&gt;</div>'''
 
 
 def test_raw():
@@ -188,10 +178,7 @@ def test_raw():
   with d:
     raw('Hello World<br />')
 
-  assert d.render() == \
-  '''<div>
-  Hello World<br />
-</div>'''
+  assert d.render() == '''<div>Hello World<br /></div>'''
 
 
 def test_escape():

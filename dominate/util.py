@@ -38,7 +38,7 @@ def include(f):
   fl = open(f, 'r')
   data = fl.read()
   fl.close()
-  return data
+  return raw(data)
 
 
 def system(cmd, data=None):
@@ -148,13 +148,13 @@ class lazy(dom_tag):
 class text(dom_tag):
   '''
   Just a string. useful for inside context managers
-  Note: this will not escape HTML, it is a raw passthrough
   '''
+  is_pretty = False
+
   def __init__(self, _text, escape=True):
     super(text, self).__init__()
     if escape:
-      from . import util
-      self.text = util.escape(_text)
+      self.text = globals()['escape'](_text)
     else:
       self.text = _text
 

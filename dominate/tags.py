@@ -1005,28 +1005,28 @@ class comment(html_tag):
   # Valid values are 'hidden', 'downlevel' or 'revealed'
   ATTRIBUTE_DOWNLEVEL = 'downlevel'
 
-  def render(self, indent=1, inline=False):
+  def _render(self, rendered, indent=1, inline=False):
     has_condition = comment.ATTRIBUTE_CONDITION in self.attributes
     is_revealed   = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and \
         self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
 
-    rendered = '<!'
+    rendered.append('<!')
     if not is_revealed:
-      rendered += '--'
+      rendered.append('--')
     if has_condition:
-      rendered += '[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION]
+      rendered.append('[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION])
 
-    rendered += self._render_children(indent - 1, inline)
+    pretty = self._render_children(rendered, indent - 1, inline)
 
     # if len(self.children) > 1:
     if any(isinstance(child, dom_tag) for child in self):
-      rendered += '\n'
-      rendered += html_tag.TAB * (indent - 1)
+      rendered.append('\n')
+      rendered.append(html_tag.TAB * (indent - 1))
 
     if has_condition:
-      rendered += '<![endif]'
+      rendered.append('<![endif]')
     if not is_revealed:
-      rendered += '--'
-    rendered += '>'
+      rendered.append('--')
+    rendered.append('>')
 
     return rendered

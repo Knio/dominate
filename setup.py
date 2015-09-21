@@ -33,9 +33,12 @@ long_description = open('README.md').read()
 #   import pypandoc
 #   long_description = pypandoc.convert(
 #     long_description, 'rst', format='markdown_github')
+#   with open('README.rst', 'w') as f:
+#     f.write(long_description)
 # except:
 #   import traceback
 #   traceback.print_exc()
+
 
 setup(
   name    = 'dominate',

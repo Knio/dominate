@@ -129,7 +129,6 @@ class dom_tag(object):
     # remove decorator from its context so it doesn't
     # get added in where it was defined
     if self._ctx:
-      assert False, self._ctx
       self._ctx.used.add(self)
 
     @wraps(func)

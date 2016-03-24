@@ -642,14 +642,14 @@ class br(html_tag):
   The br element represents a line break.
   '''
   is_single = True
+  is_inline = True
 
 class wbr(html_tag):
   '''
   The wbr element represents a line break opportunity.
   '''
   is_single = True
-
-
+  is_inline = True
 
 # Edits
 
@@ -1005,28 +1005,28 @@ class comment(html_tag):
   # Valid values are 'hidden', 'downlevel' or 'revealed'
   ATTRIBUTE_DOWNLEVEL = 'downlevel'
 
-  def _render(self, rendered, indent=1, inline=False):
+  def _render(self, sb, indent_level=1, indent_str='  ', pretty=True):
     has_condition = comment.ATTRIBUTE_CONDITION in self.attributes
     is_revealed   = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and \
         self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
 
-    rendered.append('<!')
+    sb.append('<!')
     if not is_revealed:
-      rendered.append('--')
+      sb.append('--')
     if has_condition:
-      rendered.append('[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION])
+      sb.append('[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION])
 
-    pretty = self._render_children(rendered, indent - 1, inline)
+    pretty = self._render_children(sb, indent_level - 1, indent_str, pretty)
 
     # if len(self.children) > 1:
     if any(isinstance(child, dom_tag) for child in self):
-      rendered.append('\n')
-      rendered.append(html_tag.TAB * (indent - 1))
+      sb.append('\n')
+      sb.append(indent_str * (indent_level - 1))
 
     if has_condition:
-      rendered.append('<![endif]')
+      sb.append('<![endif]')
     if not is_revealed:
-      rendered.append('--')
-    rendered.append('>')
+      sb.append('--')
+    sb.append('>')
 
-    return rendered
+    return sb

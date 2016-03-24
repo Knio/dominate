@@ -8,7 +8,7 @@ except NameError:
 
 def test_version():
   import dominate
-  version = '2.1.17'
+  version = '2.2.0'
   assert dominate.version == version
   assert dominate.__version__ == version
 
@@ -250,4 +250,31 @@ def test_nested_decorator_2():
     <p>b</p>
   </div>
 </span>'''
+
+
+def test_pretty():
+  assert head(script('foo'), style('bar')).render() == '''<head>
+  <script>foo</script>
+  <style>bar</style>
+</head>'''
+
+  assert div(pre('test')).render() == '''<div>
+  <pre>test</pre>
+</div>'''
+
+  assert div(pre('test')).render(indent='\t') == '''<div>
+\t<pre>test</pre>
+</div>'''
+
+  assert div(pre('test')).render(pretty=False) == \
+      '''<div><pre>test</pre></div>'''
+
+  assert div(span('hi'), span('there'), __pretty=False).render() == \
+    '''<div><span>hi</span><span>there</span></div>'''
+
+  assert span('hi', br(), 'there').render() == \
+      '''<span>hi<br>there</span>'''
+
+  assert span('hi', br(__inline=False), 'there').render() == \
+      '''<span>hi\n  <br>there\n</span>'''
 

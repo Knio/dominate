@@ -50,6 +50,7 @@ class dom_tag(object):
   is_pretty = True   # Text inside the tag should be left as-is (ex. <pre>)
                      # otherwise, text will be escaped() and whitespace may be
                      # modified
+  is_inline = False
 
   frame = namedtuple('frame', ['tag', 'items', 'used'])
 
@@ -86,7 +87,8 @@ class dom_tag(object):
     self.document   = None
 
     # Does not insert newlines on all children if True (recursive attribute)
-    self.do_inline = kwargs.pop('__inline', False)
+    self.is_inline = kwargs.pop('__inline', self.is_inline)
+    self.is_pretty = kwargs.pop('__pretty', self.is_pretty)
 
     #Add child elements
     if args:
@@ -301,16 +303,17 @@ class dom_tag(object):
     self.add(obj)
     return self
 
-  def render(self, indent=1, inline=False):
-    data = self._render([], indent, inline)
+  # String and unicode representations are the same as render()
+  def __unicode__(self):
+    return self.render()
+  __str__ = __unicode__
+
+  def render(self, indent='  ', pretty=True):
+    data = self._render([], 0, indent, pretty)
     return u''.join(data)
 
-  def _render(self, rendered, indent=1, inline=False):
-    '''
-    Returns a well-formatted string representation of the tag and renderings
-    of all its child tags.
-    '''
-    inline = self.do_inline or inline
+  def _render(self, sb, indent_level, indent_str, pretty):
+    pretty = pretty and self.is_pretty
 
     t = type(self)
     name = getattr(t, 'tagname', t.__name__)
@@ -320,47 +323,42 @@ class dom_tag(object):
     if name[-1] == '_':
       name = name[:-1]
 
-    rendered.extend(['<', name])
+    # open tag
+    sb.append('<')
+    sb.append(name)
 
     for attribute, value in sorted(self.attributes.items()):
-      rendered.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
+      sb.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
 
-    rendered.append('>')
+    sb.append('>')
 
     if not self.is_single:
-      pretty = self._render_children(rendered, indent, inline)
+      inline = self._render_children(sb, indent_level + 1, indent_str, pretty)
 
-      # don't add trailing whitespace after whitespace-sensitive elements
-      if pretty:
-        rendered.append('\n')
-        rendered.append(dom_tag.TAB * (indent - 1))
+      if pretty and not inline:
+        sb.append('\n')
+        sb.append(indent_str * indent_level)
 
       # close tag
-      rendered.append('</')
-      rendered.append(name)
-      rendered.append('>')
+      sb.append('</')
+      sb.append(name)
+      sb.append('>')
 
-    return rendered
+    return sb
 
-  # String and unicode representations are the same as render()
-  def __unicode__(self):
-    return self.render()
-  __str__ = __unicode__
-
-  def _render_children(self, rendered, indent=1, inline=False):
-    pretty = False
+  def _render_children(self, sb, indent_level, indent_str, pretty):
+    inline = True
     for child in self.children:
-      pretty = False
       if isinstance(child, dom_tag):
-        if not inline and self.is_pretty and child.is_pretty:
-          pretty = True
-          rendered.append('\n')
-          rendered.append(dom_tag.TAB * indent)
-        child._render(rendered, indent + 1, inline)
+        if pretty and not child.is_inline:
+          inline = False
+          sb.append('\n')
+          sb.append(indent_str * indent_level)
+        child._render(sb, indent_level, indent_str, pretty)
       else:
-        rendered.append(unicode(child))
+        sb.append(unicode(child))
 
-    return pretty
+    return inline
 
   def __repr__(self):
     name = '%s.%s' % (self.__module__, type(self).__name__)

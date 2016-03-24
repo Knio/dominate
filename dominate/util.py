@@ -78,7 +78,7 @@ _unescape = {
   # http://www.w3.org/TR/html4/sgml/entities.html
   'yuml': 255,
 }
-
+str_escape = escape
 
 def unescape(data):
   '''
@@ -139,9 +139,9 @@ class lazy(dom_tag):
     self.kwargs = kwargs
 
 
-  def _render(self, rendered, indent=1, inline=False):
+  def _render(self, sb, *a, **kw):
     r = self.func(*self.args, **self.kwargs)
-    rendered.append(str(r))
+    sb.append(str(r))
 
 
 # TODO rename this to raw?
@@ -150,17 +150,18 @@ class text(dom_tag):
   Just a string. useful for inside context managers
   '''
   is_pretty = False
+  is_inline = True
 
   def __init__(self, _text, escape=True):
     super(text, self).__init__()
     if escape:
-      self.text = globals()['escape'](_text)
+      self.text = str_escape(_text)
     else:
       self.text = _text
 
-  def _render(self, rendered, indent, inline):
-    rendered.append(self.text)
-    return rendered
+  def _render(self, sb, *a, **kw):
+    sb.append(self.text)
+    return sb
 
 def raw(s):
   '''

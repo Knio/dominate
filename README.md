@@ -25,7 +25,7 @@ with doc:
         attr(cls='body')
         p('Lorem ipsum..')
 
-print doc
+print(doc)
 ```
 
 Output:

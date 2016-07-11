@@ -110,9 +110,8 @@ accepts child elements, text, or keyword attributes. `dominate` nodes return the
 from the `__str__`, `__unicode__`, and `render()` methods.
 
 ```python
-print html(body(h1('Hello, World!')))
+print(html(body(h1('Hello, World!'))))
 ```
-
 ```html
 <html>
     <body>
@@ -138,9 +137,8 @@ For attributes `class` and `for` which conflict with Python's [reserved keywords
 
 ```python
 test = label(cls='classname anothername', fr='someinput')
-print test
+print(test)
 ```
-
 ```html
 <label class="classname anothername" for="someinput"></label>
 ```
@@ -149,9 +147,8 @@ Use `data_*` for [custom HTML5 data attributes](http://www.w3.org/html/wg/drafts
 
 ```python
 test = div(data_employee='101011')
-print test
+print(test)
 ```
-
 ```html
 <div data-employee="101011"></div>
 ```
@@ -161,9 +158,8 @@ You can also modify the attributes of tags through a dictionary-like interface:
 ```python
 header = div()
 header['id'] = 'header'
-print header
+print(header)
 ```
-
 ```html
 <div id="header"></div>
 ```
@@ -179,9 +175,8 @@ Create a simple list:
 list = ul()
 for item in range(4):
     list += li('Item #', item)
-print list
+print(list)
 ```
-
 ```html
 <ul>
     <li>Item #0</li>
@@ -194,9 +189,8 @@ print list
 `dominate` supports iterables to help streamline your code:
 
 ```python
-print ul(li(a(name, href=link), __inline=True) for name, link in menu_items)
+print(ul(li(a(name, href=link), __pretty=False) for name, link in menu_items))
 ```
-
 ```html
 <ul>
     <li><a href="/home/">Home</a></li>
@@ -214,9 +208,8 @@ _body = _html.add(body())
 header  = _body.add(div(id='header'))
 content = _body.add(div(id='content'))
 footer  = _body.add(div(id='footer'))
-print _html
+print(_html)
 ```
-
 ```html
 <html>
     <body>
@@ -234,9 +227,8 @@ _html = html()
 _head, _body = _html.add(head(title('Simple Document Tree')), body())
 names = ['header', 'content', 'footer']
 header, content, footer = _body.add(div(id=name) for name in names)
-print _html
+print(_html)
 ```
-
 ```html
 <html>
     <head>
@@ -255,9 +247,8 @@ You can modify the attributes of tags through a dictionary-like interface:
 ```python
 header = div()
 header['id'] = 'header'
-print header
+print(header)
 ```
-
 ```html
 <div id="header"></div>
 ```
@@ -267,9 +258,8 @@ Or the children of a tag though an array-line interface:
 ```python
 header = div('Test')
 header[0] = 'Hello World'
-print header
+print(header)
 ```
-
 ```html
 <div>Hello World</div>
 ```
@@ -277,22 +267,63 @@ print header
 Comments can be created using objects too!
 
 ```python
-print comment('BEGIN HEADER')
+print(comment('BEGIN HEADER'))
 ```
-
 ```html
 <!--BEGIN HEADER-->
 ```
 
 ```python
-print comment(p('Upgrade to newer IE!'), condition='lt IE9')
+print(comment(p('Upgrade to newer IE!'), condition='lt IE9'))
 ```
-
 ```html
 <!--[if lt IE9]>
   <p>Upgrade to newer IE!</p>
 <![endif]-->
 ```
+
+Rendering
+---------
+
+By default, `render()` tries to make all output human readable, with one HTML
+element per line and two spaces of indentation.
+
+This behavior can be controlled by the `__pretty` (default: `True` except for
+certain element types like `pre`) attribute when creating an element, and by
+the `pretty` (default: `True`) and `indent` (default: `  `) arguments to
+`render()`. Rendering options propagate to all descendant nodes.
+
+```python
+a = div(span('Hello World'))
+print(a.render())
+```
+```html
+<div>
+  <span>Hello World</span>
+</div>
+```
+```python
+print(a.render(pretty=False))
+```
+```html
+<div><span>Hello World</span></div>
+```
+```python
+print(a.render(indent='\t'))
+```
+```html
+<div>
+	<span>Hello World</span>
+</div>
+```
+```python
+a = div(span('Hello World'), __pretty=False)
+print(a.render())
+```
+```html
+<div><span>Hello World</span></div>
+```
+
 
 Context Managers
 ----------------
@@ -306,9 +337,8 @@ with h:
     li('Two')
     li('Three')
 
-print h
+print(h)
 ```
-
 ```html
 <ul>
     <li>One</li>
@@ -332,9 +362,8 @@ with h.add(body()).add(div(id='content')):
         with l:
             td('Three')
 
-print h
+print(h)
 ```
-
 ```html
 <html>
     <body>
@@ -364,9 +393,8 @@ d = div()
 with d:
     attr(id='header')
 
- print d
+ print(d)
  ```
-
  ```html
 <div id="header"></div>
 ```
@@ -383,9 +411,8 @@ def greeting(name):
         p('Hello, %s' % name)
     return d
 
-print greeting('Bob')
+print(greeting('Bob'))
 ```
-
 ```html
 <div>
     <p>Hello, Bob</p>
@@ -407,9 +434,8 @@ This boilerplate can be avoided by using tags (objects and instances) as decorat
 @div
 def greeting(name):
     p('Hello %s' % name)
-print greeting('Bob')
+print(greeting('Bob'))
 ```
-
 ```html
 <div>
     <p>Hello Bob</p>
@@ -426,9 +452,8 @@ Each call to the decorated function will return a copy of the node used to decor
 def greeting(name):
     p('Hello %s' % name)
 
-print greeting('Bob')
+print(greeting('Bob'))
 ```
-
 ```html
 
 <div class="greeting">
@@ -446,9 +471,8 @@ When you create a new document, the basic HTML tag structure is created for you.
 
 ```python
 d = document()
-print d
+print(d)
 ```
-
 ```html
 <!DOCTYPE html>
 <html>
@@ -468,7 +492,7 @@ The `document` class also provides helpers to allow you to access the `html`, `h
 d = document()
 ```
 
-```
+```python
 >>> d.html
 <dominate.tags.html: 0 attributes, 2 children>
 >>> d.head
@@ -487,9 +511,8 @@ The `document` class also provides helpers to allow you to directly add nodes to
 d = document()
 d += h1('Hello, World!')
 d += p('This is a paragraph.')
-print d
+print(d)
 ```
-
 ```html
 <!DOCTYPE html>
 <html>

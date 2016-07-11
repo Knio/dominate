@@ -44,8 +44,6 @@ def _get_thread_context():
 
 
 class dom_tag(object):
-  TAB = '  '  # TODO make this a parameter to render(), and a tag.
-
   is_single = False  # Tag does not require matching end tag (ex. <hr/>)
   is_pretty = True   # Text inside the tag should be left as-is (ex. <pre>)
                      # otherwise, text will be escaped() and whitespace may be

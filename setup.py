@@ -17,8 +17,6 @@ Public License along with dominate.  If not, see
 '''
 # pylint: disable=bad-whitespace
 
-# http://guide.python-distribute.org/creation.html
-
 from setuptools import setup
 
 import imp

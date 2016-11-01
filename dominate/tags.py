@@ -983,7 +983,7 @@ class menu(html_tag):
 
 class font(html_tag):
    '''
-  The font element represents a header cell in a table.
+  The font element represents the font displayed in the application
   '''
   pass
 

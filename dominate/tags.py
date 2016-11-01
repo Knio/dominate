@@ -978,15 +978,11 @@ class menu(html_tag):
   '''
   pass
 
-#Font Styles
-
-
 class font(html_tag):
-   '''
-  The font element represents the font displayed in the application
+  '''
+  The font element represents the font in a html .
   '''
   pass
-
 
 
 # Additional markup

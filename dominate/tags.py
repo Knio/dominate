@@ -978,6 +978,16 @@ class menu(html_tag):
   '''
   pass
 
+#Font Styles
+
+
+class font(html_tag):
+   '''
+  The font element represents a header cell in a table.
+  '''
+  pass
+
+
 
 # Additional markup
 

@@ -273,8 +273,8 @@ def test_pretty():
     '''<div><span>hi</span><span>there</span></div>'''
 
   assert span('hi', br(), 'there').render() == \
-      '''<span>hi<br>there</span>'''
+      '''<span>hi<br />there</span>'''
 
   assert span('hi', br(__inline=False), 'there').render() == \
-      '''<span>hi\n  <br>there\n</span>'''
+      '''<span>hi\n  <br />there\n</span>'''
 

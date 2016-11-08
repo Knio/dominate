@@ -328,7 +328,7 @@ class dom_tag(object):
     for attribute, value in sorted(self.attributes.items()):
       sb.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
 
-    sb.append('>')
+    sb.append(' />' if self.is_single else '>')
 
     if not self.is_single:
       inline = self._render_children(sb, indent_level + 1, indent_str, pretty)

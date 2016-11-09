@@ -290,8 +290,8 @@ element per line and two spaces of indentation.
 
 This behavior can be controlled by the `__pretty` (default: `True` except for
 certain element types like `pre`) attribute when creating an element, and by
-the `pretty` (default: `True`) and `indent` (default: `  `) arguments to
-`render()`. Rendering options propagate to all descendant nodes.
+the `pretty` (default: `True`), `indent` (default: `  `) and `xhtml` (default: `False`)
+ arguments to `render()`. Rendering options propagate to all descendant nodes.
 
 ```python
 a = div(span('Hello World'))
@@ -322,6 +322,25 @@ print(a.render())
 ```
 ```html
 <div><span>Hello World</span></div>
+```
+```python
+d = div()
+with d:
+    hr()
+    p("Test")
+    br()
+print(d.render())
+print(d.render(xhtml=True))
+```
+```html
+<div>
+  <hr>
+  <p>Test</p><br>
+</div>
+<div>
+  <hr />
+  <p>Test</p><br />
+</div>
 ```
 
 

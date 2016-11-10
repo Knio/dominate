@@ -1005,7 +1005,7 @@ class comment(html_tag):
   # Valid values are 'hidden', 'downlevel' or 'revealed'
   ATTRIBUTE_DOWNLEVEL = 'downlevel'
 
-  def _render(self, sb, indent_level=1, indent_str='  ', pretty=True):
+  def _render(self, sb, indent_level=1, indent_str='  ', pretty=True, xhtml=False):
     has_condition = comment.ATTRIBUTE_CONDITION in self.attributes
     is_revealed   = comment.ATTRIBUTE_DOWNLEVEL in self.attributes and \
         self.attributes[comment.ATTRIBUTE_DOWNLEVEL] == 'revealed'
@@ -1016,7 +1016,7 @@ class comment(html_tag):
     if has_condition:
       sb.append('[if %s]>' % self.attributes[comment.ATTRIBUTE_CONDITION])
 
-    pretty = self._render_children(sb, indent_level - 1, indent_str, pretty)
+    pretty = self._render_children(sb, indent_level - 1, indent_str, pretty, xhtml)
 
     # if len(self.children) > 1:
     if any(isinstance(child, dom_tag) for child in self):

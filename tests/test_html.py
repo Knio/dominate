@@ -176,9 +176,9 @@ def test_raw():
   from dominate.util import raw
   d = div()
   with d:
-    raw('Hello World<br />')
+    raw('Hello World<br>')
 
-  assert d.render() == '''<div>Hello World<br /></div>'''
+  assert d.render() == '''<div>Hello World<br></div>'''
 
 
 def test_escape():
@@ -277,4 +277,20 @@ def test_pretty():
 
   assert span('hi', br(__inline=False), 'there').render() == \
       '''<span>hi\n  <br>there\n</span>'''
+
+
+def test_xhtml():
+  assert head(script('foo'), style('bar')).render(xhtml=True) == '''<head>
+  <script>foo</script>
+  <style>bar</style>
+</head>'''
+
+  assert span('hi', br(), 'there').render(xhtml=True) == \
+         '''<span>hi<br />there</span>'''
+
+  assert span('hi', br(), 'there').render() == \
+         '''<span>hi<br>there</span>'''
+
+  assert span('hi', br(), 'there').render(xhtml=False) == \
+         '''<span>hi<br>there</span>'''
 

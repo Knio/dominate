@@ -306,11 +306,11 @@ class dom_tag(object):
     return self.render()
   __str__ = __unicode__
 
-  def render(self, indent='  ', pretty=True):
-    data = self._render([], 0, indent, pretty)
+  def render(self, indent='  ', pretty=True, xhtml=False):
+    data = self._render([], 0, indent, pretty, xhtml)
     return u''.join(data)
 
-  def _render(self, sb, indent_level, indent_str, pretty):
+  def _render(self, sb, indent_level, indent_str, pretty, xhtml):
     pretty = pretty and self.is_pretty
 
     t = type(self)
@@ -328,10 +328,10 @@ class dom_tag(object):
     for attribute, value in sorted(self.attributes.items()):
       sb.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
 
-    sb.append('>')
+    sb.append(' />' if self.is_single and xhtml else '>')
 
     if not self.is_single:
-      inline = self._render_children(sb, indent_level + 1, indent_str, pretty)
+      inline = self._render_children(sb, indent_level + 1, indent_str, pretty, xhtml)
 
       if pretty and not inline:
         sb.append('\n')
@@ -344,7 +344,7 @@ class dom_tag(object):
 
     return sb
 
-  def _render_children(self, sb, indent_level, indent_str, pretty):
+  def _render_children(self, sb, indent_level, indent_str, pretty, xhtml):
     inline = True
     for child in self.children:
       if isinstance(child, dom_tag):
@@ -352,7 +352,7 @@ class dom_tag(object):
           inline = False
           sb.append('\n')
           sb.append(indent_str * indent_level)
-        child._render(sb, indent_level, indent_str, pretty)
+        child._render(sb, indent_level, indent_str, pretty, xhtml)
       else:
         sb.append(unicode(child))
 

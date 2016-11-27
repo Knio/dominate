@@ -1,3 +1,5 @@
 include README.md
 include LICENSE.txt
 recursive-include tests *
+global-exclude __pycache__
+global-exclude *.pyc

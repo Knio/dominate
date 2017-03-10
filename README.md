@@ -418,6 +418,21 @@ with d:
 <div id="header"></div>
 ```
 
+And text nodes can be added with the `dominate.util.text` function:
+
+```python
+from dominate.util import text
+para = p(__pretty=False)
+with para:
+    text('Have a look at our ')
+    a('other products', href='/products')
+
+print(para)
+```
+```html
+<p>Have a look at our <a href="/products">other products</a></p>
+```
+
 
 Decorators
 ----------

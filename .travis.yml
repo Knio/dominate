@@ -6,7 +6,8 @@ python:
   - "3.4"
   - "3.5"
   - "pypy"
-  - "pypy3"
+# disabled for https://github.com/travis-ci/travis-ci/issues/6277
+#  - "pypy3"
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:

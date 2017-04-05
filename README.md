@@ -520,24 +520,21 @@ print(d)
 The `document` class accepts `title`, `doctype`, and `request` keyword arguments.
 The default values for these arguments are `Dominate`, `<!DOCTYPE html>`, and `None` respectively.
 
-The `document` class also provides helpers to allow you to access the `html`, `head`, and `body` nodes directly.
+The `document` class also provides helpers to allow you to access the `title`, `head`, and `body` nodes directly.
 
 ```python
 d = document()
 ```
 
 ```python
->>> d.html
-<dominate.tags.html: 0 attributes, 2 children>
 >>> d.head
-<dominate.tags.head: 0 attributes, 0 children>
+<dominate.tags.head: 0 attributes, 1 children>
 >>> d.body
 <dominate.tags.body: 0 attributes, 0 children>
+>>> d.title
+u'Dominate'
 ```
 
-
-You should notice that here the `head` tag contains zero children.
-This is because the default `title` tag is only added when the document is rendered and the `head` element does not explicitly contain one.
 
 The `document` class also provides helpers to allow you to directly add nodes to the `body` tag.
 

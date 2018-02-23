@@ -227,6 +227,11 @@ def test_keyword_attributes():
   assert div(class_name='foo', html_for='bar').render() == expected
 
 
+def test_href_attribute():
+  expected = '<a href="https://test.org/aaa?a=b&c=d">toto</a>'
+  assert a('toto', href='https://test.org/aaa?a=b&c=d').render() == expected
+
+
 def test_comment():
   d = comment('Hi there')
   assert d.render() == '<!--Hi there-->'

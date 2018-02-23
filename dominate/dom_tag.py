@@ -326,7 +326,13 @@ class dom_tag(object):
     sb.append(name)
 
     for attribute, value in sorted(self.attributes.items()):
-      sb.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
+      # No "&" escaping for href in order to prevent altering urls
+      escaped_value = escape(
+        unicode(value),
+        quote=True,
+        ampersand=attribute != 'href')
+      sb.append(' %s="%s"' % (attribute, escaped_value))
+        
 
     sb.append(' />' if self.is_single and xhtml else '>')
 

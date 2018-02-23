@@ -51,16 +51,20 @@ def system(cmd, data=None):
   return out.decode('utf8')
 
 
-def escape(data, quote=True):  # stoled from std lib cgi
+# stoled from std lib cgi and modified to handle "&" char for urls
+def escape(data, quote=True, ampersand=True):
   '''
   Escapes special characters into their html entities
-  Replace special characters "&", "<" and ">" to HTML-safe sequences.
+  Replace special characters "<" and ">" to HTML-safe sequences.
   If the optional flag quote is true, the quotation mark character (")
+  is also translated.
+  If the optional flag ampersand is true, the ampersand character (&)
   is also translated.
 
   This is used to escape content that appears in the body of an HTML cocument
   '''
-  data = data.replace("&", "&amp;")  # Must be done first!
+  if ampersand:
+    data = data.replace("&", "&amp;")  # Must be done first!
   data = data.replace("<", "&lt;")
   data = data.replace(">", "&gt;")
   if quote:

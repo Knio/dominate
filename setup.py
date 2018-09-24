@@ -48,6 +48,7 @@ setup(
 
   description      = 'Dominate is a Python library for creating and manipulating HTML documents using an elegant DOM API.',
   long_description = long_description,
+  long_description_content_type='text/markdown',
   keywords         = 'framework templating template html xhtml python html5',
 
   classifiers = [

@@ -84,7 +84,7 @@ def unescape(data):
   '''
   unescapes html entities. the opposite of escape.
   '''
-  cc = re.compile('&(?:(?:#(\d+))|([^;]+));')
+  cc = re.compile(r'&(?:(?:#(\d+))|([^;]+));')
 
   result = []
   m = cc.search(data)

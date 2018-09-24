@@ -20,9 +20,16 @@ Public License along with Dominate.  If not, see
 
 import copy
 import numbers
-from collections import defaultdict, namedtuple, Callable
+from collections import defaultdict, namedtuple
 from functools import wraps
 import threading
+
+try:
+  # Python 3
+  from collections.abc import Callable
+except ImportError:
+  # Python 2.7
+  from collections import Callable
 
 try:
   basestring = basestring

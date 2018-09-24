@@ -50,6 +50,7 @@ setup(
   long_description = long_description,
   keywords         = 'framework templating template html xhtml python html5',
 
+  python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
   classifiers = [
     'Intended Audience :: Developers',
     'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',

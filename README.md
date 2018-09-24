@@ -63,7 +63,7 @@ Output:
 Compatibility
 -------------
 
-`Dominate` is compatible with both Python 2.7 and Python 3.3. There are known issues with Python 3.2 and below.
+`Dominate` is compatible with both Python 2.7 and Python 3.4+.
 
 [![Build Status](https://travis-ci.org/Knio/dominate.png?branch=master)](https://travis-ci.org/Knio/dominate)
 [![Coverage Status](https://coveralls.io/repos/Knio/dominate/badge.png?branch=master)](https://coveralls.io/r/Knio/dominate?branch=master)

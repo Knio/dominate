@@ -24,28 +24,13 @@ _version = imp.load_source("dominate._version", "dominate/_version.py")
 
 long_description = open('README.md').read()
 
-# PyPI only supports (an old version of?) ReST.
-# Doesn't seem to be compatable with Pandoc. Shame on you.
-
-# try:
-#   import pypandoc
-#   long_description = pypandoc.convert(
-#     long_description, 'rst', format='markdown_github')
-#   with open('README.rst', 'w') as f:
-#     f.write(long_description)
-# except:
-#   import traceback
-#   traceback.print_exc()
-
-
 setup(
   name    = 'dominate',
   version = _version.__version__,
   author  = 'Tom Flanagan and Jake Wharton',
   author_email = 'tom@zkpq.ca',
-  license = 'LICENSE.txt',
-  url     = 'http://github.com/Knio/dominate/',
-
+  license = 'LGPLv3',
+  url     = 'https://github.com/Knio/dominate/',
   description      = 'Dominate is a Python library for creating and manipulating HTML documents using an elegant DOM API.',
   long_description = long_description,
   long_description_content_type='text/markdown',

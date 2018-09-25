@@ -978,6 +978,12 @@ class menu(html_tag):
   '''
   pass
 
+class font(html_tag):
+  '''
+  The font element represents the font in a html .
+  '''
+  pass
+
 
 # Additional markup
 

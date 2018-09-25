@@ -7,7 +7,8 @@ python:
   - "3.6"
   - "pypy"
   - "pypy3"
-# Enable 3.7 without globally enabling sudo and dist: xenial for other build jobs
+# Workaround for Travis CI, as 3.7 needs Xenial and sudo.
+# See https://github.com/travis-ci/travis-ci/issues/9815
 matrix:
   include:
     - python: "3.7"

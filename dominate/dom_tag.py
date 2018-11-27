@@ -381,11 +381,11 @@ class dom_tag(object):
   @staticmethod
   def clean_attribute(attribute):
     '''
-    Since some attributes match python keywords we prepend them with
-    underscores. Python also does not support colons in keywords so underscores
-    mid-attribute are replaced with colons.
+    Normalize attribute names for shorthand and work arounds for limitations
+    in Python's syntax
     '''
-    # shorthand
+
+    # Shorthand
     attribute = {
       'cls': 'class',
       'className': 'class',
@@ -395,13 +395,20 @@ class dom_tag(object):
       'htmlFor': 'for',
     }.get(attribute, attribute)
 
-    # Workaround for python's reserved words
-    if attribute[0] == '_': attribute = attribute[1:]
+    # Workaround for Python's reserved words
+    if attribute[0] == '_':
+      attribute = attribute[1:]
 
-    # Workaround for inability to use colon in python keywords
+    # Workaround for dash
     if attribute in set(['http_equiv']) or attribute.startswith('data_'):
-      return attribute.replace('_', '-').lower()
-    return attribute.replace('_', ':').lower()
+      attribute = attribute.replace('_', '-').lower()
+
+    # Workaround for colon
+    if attribute.split('_')[0] in ('xlink', 'xml', 'xmlns'):
+      attribute = attribute.replace('_', ':', 1).lower()
+
+    return attribute
+
 
   @classmethod
   def clean_pair(cls, attribute, value):

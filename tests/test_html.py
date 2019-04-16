@@ -195,9 +195,14 @@ def test_attributes():
     del d['id']
   with pytest.raises(AttributeError):
     x = d['id']
-  with d:
+
+  with div() as d:
     attr(data_test=False)
-  assert d['data-test'] == 'false'
+  assert d['data-test'] is False
+
+  with div() as d:
+    attr(data_test=True)
+  assert d['data-test']
 
   with pytest.raises(ValueError):
     attr(id='moo')
@@ -236,6 +241,13 @@ def test_comment():
   d = comment('Hi there')
   assert d.render() == '<!--Hi there-->'
   assert div(d).render() == '<div>\n  <!--Hi there-->\n</div>'
+
+
+def test_boolean_attributes():
+  assert input(type="checkbox", checked=True).render() == \
+      '<input checked="checked" type="checkbox">'
+  assert input(type="checkbox", checked=False).render() == \
+      '<input type="checkbox">'
 
 
 def test_nested_decorator_2():
@@ -298,4 +310,3 @@ def test_xhtml():
 
   assert span('hi', br(), 'there').render(xhtml=False) == \
          '''<span>hi<br>there</span>'''
-

@@ -159,12 +159,30 @@ class dom_tag(object):
           'child tags and attributes, respectively.')
   __setitem__ = set_attribute
 
-  def delete_attribute(self, key):
+  def __delitem__(self, key):
     if isinstance(key, int):
-      del self.children[key:key+1]
+      # Children are accessed using integers
+      try:
+        children = object.__getattribute__(self, 'children')
+        children.pop(key)
+      except (KeyError, IndexError):
+        raise IndexError('Child with index "%s" does not exist.' % key)
+
+    elif isinstance(key, basestring):
+      # Attributes are accessed using strings
+      try:
+        attributes = object.__getattribute__(self, 'attributes')
+        del attributes[key]
+      except KeyError:
+        raise AttributeError('Attribute "%s" does not exist.' % key)
     else:
-      del self.attributes[key]
-  __delitem__ = delete_attribute
+      raise TypeError(
+        'Only integer and string types are valid for accessing '
+        'child tags and attributes, respectively.')
+
+  __delattr__ = __delitem__
+
+  delete_attribute = __delitem__
 
   def setdocument(self, doc):
     '''

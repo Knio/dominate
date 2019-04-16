@@ -20,6 +20,7 @@ Public License along with Dominate.  If not, see
 '''
 from .dom_tag  import dom_tag, attr
 from .dom1core import dom1core
+from .style import style
 
 try:
   basestring = basestring
@@ -61,6 +62,27 @@ class html_tag(dom_tag, dom1core):
     Creates a new html tag instance.
     '''
     super(html_tag, self).__init__(*args, **kwargs)
+
+    attributes = object.__getattribute__(self, 'attributes')
+    attributes['style'] = style()
+
+  def __delitem__(self, key):
+    if key == 'style':
+      attributes = object.__getattribute__(self, 'attributes')
+      attributes['style'] = style()
+
+    else:
+        dom_tag.__delitem__(self, key)
+
+  __delattr__ = __delitem__
+  delete_attribute = __delitem__
+
+
+
+
+
+
+
 
 
   # def validate(self):
@@ -131,8 +153,6 @@ class html(html_tag):
   #   if len(self) != 2 or not isinstance(self[0], head) or not isinstance(self[1], body):
   #     return [(self, ERR_CONTENT, 'Children must be <head> and then <body>.')]
   #   return []
-
-
 
 # Document metadata
 

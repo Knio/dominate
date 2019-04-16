@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
-'''
+
+from __future__ import print_function
+
+
+"""
 css classes.
-'''
+"""
+
 __license__ = '''
 This file is part of Dominate.
 
@@ -19,8 +24,6 @@ You should have received a copy of the GNU Lesser General
 Public License along with Dominate.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
-
-from __future__ import print_function
 
 
 class css_base(object):
@@ -320,7 +323,7 @@ class css_base(object):
                 if key == '_selector':
                     continue
 
-                if isinstance(value, CSSBase):
+                if isinstance(value, css_base):
                     lines += [value.__str__(indent + 4, html)]
                 else:
                     attr_name = key[1:]
@@ -330,7 +333,9 @@ class css_base(object):
                     attr_name = attr_name.replace(' ', '')
                     attr = self.__class__.__dict__[attr_name].fget
                     name = attr.__doc__.split('\n')[1].strip()
-                    lines += ['    ' + ' ' * indent + name + ': ' + value + ';']
+                    lines += [
+                        '    ' + ' ' * indent + name + ': ' + value + ';'
+                    ]
 
             lines += [' ' * indent + '}']
 

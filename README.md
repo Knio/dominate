@@ -222,7 +222,7 @@ For clean code, the `.add()` method returns children in tuples. The above exampl
 _html = html()
 _head, _body = _html.add(head(title('Simple Document Tree')), body())
 names = ['header', 'content', 'footer']
-header, content, footer = _body.add(div(id=name) for name in names)
+header, content, footer = _body.add([div(id=name) for name in names])
 print(_html)
 ```
 ```html

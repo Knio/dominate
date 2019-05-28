@@ -333,7 +333,8 @@ class dom_tag(object):
     sb.append(name)
 
     for attribute, value in sorted(self.attributes.items()):
-      sb.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
+      if value is not False: # False values must be omitted completely
+          sb.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
 
     sb.append(' />' if self.is_single and xhtml else '>')
 
@@ -377,6 +378,7 @@ class dom_tag(object):
     if children_len != 1: children += 'ren'
 
     return '<%s at %x: %s, %s>' % (name, id(self), attributes, children)
+
 
   @staticmethod
   def clean_attribute(attribute):
@@ -425,8 +427,7 @@ class dom_tag(object):
     if value is True:
       value = attribute
 
-    if value is False:
-      value = "false"
+    # Ignore `if value is False`: this is filtered out in render()
 
     return (attribute, value)
 

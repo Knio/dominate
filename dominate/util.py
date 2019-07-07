@@ -30,6 +30,7 @@ except NameError:
   basestring = str
   unichr = chr
 
+
 def include(f):
   '''
   includes the contents of a file on disk.
@@ -79,6 +80,7 @@ _unescape = {
   'yuml': 255,
 }
 str_escape = escape
+
 
 def unescape(data):
   '''
@@ -162,6 +164,7 @@ class text(dom_tag):
   def _render(self, sb, *a, **kw):
     sb.append(self.text)
     return sb
+
 
 def raw(s):
   '''

@@ -100,7 +100,7 @@ class dom_tag(object):
       self.add(*args)
 
     for attr, value in kwargs.items():
-      self.set_attribute(*dom_tag.clean_pair(attr, value))
+      self.set_attribute(*type(self).clean_pair(attr, value))
 
     self._ctx = None
     self._add_to_ctx()

@@ -133,14 +133,13 @@ class html(html_tag):
   #   return []
 
 
-
 # Document metadata
-
 class head(html_tag):
   '''
   The head element represents a collection of metadata for the document.
   '''
   pass
+
 
 class title(html_tag):
   '''
@@ -157,6 +156,7 @@ class title(html_tag):
     self.add(text)
   text = property(_get_text, _set_text)
 
+
 class base(html_tag):
   '''
   The base element allows authors to specify the document base URL for the
@@ -166,11 +166,13 @@ class base(html_tag):
   '''
   is_single = True
 
+
 class link(html_tag):
   '''
   The link element allows authors to link their document to other resources.
   '''
   is_single = True
+
 
 class meta(html_tag):
   '''
@@ -178,6 +180,7 @@ class meta(html_tag):
   expressed using the title, base, link, style, and script elements.
   '''
   is_single = True
+
 
 class style(html_tag):
   '''
@@ -189,13 +192,13 @@ class style(html_tag):
 
 
 # Scripting
-
 class script(html_tag):
   '''
   The script element allows authors to include dynamic script and data blocks
   in their documents. The element does not represent content for the user.
   '''
   is_pretty = False
+
 
 class noscript(html_tag):
   '''
@@ -208,12 +211,12 @@ class noscript(html_tag):
 
 
 # Sections
-
 class body(html_tag):
   '''
   The body element represents the main content of the document.
   '''
   pass
+
 
 class section(html_tag):
   '''
@@ -223,12 +226,14 @@ class section(html_tag):
   '''
   pass
 
+
 class nav(html_tag):
   '''
   The nav element represents a section of a page that links to other pages or
   to parts within the page: a section with navigation links.
   '''
   pass
+
 
 class article(html_tag):
   '''
@@ -240,6 +245,7 @@ class article(html_tag):
   '''
   pass
 
+
 class aside(html_tag):
   '''
   The aside element represents a section of a page that consists of content
@@ -249,11 +255,13 @@ class aside(html_tag):
   '''
   pass
 
+
 class h1(html_tag):
   '''
   Represents the highest ranking heading.
   '''
   pass
+
 
 class h2(html_tag):
   '''
@@ -261,11 +269,13 @@ class h2(html_tag):
   '''
   pass
 
+
 class h3(html_tag):
   '''
   Represents the third-highest ranking heading.
   '''
   pass
+
 
 class h4(html_tag):
   '''
@@ -273,17 +283,20 @@ class h4(html_tag):
   '''
   pass
 
+
 class h5(html_tag):
   '''
   Represents the fifth-highest ranking heading.
   '''
   pass
 
+
 class h6(html_tag):
   '''
   Represents the sixth-highest ranking heading.
   '''
   pass
+
 
 class hgroup(html_tag):
   '''
@@ -293,11 +306,13 @@ class hgroup(html_tag):
   '''
   pass
 
+
 class header(html_tag):
   '''
   The header element represents a group of introductory or navigational aids.
   '''
   pass
+
 
 class footer(html_tag):
   '''
@@ -307,6 +322,7 @@ class footer(html_tag):
   copyright data, and the like.
   '''
   pass
+
 
 class address(html_tag):
   '''
@@ -318,12 +334,12 @@ class address(html_tag):
 
 
 # Grouping content
-
 class p(html_tag):
   '''
   The p element represents a paragraph.
   '''
   pass
+
 
 class hr(html_tag):
   '''
@@ -333,6 +349,7 @@ class hr(html_tag):
   '''
   is_single = True
 
+
 class pre(html_tag):
   '''
   The pre element represents a block of preformatted text, in which structure
@@ -340,12 +357,14 @@ class pre(html_tag):
   '''
   is_pretty = False
 
+
 class blockquote(html_tag):
   '''
   The blockquote element represents a section that is quoted from another
   source.
   '''
   pass
+
 
 class ol(html_tag):
   '''
@@ -355,6 +374,7 @@ class ol(html_tag):
   '''
   pass
 
+
 class ul(html_tag):
   '''
   The ul element represents a list of items, where the order of the items is
@@ -362,6 +382,7 @@ class ul(html_tag):
   the meaning of the document.
   '''
   pass
+
 
 class li(html_tag):
   '''
@@ -371,6 +392,7 @@ class li(html_tag):
   list-related relationship to any other li element.
   '''
   pass
+
 
 class dl(html_tag):
   '''
@@ -382,6 +404,7 @@ class dl(html_tag):
   '''
   pass
 
+
 class dt(html_tag):
   '''
   The dt element represents the term, or name, part of a term-description group
@@ -389,12 +412,14 @@ class dt(html_tag):
   '''
   pass
 
+
 class dd(html_tag):
   '''
   The dd element represents the description, definition, or value, part of a
   term-description group in a description list (dl element).
   '''
   pass
+
 
 class figure(html_tag):
   '''
@@ -404,12 +429,14 @@ class figure(html_tag):
   '''
   pass
 
+
 class figcaption(html_tag):
   '''
   The figcaption element represents a caption or legend for the rest of the
   contents of the figcaption element's parent figure element, if any.
   '''
   pass
+
 
 class div(html_tag):
   '''
@@ -420,9 +447,7 @@ class div(html_tag):
   pass
 
 
-
 # Text semantics
-
 class a(html_tag):
   '''
   If the a element has an href attribute, then it represents a hyperlink (a
@@ -434,11 +459,13 @@ class a(html_tag):
   '''
   pass
 
+
 class em(html_tag):
   '''
   The em element represents stress emphasis of its contents.
   '''
   pass
+
 
 class strong(html_tag):
   '''
@@ -446,11 +473,13 @@ class strong(html_tag):
   '''
   pass
 
+
 class small(html_tag):
   '''
   The small element represents side comments such as small print.
   '''
   pass
+
 
 class s(html_tag):
   '''
@@ -458,6 +487,7 @@ class s(html_tag):
   relevant.
   '''
   pass
+
 
 class cite(html_tag):
   '''
@@ -470,11 +500,13 @@ class cite(html_tag):
   '''
   pass
 
+
 class q(html_tag):
   '''
   The q element represents some phrasing content quoted from another source.
   '''
   pass
+
 
 class dfn(html_tag):
   '''
@@ -485,6 +517,7 @@ class dfn(html_tag):
   '''
   pass
 
+
 class abbr(html_tag):
   '''
   The abbr element represents an abbreviation or acronym, optionally with its
@@ -493,6 +526,7 @@ class abbr(html_tag):
   abbreviation, and nothing else.
   '''
   pass
+
 
 class time_(html_tag):
   '''
@@ -503,6 +537,7 @@ class time_(html_tag):
   pass
 _time = time_
 
+
 class code(html_tag):
   '''
   The code element represents a fragment of computer code. This could be an XML
@@ -510,6 +545,7 @@ class code(html_tag):
   computer would recognize.
   '''
   pass
+
 
 class var(html_tag):
   '''
@@ -520,12 +556,14 @@ class var(html_tag):
   '''
   pass
 
+
 class samp(html_tag):
   '''
   The samp element represents (sample) output from a program or computing
   system.
   '''
   pass
+
 
 class kbd(html_tag):
   '''
@@ -534,17 +572,20 @@ class kbd(html_tag):
   '''
   pass
 
+
 class sub(html_tag):
   '''
   The sub element represents a subscript.
   '''
   pass
 
+
 class sup(html_tag):
   '''
   The sup element represents a superscript.
   '''
   pass
+
 
 class i(html_tag):
   '''
@@ -556,6 +597,7 @@ class i(html_tag):
   '''
   pass
 
+
 class b(html_tag):
   '''
   The b element represents a span of text to which attention is being drawn for
@@ -566,6 +608,7 @@ class b(html_tag):
   '''
   pass
 
+
 class u(html_tag):
   '''
   The u element represents a span of text with an unarticulated, though
@@ -574,6 +617,7 @@ class u(html_tag):
   labeling the text as being misspelt.
   '''
   pass
+
 
 class mark(html_tag):
   '''
@@ -590,6 +634,7 @@ class mark(html_tag):
   '''
   pass
 
+
 class ruby(html_tag):
   '''
   The ruby element allows one or more spans of phrasing content to be marked
@@ -600,11 +645,13 @@ class ruby(html_tag):
   '''
   pass
 
+
 class rt(html_tag):
   '''
   The rt element marks the ruby text component of a ruby annotation.
   '''
   pass
+
 
 class rp(html_tag):
   '''
@@ -614,12 +661,14 @@ class rp(html_tag):
   '''
   pass
 
+
 class bdi(html_tag):
   '''
   The bdi element represents a span of text that is to be isolated from its
   surroundings for the purposes of bidirectional text formatting.
   '''
   pass
+
 
 class bdo(html_tag):
   '''
@@ -629,6 +678,7 @@ class bdo(html_tag):
   '''
   pass
 
+
 class span(html_tag):
   '''
   The span element doesn't mean anything on its own, but can be useful when
@@ -637,12 +687,14 @@ class span(html_tag):
   '''
   pass
 
+
 class br(html_tag):
   '''
   The br element represents a line break.
   '''
   is_single = True
   is_inline = True
+
 
 class wbr(html_tag):
   '''
@@ -651,13 +703,14 @@ class wbr(html_tag):
   is_single = True
   is_inline = True
 
-# Edits
 
+# Edits
 class ins(html_tag):
   '''
   The ins element represents an addition to the document.
   '''
   pass
+
 
 class del_(html_tag):
   '''
@@ -667,12 +720,12 @@ class del_(html_tag):
 
 
 # Embedded content
-
 class img(html_tag):
   '''
   An img element represents an image.
   '''
   is_single = True
+
 
 class iframe(html_tag):
   '''
@@ -680,12 +733,14 @@ class iframe(html_tag):
   '''
   pass
 
+
 class embed(html_tag):
   '''
   The embed element represents an integration point for an external (typically
   non-HTML) application or interactive content.
   '''
   is_single = True
+
 
 class object_(html_tag):
   '''
@@ -696,12 +751,14 @@ class object_(html_tag):
   pass
 _object = object_
 
+
 class param(html_tag):
   '''
   The param element defines parameters for plugins invoked by object elements.
   It does not represent anything on its own.
   '''
   is_single = True
+
 
 class video(html_tag):
   '''
@@ -710,11 +767,13 @@ class video(html_tag):
   '''
   pass
 
+
 class audio(html_tag):
   '''
   An audio element represents a sound or audio stream.
   '''
   pass
+
 
 class source(html_tag):
   '''
@@ -723,12 +782,14 @@ class source(html_tag):
   '''
   is_single = True
 
+
 class track(html_tag):
   '''
   The track element allows authors to specify explicit external timed text
   tracks for media elements. It does not represent anything on its own.
   '''
   is_single = True
+
 
 class canvas(html_tag):
   '''
@@ -738,12 +799,14 @@ class canvas(html_tag):
   '''
   pass
 
+
 class map_(html_tag):
   '''
   The map element, in conjunction with any area element descendants, defines an
   image map. The element represents its children.
   '''
   pass
+
 
 class area(html_tag):
   '''
@@ -753,15 +816,14 @@ class area(html_tag):
   is_single = True
 
 
-
 # Tabular data
-
 class table(html_tag):
   '''
   The table element represents data with more than one dimension, in the form
   of a table.
   '''
   pass
+
 
 class caption(html_tag):
   '''
@@ -770,12 +832,14 @@ class caption(html_tag):
   '''
   pass
 
+
 class colgroup(html_tag):
   '''
   The colgroup element represents a group of one or more columns in the table
   that is its parent, if it has a parent and that is a table element.
   '''
   pass
+
 
 class col(html_tag):
   '''
@@ -785,6 +849,7 @@ class col(html_tag):
   '''
   is_single = True
 
+
 class tbody(html_tag):
   '''
   The tbody element represents a block of rows that consist of a body of data
@@ -792,6 +857,7 @@ class tbody(html_tag):
   table.
   '''
   pass
+
 
 class thead(html_tag):
   '''
@@ -801,6 +867,7 @@ class thead(html_tag):
   '''
   pass
 
+
 class tfoot(html_tag):
   '''
   The tfoot element represents the block of rows that consist of the column
@@ -809,17 +876,20 @@ class tfoot(html_tag):
   '''
   pass
 
+
 class tr(html_tag):
   '''
   The tr element represents a row of cells in a table.
   '''
   pass
 
+
 class td(html_tag):
   '''
   The td element represents a data cell in a table.
   '''
   pass
+
 
 class th(html_tag):
   '''
@@ -828,9 +898,7 @@ class th(html_tag):
   pass
 
 
-
 # Forms
-
 class form(html_tag):
   '''
   The form element represents a collection of form-associated elements, some of
@@ -839,6 +907,7 @@ class form(html_tag):
   '''
   pass
 
+
 class fieldset(html_tag):
   '''
   The fieldset element represents a set of form controls optionally grouped
@@ -846,12 +915,14 @@ class fieldset(html_tag):
   '''
   pass
 
+
 class legend(html_tag):
   '''
   The legend element represents a caption for the rest of the contents of the
   legend element's parent fieldset element, if any.
   '''
   pass
+
 
 class label(html_tag):
   '''
@@ -862,6 +933,7 @@ class label(html_tag):
   '''
   pass
 
+
 class input_(html_tag):
   '''
   The input element represents a typed data field, usually with a form control
@@ -870,6 +942,7 @@ class input_(html_tag):
   is_single = True
 input = _input = input_
 
+
 class button(html_tag):
   '''
   The button element represents a button. If the element is not disabled, then
@@ -877,12 +950,14 @@ class button(html_tag):
   '''
   pass
 
+
 class select(html_tag):
   '''
   The select element represents a control for selecting amongst a set of
   options.
   '''
   pass
+
 
 class datalist(html_tag):
   '''
@@ -894,6 +969,7 @@ class datalist(html_tag):
   '''
   pass
 
+
 class optgroup(html_tag):
   '''
   The optgroup element represents a group of option elements with a common
@@ -901,12 +977,14 @@ class optgroup(html_tag):
   '''
   pass
 
+
 class option(html_tag):
   '''
   The option element represents an option in a select element or as part of a
   list of suggestions in a datalist element.
   '''
   pass
+
 
 class textarea(html_tag):
   '''
@@ -916,6 +994,7 @@ class textarea(html_tag):
   '''
   pass
 
+
 class keygen(html_tag):
   '''
   The keygen element represents a key pair generator control. When the
@@ -924,11 +1003,13 @@ class keygen(html_tag):
   '''
   is_single = True
 
+
 class output(html_tag):
   '''
   The output element represents the result of a calculation.
   '''
   pass
+
 
 class progress(html_tag):
   '''
@@ -941,6 +1022,7 @@ class progress(html_tag):
   '''
   pass
 
+
 class meter(html_tag):
   '''
   The meter element represents a scalar measurement within a known range, or a
@@ -951,13 +1033,13 @@ class meter(html_tag):
 
 
 # Interactive elements
-
 class details(html_tag):
   '''
   The details element represents a disclosure widget from which the user can
   obtain additional information or controls.
   '''
   pass
+
 
 class summary(html_tag):
   '''
@@ -966,17 +1048,20 @@ class summary(html_tag):
   '''
   pass
 
+
 class command(html_tag):
   '''
   The command element represents a command that the user can invoke.
   '''
   is_single = True
 
+
 class menu(html_tag):
   '''
   The menu element represents a list of commands.
   '''
   pass
+
 
 class font(html_tag):
   '''
@@ -986,7 +1071,6 @@ class font(html_tag):
 
 
 # Additional markup
-
 class comment(html_tag):
   '''
   Normal, one-line comment:

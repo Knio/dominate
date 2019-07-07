@@ -565,3 +565,19 @@ td(raw('<a href="example.html">Example</a>'))
 ```
 
 Without the raw call, this code would render escaped HTML with lt, etc.
+
+
+SVG
+---
+
+The `dominate.svg` module contains SVG tags similar to how `dominate.tags` contains HTML tags. SVG elements will automatically convert `_` to `-` for dashed elements. For example:
+
+```python
+from dominate.svg import *
+print(circle(stroke_width=5))
+```
+
+```html
+<circle stroke-width="5"></circle>
+```
+

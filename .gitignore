@@ -36,3 +36,9 @@ nosetests.xml
 .pydevproject
 *.sublime-workspace
 *.sublime-project
+
+
+venv
+vent/
+.idea
+.idea/

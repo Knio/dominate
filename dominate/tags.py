@@ -754,6 +754,68 @@ class area(html_tag):
 
 
 
+# SVG
+
+class svg(html_tag):
+  '''
+  Element container for svg graphics
+  '''
+  pass
+
+class circle(html_tag):
+  '''
+  A circle element for svg containers
+  '''
+  pass
+
+class ellipse(html_tag):
+  '''
+  An ellipse element for svg containers
+  '''
+  pass
+
+class line(html_tag):
+  '''
+  A line element for svg containers
+  '''
+  pass
+
+class linearGradient(html_tag):
+  '''
+  Linear gradient element for svg containers
+  '''
+  pass
+
+class path(html_tag):
+  '''
+  A path element for svg containers
+  '''
+  pass
+
+class polygon(html_tag):
+  '''
+  A polygon element for svg containers
+  '''
+  pass
+
+class polyline(html_tag):
+  '''
+  A polyline element for svg containers
+  '''
+  pass
+
+class rectangle(html_tag):
+  '''
+  A rectangle element for svg containers
+  '''
+  pass
+
+class text(html_tag):
+  '''
+  A text element for svg containers
+  '''
+  pass
+
 # Tabular data
 
 class table(html_tag):

@@ -91,7 +91,37 @@ class circle(html_tag):
     '''
     The <circle> SVG element is an SVG basic shape, used to draw circles based on a center point and a radius.
     '''
-    is_single = True
+    pass
+
+
+class clipPath(html_tag):
+    '''
+    The <clipPath> SVG element defines a clipping path, to be used used by the clip-path property.
+    '''
+    pass
+
+
+class defs(html_tag):
+    '''
+    The <defs> element is used to store graphical objects that will be used at a later time. Objects created inside a
+    <defs> element are not rendered directly. To display them you have to reference them
+    (with a <use> element for example).
+    '''
+    pass
+
+
+class desc(html_tag):
+    '''
+    The <desc> element provides an accessible, long-text description of any SVG container element or graphics element.
+    '''
+    pass
+
+
+class ellipse(html_tag):
+    '''
+    An ellipse element for svg containers
+    '''
+    pass
 
 
 class mpath(html_tag):
@@ -126,12 +156,6 @@ class tspan(html_tag):
     pass
 
 
-class ellipse(html_tag):
-  '''
-  An ellipse element for svg containers
-  '''
-  pass
-
 class line(html_tag):
   '''
   A line element for svg containers
@@ -162,10 +186,16 @@ class polyline(html_tag):
   '''
   pass
 
-class rectangle(html_tag):
+class rect(html_tag):
   '''
   A rectangle element for svg containers
   '''
   pass
+
+class use(html_tag):
+    '''
+    The <use> element takes nodes from within the SVG document, and duplicates them somewhere else.
+    '''
+    pass
 
 

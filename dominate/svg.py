@@ -190,11 +190,89 @@ class mask(svg_tag):
     pass
 
 
-
 class mpath(svg_tag):
     '''
     The <mpath> sub-element for the <animateMotion> element provides the ability to reference an
     external <path> element as the definition of a motion path.
+    '''
+    pass
+
+
+class pattern(svg_tag):
+    '''
+    The <pattern> element defines a graphics object which can be redrawn at repeated x and y-coordinate
+    intervals ("tiled") to cover an area.
+    '''
+    pass
+
+
+class polygon(svg_tag):
+    '''
+    A polygon element for svg containers
+    '''
+    pass
+
+
+class polyline(svg_tag):
+    '''
+    A polyline element for svg containers
+    '''
+    pass
+
+
+class radialGradient(svg_tag):
+    '''
+    The <radialGradient> element lets authors define radial gradients that can be applied to fill
+    or stroke of graphical elements.
+    '''
+    pass
+
+
+class tspan(svg_tag):
+    '''
+    The SVG <tspan> element define a subtext within a <text> element or another <tspan> element.
+    It allows to adjust the style and/or position of that subtext as needed.
+    '''
+    pass
+
+
+class path(svg_tag):
+    '''
+    A path element for svg containers
+    '''
+    pass
+
+
+class rect(svg_tag):
+    '''
+    A rectangle element for svg containers
+    '''
+    pass
+
+
+class stop(svg_tag):
+    '''
+    The SVG <stop> element defines a color and its position to use on a gradient.
+    This element is always a child of a <linearGradient> or <radialGradient> element.
+    '''
+    pass
+
+
+class switch(svg_tag):
+    '''
+    The <switch> SVG element evaluates any requiredFeatures, requiredExtensions and systemLanguage attributes
+    on its direct child elements in order, and then renders the first child where these attributes evaluate to true.
+    Other direct children will be bypassed and therefore not rendered. If a child element is a container element,
+    like <g>, then its subtree is also processed/rendered or bypassed/not rendered.
+    '''
+    pass
+
+
+class symbol(svg_tag):
+    '''
+    The use of symbol elements for graphics that are used multiple times in the same document adds structure and
+     semantics. Documents that are rich in structure may be rendered graphically, as speech, or as Braille,
+     and thus promote accessibility.
     '''
     pass
 
@@ -215,6 +293,14 @@ class textPath(svg_tag):
     pass
 
 
+class title(svg_tag):
+    '''
+    The <title> element provides an accessible, short-text description of any SVG container
+    element or graphics element.
+    '''
+    pass
+
+
 class tspan(svg_tag):
     '''
     The SVG <tspan> element define a subtext within a <text> element or another <tspan> element.
@@ -223,43 +309,18 @@ class tspan(svg_tag):
     pass
 
 
-class path(svg_tag):
-    '''
-    A path element for svg containers
-    '''
-    pass
-
-class polygon(svg_tag):
-    '''
-    A polygon element for svg containers
-    '''
-    pass
-
-class polyline(svg_tag):
-    '''
-    A polyline element for svg containers
-    '''
-    pass
-
-class rect(svg_tag):
-    '''
-    A rectangle element for svg containers
-    '''
-    pass
-
-class stop(svg_tag):
-    '''
-    The SVG <stop> element defines a color and its position to use on a gradient.
-    This element is always a child of a <linearGradient> or <radialGradient> element.
-    '''
-    pass
-
 class use(svg_tag):
     '''
     The <use> element takes nodes from within the SVG document, and duplicates them somewhere else.
     '''
     pass
 
+
+class view(svg_tag):
+    '''
+    A view is a defined way to view the image, like a zoom level or a detail view.
+    '''
+    pass
 
 
 # FILTERS
@@ -322,8 +383,3 @@ class fePointLight(svg_tag):
 
 class feSpotLight(svg_tag):
     pass
-
-
-
-
-

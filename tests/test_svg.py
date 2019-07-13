@@ -253,6 +253,49 @@ def test_mask():
     assert html_equals(result.render(), expected)
 
 
+def test_pattern():
+    expected = """
+    <svg viewBox="0 0 230 100">
+      <defs>
+        <pattern height="10%" id="star" viewBox="0 0 10 10" width="10%">
+          <polygon points="0,0 2,5 0,10 5,8 10,10 8,5 10,0 5,2"></polygon>
+        </pattern>
+      </defs>
+      <circle cx="50" cy="50" fill="url(#star)" r="50"></circle>
+      <circle cx="180" cy="50" fill="none" r="50" stroke="url(#star)" stroke-width="20"></circle>
+    </svg>
+    """
+    with svg(viewBox="0 0 230 100") as result:
+        with defs():
+            with pattern(id="star", viewBox="0 0 10 10", width="10%", height="10%"):
+                polygon(points="0,0 2,5 0,10 5,8 10,10 8,5 10,0 5,2")
+        circle(cx=50, cy=50, r=50, fill="url(#star)")
+        circle(cx=180, cy=50, r=50, fill="none", stroke_width=20, stroke="url(#star)")
+    assert html_equals(result.render(), expected)
+
+
+def test_radial_gradient():
+    expected = """
+    <svg height="120" version="1.1" viewBox="0 0 120 120" width="120" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <defs>
+        <radialGradient id="myGradient">
+          <stop offset="10%" stop-color="gold"></stop>
+          <stop offset="95%" stop-color="red"></stop>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="5" fill="url(#myGradient)" r="50"></circle>
+    </svg>
+    """
+    with base() as result:
+        with defs():
+            with radialGradient(id="myGradient"):
+                stop(offset="10%", stop_color="gold")
+                stop(offset="95%", stop_color="red")
+        circle(cx=50, cy=5, r=50, fill="url(#myGradient)")
+    assert html_equals(result.render(), expected)
+
+
+
 
 
 

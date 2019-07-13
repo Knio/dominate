@@ -234,6 +234,23 @@ def test_marker():
     assert html_equals(result.render(), expected)
 
 
+def test_mask():
+    expected = """
+    <svg height="120" version="1.1" viewBox="0 0 120 120" width="120" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <mask id="myMask">
+            <rect fill="white" height="100" width="100" x="0" y="0"></rect>
+            <path d="M10,35 A20,20,0,0,1,50,35 A20,20,0,0,1,90,35 Q90,65,50,95 Q10,65,10,35 Z" fill="black"></path>
+        </mask>
+    <polygon fill="orange" points="-10,110 110,110 110,-10"></polygon>
+    <circle cx="50" cy="50" mask="url(#myMask)" r="50"></circle>
+    </svg>"""
+    with base() as result:
+        with mask(id="myMask"):
+            rect(x="0", y="0", width="100", height="100", fill="white")
+            path(d="M10,35 A20,20,0,0,1,50,35 A20,20,0,0,1,90,35 Q90,65,50,95 Q10,65,10,35 Z", fill="black" )
+        polygon(points="-10,110 110,110 110,-10", fill="orange")
+        circle(cx=50, cy=50, r=50, mask="url(#myMask)")
+    assert html_equals(result.render(), expected)
 
 
 

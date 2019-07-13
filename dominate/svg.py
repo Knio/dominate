@@ -182,6 +182,14 @@ class marker(svg_tag):
     pass
 
 
+class mask(svg_tag):
+    '''
+    The <mask> element defines an alpha mask for compositing the current object into the background.
+    A mask is used/referenced using the mask property.
+    '''
+    pass
+
+
 
 class mpath(svg_tag):
     '''

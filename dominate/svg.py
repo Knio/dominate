@@ -77,7 +77,7 @@ class svg_tag(html_tag):
             if '_' in key and key.split('_')[0] in DASHED_ATTRIBUTES:
                 r = k[0].replace('_', '-')
                 kwargs[r] = kwargs.pop(k[0])
-        super().__init__(args, kwargs)
+        super(svg_tag, self).__init__(args, kwargs)
 
 
 class svg(svg_tag):

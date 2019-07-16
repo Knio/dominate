@@ -149,9 +149,9 @@ def test_filters():
         with filter() as f:
             attr()
         expected = f"""
-            <filter>
-                <{name}></{name}>
-            </filter>
+        <filter>
+            <{name}></{name}>
+        </filter>
         """
         assert html_equals(f.render(), expected)
 

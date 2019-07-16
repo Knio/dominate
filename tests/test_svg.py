@@ -19,13 +19,6 @@ def base():
               xmlns="http://www.w3.org/2000/svg", xmlns_xlink="http://www.w3.org/1999/xlink")
 
 
-def make_circle(cx: int = 50, cy: int=60, r: int=30, fill: str = "black"):
-    if fill:
-        return circle(cx=str(cx), cy=str(cy), r=str(r), fill=fill)
-    else:
-        return circle(cx=str(cx), cy=str(cy), r=str(r))
-
-
 # Note, all tests produce working examples. The expected results can be pasted into https://jsfiddle.net/api/mdn/
 
 
@@ -61,8 +54,8 @@ def test_animate_motion():
     with base() as result:
         path(d="M10,110 A120,120 -45 0,1 110 10 A120,120 -45 0,1 10,110", stroke="lightgrey", stroke_width="2",
              fill="none", id="theMotionPath")
-        make_circle(10, 110, 3, fill="lightgrey")
-        make_circle(110, 10, 3, "lightgrey")
+        circle(cx=10, cy=110, r=3, fill="lightgrey")
+        circle(cx=110, cy=10, r=3, fill="lightgrey")
         with circle(cx="", cy="", r="5", fill="red"):
             with animateMotion(dur="6s", repeatCount="indefinite"):
                 mpath(xlink_href="#theMotionPath")
@@ -94,7 +87,7 @@ def test_circle():
     </svg>        
     """
     with base() as result:
-        with make_circle():
+        with circle(cx=50, cy=60, r=30, fill="black"):
             desc("I am a circle")
     assert html_equals(result.render(), expected)
 
@@ -129,7 +122,7 @@ def test_defs():
     """
     with base() as result:
         with defs():
-            make_circle()
+            circle(cx=50, cy=60, r=30, fill="black")
         use(x="5", y="5", xlink_href="#myCircle")
     assert html_equals(result.render(), expected)
 
@@ -166,15 +159,17 @@ def test_g():
     expected = """
     <svg height="120" version="1.1" viewBox="0 0 120 120" width="120" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <g fill="white" stroke="green" stroke-width="5">
-        <circle cx="40" cy="40" r="25"></circle>
-        <circle cx="60" cy="60" r="25"></circle>
+        <circle r="25" rx="40" ry="40"></circle>
+        <circle r="25" rx="60" ry="60"></circle>
       </g>
     </svg>
     """
     with base() as result:
         with g(fill="white", stroke="green", stroke_width="5"):
-            make_circle(40, 40, 25, None)
-            make_circle(60, 60, 25, None)
+            circle(rx=40, ry=40, r=25)
+            circle(rx=60, ry=60, r=25)
+
+    print(result)
     assert html_equals(result.render(), expected)
 
 
@@ -192,13 +187,13 @@ def test_line():
 def test_linear_gradient():
     expected = """
     <svg height="120" version="1.1" viewBox="0 0 120 120" width="120" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-        <defs>
-            <linearGradient gradientTransform="rotate(90)" id="myGradient">
-              <stop offset="5%" stop-color="gold"></stop>
-              <stop offset="95%" stop-color="red"></stop>
-            </linearGradient>
-        </defs>
-        <circle cx="50" cy="50" fill="url('#myGradient')" r="40"></circle>
+      <defs>
+        <linearGradient gradientTransform="rotate(90)" id="myGradient">
+          <stop offset="5%" stop-color="gold"></stop>
+          <stop offset="95%" stop-color="red"></stop>
+        </linearGradient>
+      </defs>
+      <circle fill="url('#myGradient')" r="40" rx="50" ry="50"></circle>
     </svg>
     """
     with base() as result:
@@ -207,7 +202,7 @@ def test_linear_gradient():
                 stop(offset="5%", stop_color="gold")
                 stop(offset="95%", stop_color="red")
 
-        make_circle(50, 50, 40, "url('#myGradient')")
+        circle(rx=50, ry=50, r=40, fill="url('#myGradient')")
 
     assert html_equals(result.render(), expected)
 

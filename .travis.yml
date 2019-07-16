@@ -19,6 +19,7 @@ matrix:
 install:
     - pip install pip --upgrade
     - pip install pytest>=2.7.3 --upgrade
+    - pip install htmldiffer>=0.25.2 --upgrade
 
 # command to run tests, e.g. python setup.py test
 script:

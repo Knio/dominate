@@ -148,11 +148,11 @@ def test_filters():
         attr = getattr(m_svg, name)
         with filter() as f:
             attr()
-        expected = f"""
+        expected = """
         <filter>
-            <{name}></{name}>
+            <{}></{}>
         </filter>
-        """
+        """.format(name, name)
         assert html_equals(f.render(), expected)
 
 def test_g():
@@ -169,7 +169,6 @@ def test_g():
             circle(rx=40, ry=40, r=25)
             circle(rx=60, ry=60, r=25)
 
-    print(result)
     assert html_equals(result.render(), expected)
 
 

@@ -402,7 +402,8 @@ class dom_tag(object):
       attribute = attribute[1:]
 
     # Workaround for dash
-    if attribute in set(['http_equiv']) or attribute.startswith('data_'):
+    special_prefix = any([attribute.startswith(x) for x in ('data_', 'aria_')])
+    if attribute in set(['http_equiv']) or special_prefix:
       attribute = attribute.replace('_', '-').lower()
 
     # Workaround for colon

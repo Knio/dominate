@@ -581,3 +581,29 @@ print(circle(stroke_width=5))
 <circle stroke-width="5"></circle>
 ```
 
+Custom Tags
+-----------
+Custom tags, such as those used by Vue.js, can be created by overriding `html_tag`.
+
+Override the `hyphenate_tagname` attribute to replace underscores in the class name with hyphens.
+
+```python
+class vue_tag(html_tag):
+    hyphenate_tagname = True
+
+class v_app(vue_tag): pass
+class v_content(vue_tag): pass
+class v_container(vue_tag): pass
+
+print(div(v_app(v_content(v_container('Hello world'))), id='app'))
+```
+
+```html
+<div id="app">
+  <v-app>
+    <v-content>
+      <v-container>Hello world</v-container>
+    </v-content>
+  </v-app>
+</div>
+```

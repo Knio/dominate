@@ -295,6 +295,13 @@ def test_pretty():
   assert span('hi', br(__inline=False), 'there').render() == \
       '''<span>hi\n  <br>there\n</span>'''
 
+def test_hyphenate_tagname():
+  class my_tag(html_tag):
+      hyphenate_tagname = True
+
+  d = my_tag(pre('test')).render(pretty=False) == \
+    '''<my-tag><pre>test</pre></my-tag>'''
+
 
 def test_xhtml():
   assert head(script('foo'), style('bar')).render(xhtml=True) == '''<head>

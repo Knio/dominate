@@ -57,6 +57,9 @@ class dom_tag(object):
                      # modified
   is_inline = False
 
+  # Replace underscores in tag name with hyphens
+  hyphenate_tagname = False
+
   frame = namedtuple('frame', ['tag', 'items', 'used'])
 
   def __new__(_cls, *args, **kwargs):
@@ -313,6 +316,12 @@ class dom_tag(object):
     return self.render()
   __str__ = __unicode__
 
+  @property
+  def _name(self):
+    t = type(self)
+    n = getattr(t, 'tagname', t.__name__)
+    return n.replace('_', '-') if self.hyphenate_tagname else n
+
   def render(self, indent='  ', pretty=True, xhtml=False):
     data = self._render([], 0, indent, pretty, xhtml)
     return u''.join(data)
@@ -320,11 +329,9 @@ class dom_tag(object):
   def _render(self, sb, indent_level, indent_str, pretty, xhtml):
     pretty = pretty and self.is_pretty
 
-    t = type(self)
-    name = getattr(t, 'tagname', t.__name__)
-
     # Workaround for python keywords and standard classes/methods
     # (del, object, input)
+    name = self._name
     if name[-1] == '_':
       name = name[:-1]
 

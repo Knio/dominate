@@ -77,7 +77,7 @@ class dom_tag(object):
 
   def __init__(self, *args, **kwargs):
     '''
-    Creates a new tag. Child tags should be passed as aruguments and attributes
+    Creates a new tag. Child tags should be passed as arguments and attributes
     should be passed as keyword arguments.
 
     There is a non-rendering attribute which controls how the tag renders:

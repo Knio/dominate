@@ -5,15 +5,10 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
+  - "3.7"
+  - "3.8"
   - "pypy"
   - "pypy3"
-# Workaround for Travis CI, as 3.7 needs Xenial and sudo.
-# See https://github.com/travis-ci/travis-ci/issues/9815
-matrix:
-  include:
-    - python: "3.7"
-      dist: xenial
-      sudo: true
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:

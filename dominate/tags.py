@@ -217,6 +217,14 @@ class body(html_tag):
   '''
   pass
 
+class main(html_tag):
+  '''
+  The main content area of a document includes content that is unique to that
+  document and excludes content that is repeated across a set of documents such
+  as site navigation links, copyright information, site logos and banners and
+  search forms (unless the document or application’s main function is that of a
+  search form).
+  '''
 
 class section(html_tag):
   '''

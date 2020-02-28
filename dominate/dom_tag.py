@@ -320,8 +320,7 @@ class dom_tag(object):
   def _render(self, sb, indent_level, indent_str, pretty, xhtml):
     pretty = pretty and self.is_pretty
 
-    t = type(self)
-    name = getattr(t, 'tagname', t.__name__)
+    name = getattr(self, 'tagname', type(self).__name__)
 
     # Workaround for python keywords and standard classes/methods
     # (del, object, input)

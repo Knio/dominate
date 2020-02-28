@@ -52,14 +52,14 @@ def system(cmd, data=None):
   return out.decode('utf8')
 
 
-def escape(data, quote=True):  # stoled from std lib cgi
+def escape(data, quote=True):  # stolen from std lib cgi
   '''
   Escapes special characters into their html entities
   Replace special characters "&", "<" and ">" to HTML-safe sequences.
   If the optional flag quote is true, the quotation mark character (")
   is also translated.
 
-  This is used to escape content that appears in the body of an HTML cocument
+  This is used to escape content that appears in the body of an HTML document
   '''
   data = data.replace("&", "&amp;")  # Must be done first!
   data = data.replace("<", "&lt;")

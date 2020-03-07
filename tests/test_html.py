@@ -8,7 +8,7 @@ except NameError:
 
 def test_version():
   import dominate
-  version = '2.5.0'
+  version = '2.5.1'
   assert dominate.version == version
   assert dominate.__version__ == version
 

@@ -48,9 +48,10 @@ _ATTR_EVENTS = set([
 ])
 
 DASHED_ATTRIBUTES = set([
-  'accent', 'arabic', 'baseline', 'cap', 'clip', 'color', 'enable', 'fill', 'flood', 'font', 'glyph',
-  'horiz', 'image', 'letter', 'lighting', 'marker', 'panose', 'paint', 'pointer', 'shape', 'stop',
-  'stroke', 'text', 'unicode', 'units', 'v', 'vert', 'x'
+  'accent', 'alignment', 'arabic', 'baseline', 'cap', 'clip', 'color', 'dominant', 'enable', 'fill', 'flood', 
+  'font', 'glyph', 'horiz', 'image', 'letter', 'lighting', 'marker', 'overline', 'paint', 'panose', 'pointer', 
+  'rendering', 'shape', 'stop', 'strikethrough', 'stroke', 'text', 'underline', 'unicode', 'units', 'v', 'vector', 
+  'vert', 'word', 'writing', 'x'
 ])
 
 

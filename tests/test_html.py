@@ -244,9 +244,9 @@ def test_comment():
 
 
 def test_boolean_attributes():
-  assert _input(type="checkbox", checked=True).render() == \
+  assert input_(type="checkbox", checked=True).render() == \
       '<input checked="checked" type="checkbox">'
-  assert _input(type="checkbox", checked=False).render() == \
+  assert input_(type="checkbox", checked=False).render() == \
       '<input type="checkbox">'
 
 

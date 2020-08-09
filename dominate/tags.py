@@ -725,7 +725,7 @@ class del_(html_tag):
   The del element represents a removal from the document.
   '''
   pass
-
+_del = del_
 
 # Embedded content
 class img(html_tag):
@@ -814,7 +814,7 @@ class map_(html_tag):
   image map. The element represents its children.
   '''
   pass
-
+_map = map_
 
 class area(html_tag):
   '''
@@ -948,7 +948,7 @@ class input_(html_tag):
   to allow the user to edit the data.
   '''
   is_single = True
-input = _input = input_
+_input = input_
 
 
 class button(html_tag):

@@ -208,6 +208,12 @@ def test_attributes():
     attr(id='moo')
 
 
+def test_attribute_dashes():
+  # fix issue #118 (https://github.com/Knio/dominate/issues/118)
+  expected = '<div aria-foo="bar" data-a-b-c="foo" data-page-size="123"></div>'
+  assert div(data_a_b_c='foo', data_page_size='123', aria_foo='bar').render() == expected
+
+
 def test_lazy():
   from dominate import util
   executed = [False]

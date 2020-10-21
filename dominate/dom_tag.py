@@ -43,6 +43,7 @@ try:
 except ImportError:
   greenlet = None
 
+
 def _get_thread_context():
   context = [threading.current_thread()]
   if greenlet:
@@ -57,11 +58,11 @@ class dom_tag(object):
                      # modified
   is_inline = False
 
-  frame = namedtuple('frame', ['tag', 'items', 'used'])
 
   def __new__(_cls, *args, **kwargs):
     '''
-    Check if bare tag is being used a a decorator.
+    Check if bare tag is being used a a decorator
+    (called with a single function arg).
     decorate the function and return
     '''
     if len(args) == 1 and isinstance(args[0], Callable) \
@@ -74,6 +75,7 @@ class dom_tag(object):
           return wrapped(*args, **kwargs) or _tag
       return f
     return object.__new__(_cls)
+
 
   def __init__(self, *args, **kwargs):
     '''
@@ -105,28 +107,35 @@ class dom_tag(object):
     self._ctx = None
     self._add_to_ctx()
 
-  def _add_to_ctx(self):
-    ctx = dom_tag._with_contexts[_get_thread_context()]
-    if ctx and ctx[-1]:
-      self._ctx = ctx[-1]
-      ctx[-1].items.append(self)
 
-  # stack of (root_tag, [new_tags], set(used_tags))
+  # context manager
+  frame = namedtuple('frame', ['tag', 'items', 'used'])
+  # stack of frames
   _with_contexts = defaultdict(list)
 
+  def _add_to_ctx(self):
+    stack = dom_tag._with_contexts.get(_get_thread_context())
+    if stack:
+      self._ctx = stack[-1]
+      stack[-1].items.append(self)
+
+
   def __enter__(self):
-    ctx = dom_tag._with_contexts[_get_thread_context()]
-    ctx.append(dom_tag.frame(self, [], set()))
+    stack = dom_tag._with_contexts[_get_thread_context()]
+    stack.append(dom_tag.frame(self, [], set()))
     return self
 
+
   def __exit__(self, type, value, traceback):
-    ctx = dom_tag._with_contexts[_get_thread_context()]
-    slf, items, used = ctx[-1]
-    ctx[-1] = None
-    for item in items:
-      if item in used: continue
+    thread_id = _get_thread_context()
+    stack = dom_tag._with_contexts[thread_id]
+    frame = stack.pop()
+    for item in frame.items:
+      if item in frame.used: continue
       self.add(item)
-    ctx.pop()
+    if not stack:
+      del dom_tag._with_contexts[thread_id]
+
 
   def __call__(self, func):
     '''
@@ -145,6 +154,7 @@ class dom_tag(object):
       with tag:
         return func(*args, **kwargs) or tag
     return f
+
 
   def set_attribute(self, key, value):
     '''
@@ -178,6 +188,7 @@ class dom_tag(object):
         if not isinstance(i, dom_tag): return
         i.setdocument(doc)
 
+
   def add(self, *args):
     '''
     Add new child tags.
@@ -192,9 +203,9 @@ class dom_tag(object):
         self.children.append(obj)
 
       elif isinstance(obj, dom_tag):
-        ctx = dom_tag._with_contexts[_get_thread_context()]
-        if ctx and ctx[-1]:
-          ctx[-1].used.add(obj)
+        stack = dom_tag._with_contexts.get(_get_thread_context())
+        if stack:
+          stack[-1].used.add(obj)
         self.children.append(obj)
         obj.parent = self
         obj.setdocument(self.document)
@@ -215,17 +226,21 @@ class dom_tag(object):
 
     return args
 
+
   def add_raw_string(self, s):
     self.children.append(s)
 
+
   def remove(self, obj):
     self.children.remove(obj)
+
 
   def clear(self):
     for i in self.children:
       if isinstance(i, dom_tag) and i.parent is self:
         i.parent = None
     self.children = []
+
 
   def get(self, tag=None, **kwargs):
     '''
@@ -253,6 +268,7 @@ class dom_tag(object):
         results.extend(child.get(tag, **kwargs))
     return results
 
+
   def __getitem__(self, key):
     '''
     Returns the stored value of the specified attribute or child
@@ -275,11 +291,13 @@ class dom_tag(object):
           'child tags and attributes, respectively.')
   __getattr__ = __getitem__
 
+
   def __len__(self):
     '''
     Number of child elements.
     '''
     return len(self.children)
+
 
   def __bool__(self):
     '''
@@ -288,11 +306,13 @@ class dom_tag(object):
     return True
   __nonzero__ = __bool__
 
+
   def __iter__(self):
     '''
     Iterates over child elements.
     '''
     return self.children.__iter__()
+
 
   def __contains__(self, item):
     '''
@@ -300,6 +320,7 @@ class dom_tag(object):
     Accepts both a string and a class.
     '''
     return bool(self.get(item))
+
 
   def __iadd__(self, obj):
     '''
@@ -313,9 +334,11 @@ class dom_tag(object):
     return self.render()
   __str__ = __unicode__
 
+
   def render(self, indent='  ', pretty=True, xhtml=False):
     data = self._render([], 0, indent, pretty, xhtml)
     return u''.join(data)
+
 
   def _render(self, sb, indent_level, indent_str, pretty, xhtml):
     pretty = pretty and self.is_pretty
@@ -364,6 +387,7 @@ class dom_tag(object):
         sb.append(unicode(child))
 
     return inline
+
 
   def __repr__(self):
     name = '%s.%s' % (self.__module__, type(self).__name__)
@@ -432,18 +456,30 @@ class dom_tag(object):
     return (attribute, value)
 
 
+_get_current_none = object()
+def get_current(default=_get_current_none):
+  '''
+  get the current tag being used as a with context or decorated function.
+  if no context is active, raises ValueError, or returns the default, if provided
+  '''
+  h = _get_thread_context()
+  ctx = dom_tag._with_contexts.get(h, None)
+  if ctx:
+    return ctx[-1].tag
+  if default is _get_current_none:
+    raise ValueError('no current context')
+  return default
+
+
 def attr(*args, **kwargs):
   '''
   Set attributes on the current active tag context
   '''
-  ctx = dom_tag._with_contexts[_get_thread_context()]
-  if ctx and ctx[-1]:
-    dicts = args + (kwargs,)
-    for d in dicts:
-      for attr, value in d.items():
-        ctx[-1].tag.set_attribute(*dom_tag.clean_pair(attr, value))
-  else:
-    raise ValueError('not in a tag context')
+  c = get_current()
+  dicts = args + (kwargs,)
+  for d in dicts:
+    for attr, value in d.items():
+      c.set_attribute(*dom_tag.clean_pair(attr, value))
 
 
 # escape() is used in render

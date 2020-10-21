@@ -1,3 +1,4 @@
+import dominate
 from dominate.tags import *
 import pytest
 
@@ -5,12 +6,6 @@ try:
   xrange = xrange
 except NameError:
   xrange = range
-
-def test_version():
-  import dominate
-  version = '2.5.2'
-  assert dominate.version == version
-  assert dominate.__version__ == version
 
 
 def test_arguments():
@@ -29,7 +24,7 @@ def test_kwargs():
     cls="mydiv",
     data_name='foo',
     onclick='alert(1);').render() == \
-'''<div checked="checked" class="mydiv" data-name="foo" id="4" onclick="alert(1);"></div>'''
+  '''<div checked="checked" class="mydiv" data-name="foo" id="4" onclick="alert(1);"></div>'''
 
 
 def test_repr():
@@ -77,15 +72,15 @@ def test_iadd():
 </ul>'''
 
 
-# copy rest of examples here
-
-
 def test_context_manager():
+  other = div()
   h = ul()
   with h:
     li('One')
     li('Two')
     li('Three')
+    # added to other, so not added to h
+    other += li('Four')
 
   assert h.render() == \
 '''<ul>
@@ -186,6 +181,22 @@ def test_escape():
 <pre>&lt;&gt;</pre>'''
 
 
+def test_get_context():
+  with pytest.raises(ValueError):
+    d = get_current()
+
+  d = get_current(None)
+  assert d is None
+
+  with div() as d1:
+    d2 = span()
+    with d2:
+      d2p = get_current()
+    d1p = get_current()
+  assert d1 is d1p
+  assert d2 is d2p
+
+
 def test_attributes():
   d = div()
   d['id'] = 'foo'
@@ -247,6 +258,14 @@ def test_comment():
   d = comment('Hi there')
   assert d.render() == '<!--Hi there-->'
   assert div(d).render() == '<div>\n  <!--Hi there-->\n</div>'
+
+  d = comment('Hi ie user', condition='IE 6')
+  assert d.render() == '<!--[if IE 6]>Hi ie user<![endif]-->'
+
+  d = comment(div('Hi non-ie user'), condition='!IE', downlevel='revealed')
+  assert d.render() == '''<![if !IE]>
+<div>Hi non-ie user</div>
+<![endif]>'''
 
 
 def test_boolean_attributes():

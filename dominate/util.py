@@ -21,8 +21,8 @@ Public License along with Dominate.  If not, see
 '''
 
 import re
-from .dom_tag import dom_tag
 
+from .dom_tag import dom_tag
 
 try:
   basestring = basestring

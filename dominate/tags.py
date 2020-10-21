@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General
 Public License along with Dominate.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
-from .dom_tag  import dom_tag, attr
+from .dom_tag  import dom_tag, attr, get_current
 from .dom1core import dom1core
 
 try:

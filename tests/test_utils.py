@@ -1,5 +1,8 @@
+import pytest
+
 from dominate.tags import *
 from dominate import util
+
 
 def test_include():
   import os
@@ -18,6 +21,7 @@ def test_include():
     except:
       pass
 
+
 def test_system():
   d = div()
   d += util.system('echo Hello World')
@@ -26,6 +30,7 @@ def test_system():
 
 def test_unescape():
   assert util.unescape('&amp;&lt;&gt;&#32;') == '&<> '
+
 
 def test_url():
   assert util.url_escape('hi there?') == 'hi%20there%3F'

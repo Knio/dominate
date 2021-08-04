@@ -355,8 +355,10 @@ class dom_tag(object):
     sb.append(name)
 
     for attribute, value in sorted(self.attributes.items()):
-      if value is not False: # False values must be omitted completely
-          sb.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
+      if value is False:
+        continue
+      val = unicode(value) if isinstance(value, text) and not value.escape else escape(unicode(value), True)
+      sb.append(' %s="%s"' % (attribute, val))
 
     sb.append(' />' if self.is_single and xhtml else '>')
 
@@ -483,4 +485,4 @@ def attr(*args, **kwargs):
 
 
 # escape() is used in render
-from .util import escape
+from .util import escape, text

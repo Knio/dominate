@@ -1078,6 +1078,14 @@ class font(html_tag):
   pass
 
 
+class tag(html_tag):
+  def __init__(self, tagname, *args, **kwargs):
+    '''
+    Creates a new custom html tag instance.
+    '''
+    self.tagname = tagname
+    super(tag, self).__init__(*args, **kwargs)
+
 # Additional markup
 class comment(html_tag):
   '''

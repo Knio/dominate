@@ -335,3 +335,8 @@ def test_xhtml():
 
   assert span('hi', br(), 'there').render(xhtml=False) == \
          '''<span>hi<br>there</span>'''
+
+
+def test_custom_tag():
+  assert tag('custom-element', div(), 'text', attr = 1).render() == \
+      '''<custom-element attr="1">\n  <div></div>text\n</custom-element>'''

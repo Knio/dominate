@@ -415,9 +415,11 @@ class dom_tag(object):
       'cls': 'class',
       'className': 'class',
       'class_name': 'class',
+      'klass': 'class',
       'fr': 'for',
       'html_for': 'for',
       'htmlFor': 'for',
+      'phor': 'for',
     }.get(attribute, attribute)
 
     # Workaround for Python's reserved words

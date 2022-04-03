@@ -213,14 +213,6 @@ class radialGradient(svg_tag):
   pass
 
 
-class tspan(svg_tag):
-  '''
-  The SVG <tspan> element define a subtext within a <text> element or another <tspan> element.
-  It allows to adjust the style and/or position of that subtext as needed.
-  '''
-  pass
-
-
 class path(svg_tag):
   '''
   A path element for svg containers

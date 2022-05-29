@@ -70,7 +70,7 @@ Installation
 The recommended way to install `dominate` is with
 [`pip`](http://pypi.python.org/pypi/pip/):
 
-    sudo pip install dominate
+    pip install dominate
 
 [![PyPI version](https://img.shields.io/pypi/v/dominate.svg?style=flat)](https://pypi.org/project/dominate/)
 [![PyPI downloads](https://img.shields.io/pypi/dm/dominate.svg?style=flat)](https://pypi.org/project/dominate/)

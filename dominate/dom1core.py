@@ -46,8 +46,7 @@ class dom1core(object):
       raise ValueError('Multiple tags with id "%s".' % id)
     elif results:
       return results[0]
-    else:
-      return None
+    return None
 
   def getElementsByTagName(self, name):
     '''
@@ -55,8 +54,7 @@ class dom1core(object):
     '''
     if isinstance(name, basestring):
       return self.get(name.lower())
-    else:
-      return None
+    return None
 
   def appendChild(self, obj):
     '''
@@ -64,5 +62,3 @@ class dom1core(object):
     '''
     self.add(obj)
     return self
-
-

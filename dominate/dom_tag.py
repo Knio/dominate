@@ -91,7 +91,6 @@ class dom_tag(object):
     self.attributes = {}
     self.children   = []
     self.parent     = None
-    self.document   = None
 
     # Does not insert newlines on all children if True (recursive attribute)
     self.is_inline = kwargs.pop('__inline', self.is_inline)
@@ -169,24 +168,13 @@ class dom_tag(object):
           'child tags and attributes, respectively.')
   __setitem__ = set_attribute
 
+
   def delete_attribute(self, key):
     if isinstance(key, int):
       del self.children[key:key+1]
     else:
       del self.attributes[key]
   __delitem__ = delete_attribute
-
-  def setdocument(self, doc):
-    '''
-    Creates a reference to the parent document to allow for partial-tree
-    validation.
-    '''
-    # assume that a document is correct in the subtree
-    if self.document != doc:
-      self.document = doc
-      for i in self.children:
-        if not isinstance(i, dom_tag): return
-        i.setdocument(doc)
 
 
   def add(self, *args):
@@ -208,7 +196,6 @@ class dom_tag(object):
           stack[-1].used.add(obj)
         self.children.append(obj)
         obj.parent = self
-        obj.setdocument(self.document)
 
       elif isinstance(obj, dict):
         for attr, value in obj.items():

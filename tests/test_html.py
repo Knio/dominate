@@ -337,8 +337,9 @@ def test_xhtml():
   assert span('hi', br(), 'there').render(xhtml=False) == \
          '''<span>hi<br>there</span>'''
 
+  
 def test_verbatim_attributes():
-  assert tag('custom-element', attr = '{<div></div>}').render() == \
-      '''<custom-element attr="{&lt;div&gt;&lt;/div&gt;}"></custom-element>'''
-  assert tag('custom-element', attr = raw('{<div></div>}')).render() == \
-      '''<custom-element attr="{<div></div>}"></custom-element>'''
+  assert div(attr = '{<div></div>}').render() == \
+      '''<div attr="{&lt;div&gt;&lt;/div&gt;}"></div>'''
+  assert div(attr = raw('{<div></div>}')).render() == \
+      '''<div attr="{<div></div>}"></div>'''

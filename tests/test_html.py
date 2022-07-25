@@ -217,7 +217,13 @@ def test_attributes():
   assert d['data-test']
 
   with pytest.raises(ValueError):
+    # not in a tag context
     attr(id='moo')
+
+
+def test_attribute_none():
+  d = div(foo=1, bar=None)
+  assert d.render() == '<div foo="1"></div>'
 
 
 def test_attribute_dashes():
@@ -321,6 +327,9 @@ def test_pretty():
   assert span('hi', br(__inline=False), 'there').render() == \
       '''<span>hi\n  <br>there\n</span>'''
 
+  assert p('goodbye ', i('cruel'), ' world').render() == \
+    '''<p>goodbye <i>cruel</i> world</p>'''
+
 
 def test_xhtml():
   assert head(script('foo'), style('bar')).render(xhtml=True) == '''<head>
@@ -337,7 +346,7 @@ def test_xhtml():
   assert span('hi', br(), 'there').render(xhtml=False) == \
          '''<span>hi<br>there</span>'''
 
-  
+
 def test_verbatim_attributes():
   assert div(attr = '{<div></div>}').render() == \
       '''<div attr="{&lt;div&gt;&lt;/div&gt;}"></div>'''

@@ -596,6 +596,7 @@ class sup(html_tag):
 
 
 class i(html_tag):
+  is_inline = True
   '''
   The i element represents a span of text in an alternate voice or mood, or
   otherwise offset from the normal prose in a manner indicating a different

@@ -27,15 +27,16 @@ except NameError: # py3
 
 class document(tags.html):
   tagname = 'html'
-  def __init__(self, title='Dominate', doctype='<!DOCTYPE html>'):
+  def __init__(self, title='Dominate', doctype='<!DOCTYPE html>', *a, **kw):
     '''
     Creates a new document instance. Accepts `title` and `doctype`
     '''
-    super(document, self).__init__()
+    super(document, self).__init__(*a, **kw)
     self.doctype    = doctype
     self.head       = super(document, self).add(tags.head())
     self.body       = super(document, self).add(tags.body())
-    self.title_node = self.head.add(tags.title(title))
+    if title is not None:
+      self.title_node = self.head.add(tags.title(title))
     with self.body:
       self.header   = util.container()
       self.main     = util.container()

@@ -101,6 +101,16 @@ def test_containers():
   </body>
 </html>'''
 
+
+def test_attributes():
+  d = document(title=None, doctype=None, lang='en')
+  assert d.render() == \
+'''<html lang="en">
+  <head></head>
+  <body></body>
+</html>'''
+
+
 if __name__ == '__main__':
   # test_doc()
   test_decorator()

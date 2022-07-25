@@ -120,6 +120,19 @@ def url_unescape(data):
     lambda m: unichr(int(m.group(1), 16)), data)
 
 
+class container(dom_tag):
+  '''
+  Contains multiple elements, but does not add a level
+  '''
+  is_inline = True
+  def _render(self, sb, indent_level, indent_str, pretty, xhtml):
+    inline = self._render_children(sb, indent_level, indent_str, pretty, xhtml)
+    if pretty and not inline:
+      sb.append('\n')
+      sb.append(indent_str * (indent_level - 1))
+    return sb
+
+
 class lazy(dom_tag):
   '''
   delays function execution until rendered
@@ -146,10 +159,9 @@ class lazy(dom_tag):
     sb.append(str(r))
 
 
-# TODO rename this to raw?
 class text(dom_tag):
   '''
-  Just a string. useful for inside context managers
+  Just a string. Useful for inside context managers
   '''
   is_pretty = False
   is_inline = True
@@ -168,6 +180,6 @@ class text(dom_tag):
 
 def raw(s):
   '''
-  Inserts a raw string into the DOM. Unsafe.
+  Inserts a raw string into the DOM. Unsafe. Alias for text(x, escape=False)
   '''
   return text(s, escape=False)

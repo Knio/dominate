@@ -17,6 +17,7 @@ Public License along with Dominate.  If not, see
 '''
 
 from . import tags
+from . import util
 
 try:
   basestring = basestring
@@ -26,16 +27,20 @@ except NameError: # py3
 
 class document(tags.html):
   tagname = 'html'
-  def __init__(self, title='Dominate', doctype='<!DOCTYPE html>', request=None):
+  def __init__(self, title='Dominate', doctype='<!DOCTYPE html>'):
     '''
-    Creates a new document instance. Accepts `title`, `doctype`, and `request` keyword arguments.
+    Creates a new document instance. Accepts `title` and `doctype`
     '''
     super(document, self).__init__()
     self.doctype    = doctype
     self.head       = super(document, self).add(tags.head())
     self.body       = super(document, self).add(tags.body())
     self.title_node = self.head.add(tags.title(title))
-    self._entry     = self.body
+    with self.body:
+      self.header   = util.container()
+      self.main     = util.container()
+      self.footer   = util.container()
+    self._entry = self.main
 
   def get_title(self):
     return self.title_node.text
@@ -56,20 +61,15 @@ class document(tags.html):
     '''
     return self._entry.add(*args)
 
-  def render(self, *args, **kwargs):
+  def _render(self, sb, *args, **kwargs):
     '''
-    Creates a <title> tag if not present and renders the DOCTYPE and tag tree.
+    Renders the DOCTYPE and tag tree.
     '''
-    r = []
-
-    #Validates the tag tree and adds the doctype if one was set
+    # adds the doctype if one was set
     if self.doctype:
-      r.append(self.doctype)
-      r.append('\n')
-    r.append(super(document, self).render(*args, **kwargs))
-
-    return u''.join(r)
-  __str__ = __unicode__ = render
+      sb.append(self.doctype)
+      sb.append('\n')
+    return super(document, self)._render(sb, *args, **kwargs)
 
   def __repr__(self):
     return '<dominate.document "%s">' % self.title

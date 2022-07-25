@@ -199,7 +199,7 @@ class dom_tag(object):
         obj = str(obj)
 
       if isinstance(obj, basestring):
-        obj = escape(obj)
+        obj = util.escape(obj)
         self.children.append(obj)
 
       elif isinstance(obj, dom_tag):
@@ -356,21 +356,22 @@ class dom_tag(object):
 
     for attribute, value in sorted(self.attributes.items()):
       if value is not False: # False values must be omitted completely
-          sb.append(' %s="%s"' % (attribute, escape(unicode(value), True)))
+          sb.append(' %s="%s"' % (attribute, util.escape(unicode(value), True)))
 
     sb.append(' />' if self.is_single and xhtml else '>')
 
-    if not self.is_single:
-      inline = self._render_children(sb, indent_level + 1, indent_str, pretty, xhtml)
+    if self.is_single:
+      return sb
 
-      if pretty and not inline:
-        sb.append('\n')
-        sb.append(indent_str * indent_level)
+    inline = self._render_children(sb, indent_level + 1, indent_str, pretty, xhtml)
+    if pretty and not inline:
+      sb.append('\n')
+      sb.append(indent_str * indent_level)
 
-      # close tag
-      sb.append('</')
-      sb.append(name)
-      sb.append('>')
+    # close tag
+    sb.append('</')
+    sb.append(name)
+    sb.append('>')
 
     return sb
 
@@ -482,5 +483,4 @@ def attr(*args, **kwargs):
       c.set_attribute(*dom_tag.clean_pair(attr, value))
 
 
-# escape() is used in render
-from .util import escape
+from . import util

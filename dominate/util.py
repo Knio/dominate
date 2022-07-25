@@ -168,6 +168,7 @@ class text(dom_tag):
 
   def __init__(self, _text, escape=True):
     super(text, self).__init__()
+    self.escape = escape
     if escape:
       self.text = str_escape(_text)
     else:

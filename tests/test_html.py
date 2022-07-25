@@ -1,6 +1,7 @@
 import dominate
 from dominate.tags import *
 import pytest
+from dominate.util import raw
 
 try:
   xrange = xrange
@@ -335,3 +336,10 @@ def test_xhtml():
 
   assert span('hi', br(), 'there').render(xhtml=False) == \
          '''<span>hi<br>there</span>'''
+
+  
+def test_verbatim_attributes():
+  assert div(attr = '{<div></div>}').render() == \
+      '''<div attr="{&lt;div&gt;&lt;/div&gt;}"></div>'''
+  assert div(attr = raw('{<div></div>}')).render() == \
+      '''<div attr="{<div></div>}"></div>'''

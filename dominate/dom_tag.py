@@ -355,8 +355,10 @@ class dom_tag(object):
     sb.append(name)
 
     for attribute, value in sorted(self.attributes.items()):
-      if value is not False: # False values must be omitted completely
-          sb.append(' %s="%s"' % (attribute, util.escape(unicode(value), True)))
+      if value is False:
+        continue
+      val = unicode(value) if isinstance(value, util.text) and not value.escape else util.escape(unicode(value), True)
+      sb.append(' %s="%s"' % (attribute, val))
 
     sb.append(' />' if self.is_single and xhtml else '>')
 

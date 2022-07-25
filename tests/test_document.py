@@ -70,6 +70,36 @@ def test_title():
   <body></body>
 </html>'''
 
+def test_containers():
+  d = document()
+  with d.footer:
+    div('footer')
+  with d:
+    div('main1')
+  with d.main:
+    div('main2')
+  print(d.header)
+  print(d)
+  print(d.body.children)
+  with d.header:
+    div('header1')
+    div('header2')
+  assert d.render() == \
+'''<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dominate</title>
+  </head>
+  <body>
+    <div>header1</div>
+    <div>header2</div>
+  ''''''
+    <div>main1</div>
+    <div>main2</div>
+  ''''''
+    <div>footer</div>
+  </body>
+</html>'''
 
 if __name__ == '__main__':
   # test_doc()

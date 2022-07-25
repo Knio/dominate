@@ -327,6 +327,9 @@ def test_pretty():
   assert span('hi', br(__inline=False), 'there').render() == \
       '''<span>hi\n  <br>there\n</span>'''
 
+  assert p('goodbye ', i('cruel'), ' world').render() == \
+    '''<p>goodbye <i>cruel</i> world</p>'''
+
 
 def test_xhtml():
   assert head(script('foo'), style('bar')).render(xhtml=True) == '''<head>

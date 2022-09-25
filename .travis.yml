@@ -17,6 +17,7 @@ install:
     - pip install pip --upgrade
     - pip install importlib_metadata --upgrade # fix for broken py3.7
     - pip install pytest>=2.7.3 --upgrade
+    - pip install mock --upgrade
 
 # command to run tests, e.g. python setup.py test
 script:

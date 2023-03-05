@@ -52,7 +52,6 @@ jobs:
       env:
         COVERAGE_RCFILE: ".github/workflows/.coveragerc"
       run: |
-        python -m pip install coverage "coveralls<3.0.0"
         PYTHONPATH=. coverage run --source=dominate -m pytest
         python -m coverage report
     - name: Coveralls-manual
@@ -60,8 +59,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
-        python -m pip install coveralls
+        python -m pip install "coveralls<3.0.0"
         python -m coveralls -service=gihtub || true
     - name: Coveralls
       uses: AndreMiras/coveralls-python-action@develop
-        

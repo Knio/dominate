@@ -27,13 +27,13 @@ import threading
 try:
   # Python 3
   from collections.abc import Callable
-except ImportError:
+except ImportError: # pragma: no cover
   # Python 2.7
   from collections import Callable
 
 try:
   basestring = basestring
-except NameError: # py3
+except NameError: # py3 # pragma: no cover
   basestring = str
   unicode = str
 
@@ -265,7 +265,7 @@ class dom_tag(object):
       # Children are accessed using integers
       try:
         return object.__getattribute__(self, 'children')[key]
-      except KeyError:
+      except IndexError:
         raise IndexError('Child with index "%s" does not exist.' % key)
     elif isinstance(key, basestring):
       # Attributes are accessed using strings

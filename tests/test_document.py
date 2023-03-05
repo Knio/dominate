@@ -110,6 +110,9 @@ def test_attributes():
   <body></body>
 </html>'''
 
+def test_repr():
+  d = document(title='foo')
+  assert d.__repr__() == '<dominate.document "foo">'
 
 if __name__ == '__main__':
   # test_doc()

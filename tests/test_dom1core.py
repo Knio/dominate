@@ -13,9 +13,10 @@ def test_dom():
   assert container.getElementById('base') is dom
   assert container.getElementById('span1') is s1
   assert container.getElementById('span3') is s3
+  assert container.getElementById('foo') is None
   assert container.getElementsByTagName('span') == [s1, s2, s3]
   assert container.getElementsByTagName('SPAN') == [s1, s2, s3]
-
+  assert container.getElementsByTagName(1234) is None
 
 def test_element():
   d = div(
@@ -25,3 +26,9 @@ def test_element():
   with pytest.raises(ValueError):
     d.getElementById('a')
 
+def test_parent_node():
+  parent = div(id='parent')
+  child = div(id='child')
+  parent.add(child)
+
+  assert child.parentNode is parent

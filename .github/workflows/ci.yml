@@ -50,8 +50,9 @@ jobs:
         pytest
     - name: Coverage
       run: |
-        python -m pip install coveralls coverage
+        python -m pip install coverage
         PYTHONPATH=. coverage run --source=dominate -m pytest
         coverage report
-        coveralls
+    - name: Coveralls
+      uses: coverallsapp/github-action@v1
   

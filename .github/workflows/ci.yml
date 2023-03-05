@@ -54,13 +54,13 @@ jobs:
         PYTHONPATH=. coverage run --source=dominate -m pytest
         python -m coverage report
     - name: Coveralls-manual
-      uses: coverallsapp/github-action@v1
-      with:
-        path-to-lcov: ".coverage"
-    - name: Coveralls
       env: 
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         python -m pip install coveralls
         python -m coveralls --service=gihtub
-
+    - name: Coveralls
+      uses: coverallsapp/github-action@v1
+      with:
+        path-to-lcov: ""
+        

@@ -1,5 +1,8 @@
-import mock
 import pytest
+try:
+    import mock
+except ImportError:
+    import unittest.mock as mock
 
 from dominate.tags import *
 
@@ -21,15 +24,12 @@ def test___get_thread_context(monkeypatch):
 
 def test_add_raw_string():
     container = div()
-
     container.add_raw_string('foo')
-
     assert container.children == ['foo']
 
 def test_clear():
     container = div()
     child = div()
-
     container.add(child)
 
     assert container.children == [child]
@@ -42,15 +42,13 @@ def test_clear():
 
 def test_set_attribute():
     container = div()
-
     container.add_raw_string('foo')
     container.set_attribute(0, 'bar')
 
     assert container.children == ['bar']
 
 def test_set_attribute_error():
-    container = div()\
-
+    container = div()
     with pytest.raises(TypeError, match=(
             'Only integer and string types are valid for assigning '
             'child tags and attributes, respectively.'
@@ -65,5 +63,19 @@ def test___get_item___child_index_error():
 def test___contains__():
     container = div()
     container.add(div())
-
     assert 'div' in container
+
+def test_nested_context():
+    def sub(*args):
+        with div('B') as B:
+            B.add(*args)
+
+    with div('A') as A:
+        sub(div('C'))
+
+    assert str(A) == \
+'''<div>A
+  <div>B
+    <div>C</div>
+  </div>
+</div>'''

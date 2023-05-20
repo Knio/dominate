@@ -191,9 +191,9 @@ class dom_tag(object):
         self.children.append(obj)
 
       elif isinstance(obj, dom_tag):
-        stack = dom_tag._with_contexts.get(_get_thread_context())
-        if stack:
-          stack[-1].used.add(obj)
+        stack = dom_tag._with_contexts.get(_get_thread_context(), [])
+        for s in stack:
+          s.used.add(obj)
         self.children.append(obj)
         obj.parent = self
 

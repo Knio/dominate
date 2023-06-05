@@ -10,26 +10,28 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        python-version:
-          - "2.7"
-          - "3.4.10"
-          - "3.5.10"
-          - "3.6.15"
-          - "3.7"
-          - "3.8"
-          - "3.9"
-          - "3.10"
-          - "3.11"
+       python: ["3"]
+       os: ["ubuntu-latest"]
+       include:
+          - {python: "2.7", os: "ubuntu-22.04"}
+          - {python: "3.4", os: "ubuntu-20.04"}
+          - {python: "3.5", os: "ubuntu-20.04"}
+          - {python: "3.6", os: "ubuntu-20.04"}
+          - {python: "3.7", os: "ubuntu-22.04"}
+          - {python: "3.8", os: "ubuntu-22.04"}
+          - {python: "3.9", os: "ubuntu-22.04"}
+          - {python: "3.10", os: "ubuntu-22.04"}
+          - {python: "3.11", os: "ubuntu-22.04"}
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python ${{ matrix.python }}
       uses: actions/setup-python@v3
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: ${{ matrix.python }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -41,8 +43,7 @@ jobs:
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=80 --statistics
     - name: Build and test
       run: |
         python setup.py sdist --formats=zip
@@ -53,14 +54,14 @@ jobs:
         COVERAGE_RCFILE: ".github/workflows/.coveragerc"
       run: |
         python -m pip install coverage
-        PYTHONPATH=. coverage run --source=dominate -m pytest
+        coverage run --source=dominate -m pytest
         python -m coverage report
     - name: Coveralls-manual
       env: 
+        COVERAGE_RCFILE: ".github/workflows/.coveragerc"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
+        python -m pip install "coverage"
         python -m pip install "coveralls"
+        coverage run --source=dominate -m pytest
         python -m coveralls --service=github || true
-    - name: Coveralls
-      uses: AndreMiras/coveralls-python-action@develop

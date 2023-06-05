@@ -19,7 +19,7 @@ def test___get_thread_context(monkeypatch):
 
     assert sut._get_thread_context() in [
         -6805948436281256182, # Python >= 3.9
-        1692341442 # i686
+        1692341442, # i686
         3713141171098444831, # Python < 3.9
     ]
 

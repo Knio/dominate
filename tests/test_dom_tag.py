@@ -20,6 +20,8 @@ def test___get_thread_context(monkeypatch):
     assert sut._get_thread_context() in [
         -6805948436281256182, # Python >= 3.9
         3713141171098444831, # Python < 3.9
+        1692341442, # Python >= 3.9, 32-bit
+        -667720673, # Python < 3.9, 32-bit
     ]
 
 def test_add_raw_string():

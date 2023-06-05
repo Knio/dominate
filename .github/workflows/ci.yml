@@ -1,0 +1,61 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Dominate
+on:
+  push:
+    branches: [ "test" ]
+  pull_request:
+    branches: [ "test" ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+       python: ["3"]
+       os: ["ubuntu-latest"]
+       include:
+          - {python: "2.7", os: "ubuntu-22.04"}
+          # https://github.blog/changelog/2022-08-09-github-actions-the-ubuntu-18-04-actions-runner-image-is-being-deprecated-and-will-be-removed-by-12-1-22/
+          # - {python: "3.4", os: "ubuntu-18.04"}
+          - {python: "3.5", os: "ubuntu-20.04"}
+          - {python: "3.6", os: "ubuntu-20.04"}
+          - {python: "3.7", os: "ubuntu-22.04"}
+          - {python: "3.8", os: "ubuntu-22.04"}
+          - {python: "3.9", os: "ubuntu-22.04"}
+          - {python: "3.10", os: "ubuntu-22.04"}
+          - {python: "3.11", os: "ubuntu-22.04"}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+        python -m pip install mock
+        python -m pip install flake8
+        python -m pip install importlib_metadata 
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=80 --statistics
+    - name: Build and test
+      run: |
+        python setup.py sdist --formats=zip
+        pip install dist/dominate*.zip
+        pytest
+    - name: Coveralls
+      env: 
+        COVERAGE_RCFILE: ".github/workflows/.coveragerc"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        python -m pip install "coverage"
+        python -m pip install "coveralls"
+        coverage run --source=dominate -m pytest
+        python -m coveralls --service=github || true

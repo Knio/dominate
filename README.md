@@ -5,7 +5,7 @@ Dominate
 It allows you to write HTML pages in pure Python very concisely, which eliminates the need to learn another template language, and lets you take advantage of the more powerful features of Python.
 
 ![Python version](https://img.shields.io/pypi/pyversions/dominate.svg?style=flat)
-[![Build status](https://img.shields.io/travis/Knio/dominate/master.svg?style=flat)](https://travis-ci.org/Knio/dominate)
+[![Build status](https://github.com/Knio/dominate/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Knio/dominate/actions/workflows/ci.yml?query=workflow%3Aci+branch%3Amaster+)
 [![Coverage status](https://img.shields.io/coveralls/github/Knio/dominate/master.svg?style=flat)](https://coveralls.io/r/Knio/dominate?branch=master)
 
 Python:

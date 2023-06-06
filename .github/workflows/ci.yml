@@ -4,9 +4,9 @@
 name: Dominate
 on:
   push:
-    branches: [ "test" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "test" ]
+    branches: ["master"]
 
 jobs:
   test:

@@ -41,22 +41,17 @@ jobs:
         python -m pip install mock
         python -m pip install flake8
         python -m pip install importlib_metadata
+        python -m pip install build
     - name: "Lint with flake8"
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=80 --statistics
-    - name: "Build and test (Old)"
-      if: ${{ matrix.python != '3.12' }}
+    - name: "Build and test"
       run: |
-        python setup/setup.py sdist --formats=zip
-        pip install dist/dominate*.zip
+        python -m build -s
+        pip install dist/dominate*.tar.gz
         pytest
-    - name: "Build and test (Python 3.12+)"
-      if: ${{ matrix.python == '3.12' }}
-      run: |
-        # lolz theres still no correct way to make a python package
-        false
     - name: Coveralls
       env:
         COVERAGE_RCFILE: ".github/workflows/.coveragerc"

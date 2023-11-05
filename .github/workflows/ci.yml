@@ -47,13 +47,13 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=80 --statistics
     - name: "Build and test (Old)"
-      if: matrix.python != "3.12"
+      if: ${{ matrix.python != "3.12" }}
       run: |
         python setup/setup.py sdist --formats=zip
         pip install dist/dominate*.zip
         pytest
     - name: "Build and test (Python 3.12+)"
-      if: matrix.python == "3.12"
+      if: ${{ matrix.python == "3.12" }}
       run: |
         # lolz theres still no correct way to make a python package
         false

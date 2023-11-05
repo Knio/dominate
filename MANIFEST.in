@@ -1,5 +1,7 @@
 include README.md
 include LICENSE.txt
+include pyproject.toml
+include setup/setup.py
 recursive-include tests *
 global-exclude __pycache__
 global-exclude *.pyc

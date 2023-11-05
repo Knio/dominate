@@ -1,8 +1,12 @@
-import pytest
-
+import dominate
 from dominate.tags import *
 from dominate import util
 
+
+def test_context():
+  id1 = dominate.dom_tag._get_thread_context()
+  id2 = dominate.dom_tag._get_thread_context()
+  assert id1 == id2
 
 def test_include():
   import os
@@ -53,4 +57,3 @@ def test_container():
 '''<div>
   <h1>a</h1>
 </div>'''
-

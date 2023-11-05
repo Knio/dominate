@@ -17,11 +17,6 @@ jobs:
        python: ["3"]
        os: ["ubuntu-latest"]
        include:
-          - {python: "2.7", os: "ubuntu-22.04"}
-          # https://github.blog/changelog/2022-08-09-github-actions-the-ubuntu-18-04-actions-runner-image-is-being-deprecated-and-will-be-removed-by-12-1-22/
-          # - {python: "3.4", os: "ubuntu-18.04"}
-          - {python: "3.5", os: "ubuntu-20.04"}
-          - {python: "3.6", os: "ubuntu-20.04"}
           - {python: "3.7", os: "ubuntu-22.04"}
           - {python: "3.8", os: "ubuntu-22.04"}
           - {python: "3.9", os: "ubuntu-22.04"}

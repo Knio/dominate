@@ -36,6 +36,7 @@ jobs:
         python -m pip install mock
         python -m pip install flake8
         python -m pip install importlib_metadata
+        python -m pip install setuptools>=62
         python -m pip install build
     - name: "Lint with flake8"
       run: |

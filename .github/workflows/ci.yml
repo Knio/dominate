@@ -27,35 +27,42 @@ jobs:
           - {python: "3.9", os: "ubuntu-22.04"}
           - {python: "3.10", os: "ubuntu-22.04"}
           - {python: "3.11", os: "ubuntu-22.04"}
+          - {python: "3.12", os: "ubuntu-22.04"}
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python }}
+    - name: "Set up Python ${{ matrix.python }}"
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python }}
-    - name: Install dependencies
+    - name: "Install dependencies"
       run: |
         python -m pip install --upgrade pip
         python -m pip install pytest
         python -m pip install mock
         python -m pip install flake8
-        python -m pip install importlib_metadata 
-    - name: Lint with flake8
+        python -m pip install importlib_metadata
+    - name: "Lint with flake8"
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=80 --statistics
-    - name: Build and test
+    - name: "Build and test (Old)"
+      if: matrix.python != "3.12"
       run: |
-        python setup.py sdist --formats=zip
+        python setup/setup.py sdist --formats=zip
         pip install dist/dominate*.zip
         pytest
+    - name: "Build and test (Python 3.12+)"
+      if: matrix.python == "3.12"
+      run: |
+        # lolz theres still no correct way to make a python package
+        false
     - name: Coveralls
-      env: 
+      env:
         COVERAGE_RCFILE: ".github/workflows/.coveragerc"
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        python -m pip install "coverage"
-        python -m pip install "coveralls"
+        python -m pip install coverage
+        python -m pip install coveralls
         coverage run --source=dominate -m pytest
         python -m coveralls --service=github || true

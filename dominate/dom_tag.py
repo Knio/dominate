@@ -23,6 +23,8 @@ import numbers
 from collections import defaultdict, namedtuple
 from functools import wraps
 import threading
+from asyncio import get_event_loop
+from contextvars import ContextVar
 
 try:
   # Python 3
@@ -37,19 +39,48 @@ except NameError: # py3 # pragma: no cover
   basestring = str
   unicode = str
 
-
 try:
   import greenlet
 except ImportError:
   greenlet = None
 
+# We want dominate to work in async contexts - however, the problem is
+# when we bind a tag using "with", we set what is essentially a global variable.
+# If we are processing multiple documents at the same time, one context
+# can "overwrite" the "bound tag" of another - this can cause documents to
+# sort of bleed into one another...
+
+# The solution is to use a ContextVar - which provides async context local storage.
+# We use this to store a unique ID for each async context. We then use thie ID to
+# form the key (in _get_thread_context) that is used to index the _with_context defaultdict.
+# The presense of this key ensures that each async context has its own stack and doesn't conflict.
+async_context_id_counter = 5
+async_context_id = ContextVar('async_context_id', default = None)
+
+def _get_async_context_id():
+  global async_context_id_counter
+  if async_context_id.get() is None:
+    async_context_id.set(async_context_id_counter)
+    async_context_id_counter += 1
+  print(async_context_id.get())
+  return async_context_id.get()
 
 def _get_thread_context():
   context = [threading.current_thread()]
+  # Tag extra content information with a name to make sure
+  # a greenlet.getcurrent() == 1 doesn't get confused with a
+  # a _get_thread_context() == 1.
   if greenlet:
-    context.append(greenlet.getcurrent())
-  return hash(tuple(context))
+    context.append(("greenlet", greenlet.getcurrent()))
 
+  try:
+    if get_event_loop().is_running():
+      # Only add this extra information if we are actually in a running event loop
+      context.append(("async", _get_async_context_id()))
+  # A runtime error is raised if there is no async loop...
+  except RuntimeError:
+    pass
+  return hash(tuple(context))
 
 class dom_tag(object):
   is_single = False  # Tag does not require matching end tag (ex. <hr/>)

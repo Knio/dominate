@@ -24,6 +24,7 @@ from collections import defaultdict, namedtuple
 from functools import wraps
 import threading
 from asyncio import get_event_loop
+from uuid import uuid4
 from contextvars import ContextVar
 
 try:
@@ -54,15 +55,11 @@ except ImportError:
 # We use this to store a unique ID for each async context. We then use thie ID to
 # form the key (in _get_thread_context) that is used to index the _with_context defaultdict.
 # The presense of this key ensures that each async context has its own stack and doesn't conflict.
-async_context_id_counter = 5
 async_context_id = ContextVar('async_context_id', default = None)
 
 def _get_async_context_id():
-  global async_context_id_counter
   if async_context_id.get() is None:
-    async_context_id.set(async_context_id_counter)
-    async_context_id_counter += 1
-  print(async_context_id.get())
+    async_context_id.set(uuid4().hex)
   return async_context_id.get()
 
 def _get_thread_context():
@@ -80,7 +77,7 @@ def _get_thread_context():
   # A runtime error is raised if there is no async loop...
   except RuntimeError:
     pass
-  return hash(tuple(context))
+  return tuple(context)
 
 class dom_tag(object):
   is_single = False  # Tag does not require matching end tag (ex. <hr/>)

@@ -10,7 +10,7 @@ authors = [
     {name = "Tom Flanagan", email = "tom@zkpq.ca"},
     {name = "Jake Wharton"},
 ]
-requires-python = ">=3.4"
+requires-python = ">=3.7"
 keywords = ["framework", "templating", "template", "html", "xhtml", "python", "html5"]
 license = {text = "LGPL-3.0-or-newer"}
 classifiers = [

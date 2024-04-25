@@ -329,6 +329,9 @@ def test_pretty():
 
   assert p('goodbye ', i('cruel'), ' world').render() == \
     '''<p>goodbye <i>cruel</i> world</p>'''
+  
+  assert p('my 1', sup('st'), ' PR').render() == \
+    '''<p>my 1<sup>st</sup> PR</p>'''
 
 
 def test_xhtml():

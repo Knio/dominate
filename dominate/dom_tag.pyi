@@ -124,7 +124,8 @@ class dom_tag(object):
     def clean_pair(cls, key: str, value: str | Literal[True]) -> Tuple[str, str]:
         ...
 
-def attr(key: str, value: str) -> None:
+
+def attr(*args: Dict[str, str | Literal[True]], **kwargs: str | Literal[True]) -> None:
     ...
 
 @overload

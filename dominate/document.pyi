@@ -13,9 +13,9 @@ class document(html):
 
     def __init__(
         self,
+        *a: dom_tag | str,
         title: str = ...,
         doctype: str = ...,
-        *a: dom_tag | str,
         __inline: bool = ...,
         __pretty: bool = ...,
         **kw: str | Literal[True],

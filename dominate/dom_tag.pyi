@@ -74,7 +74,7 @@ class dom_tag(object):
         ...
 
     @overload
-    def get(self, tag: Type[T], **kwargs: str | Literal[True]) -> List[T]:
+    def get(self, tag: Type[C], **kwargs: str | Literal[True]) -> List[C]:
         ...
 
     @overload

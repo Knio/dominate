@@ -1,3 +1,5 @@
+import sys
+
 import dominate.svg
 from dominate.tags import *
 from dominate.svg import *
@@ -14,7 +16,10 @@ def base():
 
 
 def get_expected(func):
-  return func.__doc__.replace('\n  ', '\n').strip()
+  doc = func.__doc__
+  if sys.version_info < (3, 13):
+      doc = doc.replace('\n  ', '\n')
+  return doc.strip()
 
 
 def output_test(func):

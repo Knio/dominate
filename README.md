@@ -129,6 +129,7 @@ For attributes `class` and `for` which conflict with Python's [reserved keywords
 |cls | fr |
 |className|htmlFor|
 |class_name|html_for|
+|klass|phor|
 
 
 ```python

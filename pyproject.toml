@@ -31,6 +31,9 @@ classifiers = [
     "Topic :: Text Processing :: Markup :: HTML",
 ]
 dynamic = ["version"]
+dependencies = [
+    'cssutils >= 2.11.1',
+]
 
 [project.urls]
 Homepage = "https://github.com/Knio/dominate"

@@ -27,6 +27,10 @@ from asyncio import get_event_loop
 from uuid import uuid4
 from contextvars import ContextVar
 
+from .directives.attrs import KlassDirective, StyleDirective
+from .directives.alpine import AlpineDominated
+from .directives.htmx import HtmxDominated
+
 try:
   # Python 3
   from collections.abc import Callable
@@ -86,6 +90,11 @@ class dom_tag(object):
                      # modified
   is_inline = False
 
+  klass = cls = class_ = KlassDirective()
+  style = StyleDirective()
+
+  alpine = x = AlpineDominated()
+  htmx = hx = HtmxDominated()
 
   def __new__(_cls, *args, **kwargs):
     '''

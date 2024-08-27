@@ -57,7 +57,9 @@ setup(
     'Topic :: Software Development :: Libraries :: Python Modules',
     'Topic :: Text Processing :: Markup :: HTML',
   ],
-
+  install_requires=[
+    'cssutils >= 2.11.1',
+  ],
   packages = ['dominate'],
   include_package_data = True,
 )

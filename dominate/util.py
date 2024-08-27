@@ -22,7 +22,10 @@ Public License along with Dominate.  If not, see
 
 import re
 
-from .dom_tag import dom_tag
+from .directives.alpine import AlpineDominated
+from .directives.htmx import HtmxDominated
+
+from .dom_tag import dom_tag, get_current
 
 try:
   basestring = basestring
@@ -184,3 +187,10 @@ def raw(s):
   Inserts a raw string into the DOM. Unsafe. Alias for text(x, escape=False)
   '''
   return text(s, escape=False)
+
+
+this = get_current
+
+alpine = x = AlpineDominated()
+
+htmx = hx = HtmxDominated()

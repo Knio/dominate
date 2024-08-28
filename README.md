@@ -83,10 +83,13 @@ Developed By
 * Tom Flanagan - <tom@zkpq.ca>
 * Jake Wharton - <jakewharton@gmail.com>
 * [Brad Janke](//github.com/bradj)
+* [Nikalexis Nikos](//github.com/nikalexis)
 
 Git repository located at
 [github.com/Knio/dominate](//github.com/Knio/dominate)
 
+Current fork (with directives feature) located at
+[github.com/nikalexis/dominate](//github.com/nikalexis/dominate)
 
 Examples
 ========
@@ -582,3 +585,174 @@ print(circle(stroke_width=5))
 <circle stroke-width="5"></circle>
 ```
 
+Using directives
+----------------
+
+Directives act as helpers to build a specific attribute of a DOM tag.
+
+Currently the following directives are available:
+
+* HTML tag attributes
+  * `class`
+  * `style`
+* Javascript magic libraries
+  * [Alpine.js](https://alpinejs.dev/start-here)
+  * [HTMX](https://htmx.org/docs/)
+
+### HTML `class` attribute examples
+
+```python
+from dominate.all import *
+
+with div('mx-3') as my_div:
+
+    # this() is a special function alias to get_current()
+    # returning always the object declared in the closest `with` clause above
+    
+    # Add / remove / reset class(es) attribute
+    my_div.klass += 'my-5' # add
+    my_div.klass('row') # reset
+    this().klass = 'row' # reset
+    this().klass.add('align-items-start') # add
+    this().klass += 'another-class' # add
+    this().klass += ('one', 'two', 'three', 'four') # add
+    this().klass -= 'another-class' # remove
+    # you can use .class_
+    this().class_.remove('one', 'two') # remove
+    # you can use .cls
+    this().cls -= ('three', 'four') # remove
+```
+
+### HTML `style` attribute examples
+
+```python
+from dominate.all import *
+
+with div('mx-3') as my_div:
+
+    # Add / remove / replace / reset style(s) attribute
+    # all underscore (_) chars are converted to hyphen (-) chars ONLY when python dict keys are used
+    # e.g. below background_color will be converted to background-color
+    this().style.add(background_color='pink', font_style='italic') # add or replace existing
+    this().style.add(color='white') # add or replace existing
+    this().style.add_extra(color='black') # add
+    this().style['font-weight'] = ('bold', '!important') # add or replace existing
+    this().style += dict(font_weight='normal') # add or replace existing
+    this().style -= 'font-weight' # remove
+    this().style.reset(font_weight='normal') # reset
+    del this().style['font-weight'] # remove
+    this().style = dict(background_color='lime') # reset
+    # underscore will not be replaced to a hyphen when is passed as a string
+    this().style['font_weight'] = 'wrong_css_hyphen' # add or replace existing
+    this().style(**{'font_weight': 'normal'}) # add or replace existing
+
+    # css property is using the ccsutils library for advanced methods
+    css = this().style.css
+    # you can do any kind of magic using this library and then set back the final css
+    css.setProperty('font-style', 'italic', 'important')
+    this().style.css = css
+```
+
+### Javascript `Alpine.js` library examples
+
+```python
+from dominate.all import *
+
+with div('mx-3') as my_div:
+
+    # Alpine.js directives
+    this().x.init = 'console.log("Testing alpine directive");'
+    # x directive is an alias to alpine
+    # you also use it as a callable
+    alpine.init('console.log("Testing alpine directive");')
+
+    with button('Click me to create an alert'):
+        # using this(). is optional for x / alpine directive
+        x.on['click'] = 'alert("Alert!");'
+        # x directive is an alias to alpine
+        alpine.on['click'] = 'alert("Alert!");'
+    
+    # all Alpine.js directives supported:
+    x.data = '...'
+    x.init = '...'
+    x.show = '...'
+    x.bind['...'] = '...'
+    x.on['...'] = '...'
+    x.text = '...'
+    x.html = '...'
+    x.model = '...'
+    x.modelable = '...'
+    x.for_ = '...'
+    x.transition = '...'
+    x.effect = '...'
+    x.ignore = '...'
+    x.ref = '...'
+    x.cloak = '...'
+    x.teleport = '...'
+    x.if_ = '...'
+    x.id = '...'
+```
+
+### Javascript `HTMX` library examples
+
+```python
+from dominate.all import *
+
+with div('mx-3') as my_div:
+
+    # HTMX directives
+    with button('Click me to replace a div using htmx'):
+        # set multiple htmx attributes together
+        this().hx.get('/replace_div/').trigger('click').target('closest .div').swap('innerHTML')
+        # hx directive is an alias to htmx
+        this().htmx.get('/replace_div_2/') # reset hx-get attribute
+        # using this(). is optional for hx / htmx directive
+        hx.swap = 'outerHTML' # reset swap
+
+    # all HTMX directives supported:
+    hx.get = '...'
+    hx.post = '...'
+    hx.on['...'] = '...'
+    hx.push_url = '...'
+    hx.select = '...'
+    hx.select_oob = '...'
+    hx.swap = '...'
+    hx.swap_oob = '...'
+    hx.target = '...'
+    hx.trigger = '...'
+    hx.vals = '...'
+
+    hx.boost = '...'
+    hx.confirm = '...'
+    hx.delete = '...'
+    hx.disable = '...'
+    hx.disable_elt = '...'
+    hx.disinherit = '...'
+    hx.encoding = '...'
+    hx.ext = '...'
+    hx.headers = '...'
+    hx.history = '...'
+    hx.history_elt = '...'
+    hx.include = '...'
+    hx.indicator = '...'
+    hx.inherit = '...'
+    hx.params = '...'
+    hx.patch = '...'
+    hx.preserve = '...'
+    hx.prompt = '...'
+    hx.put = '...'
+    hx.replace_url = '...'
+    hx.request = '...'
+    hx.sync = '...'
+    hx.validate = '...'
+    hx.vars = '...'
+```
+
+Quick imports
+-------------
+
+If you want an easy way to import all available tags, document and directives you can use the following:
+
+```python
+from dominate.all import *
+```

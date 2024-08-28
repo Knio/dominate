@@ -40,7 +40,7 @@ Homepage = "https://github.com/Knio/dominate"
 Source = "https://github.com/Knio/dominate"
 
 [tool.setuptools]
-packages = ["dominate"]
+packages = ["dominate*"]
 
 [tool.setuptools.dynamic]
 version = {attr = "dominate._version.__version__"}

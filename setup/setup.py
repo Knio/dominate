@@ -60,6 +60,6 @@ setup(
   install_requires=[
     'cssutils >= 2.11.1',
   ],
-  packages = ['dominate'],
+  packages = ['dominate*'],
   include_package_data = True,
 )

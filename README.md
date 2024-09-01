@@ -726,7 +726,7 @@ with div('mx-3') as my_div:
     hx.confirm = '...'
     hx.delete = '...'
     hx.disable = '...'
-    hx.disable_elt = '...'
+    hx.disabled_elt = '...'
     hx.disinherit = '...'
     hx.encoding = '...'
     hx.ext = '...'

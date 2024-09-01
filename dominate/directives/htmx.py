@@ -28,7 +28,7 @@ class HtmxDominated(BaseDominated):
     confirm = HtmxDirective()
     delete = HtmxDirective()
     disable = HtmxDirective()
-    disable_elt = HtmxDirective()
+    disabled_elt = HtmxDirective()
     disinherit = HtmxDirective()
     encoding = HtmxDirective()
     ext = HtmxDirective()

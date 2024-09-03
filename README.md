@@ -556,7 +556,7 @@ print(d)
 Embedding HTML
 --------------
 
-If you need to embed a node of pre-formed HTML coming from a library such as markdown or the like, you can avoid escaped HTML by using the raw method from the dominate.util package:
+If you need to embed a node of pre-formed HTML coming from a library such as markdown or the like you can avoid escaped HTML by using the raw method from the dominate.util package:
 
 ```
 from dominate.util import raw
@@ -564,7 +564,7 @@ from dominate.util import raw
 td(raw('<a href="example.html">Example</a>'))
 ```
 
-Without the raw call, this code would render escaped HTML with lt, etc.
+Without the raw call, this code would render escaped HTML with lt, etc. The behavior of the previous block of code is the same as `td_element.innerHTML="<a href="example.html">Example</a>"` in JavaScript.
 
 
 SVG

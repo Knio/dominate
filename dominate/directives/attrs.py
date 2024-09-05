@@ -36,6 +36,12 @@ class KlassDirective(BaseDirective):
             self.remove_classes(*classes)
         )
 
+    def replace(self, old, new):
+        return self.remove(old).klass.add(new)
+
+    def exists(self, class_name):
+        return class_name in self.get_classes()
+
     def __sub__(self, other):
         if type(other) is str:
             return self.remove_classes(other)

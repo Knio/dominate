@@ -103,9 +103,9 @@ class StyleDirective(BaseDirective):
         if type(value) is dict:
             self.copied_self(instance).__call__(**value)
         elif type(value) is cssutils.css.CSSStyleDeclaration:
-            super().__call__(value.getCssText(' '))
+            super(StyleDirective, self.copied_self(instance)).__call__(value.getCssText(' '))
         else:
-            super().__call__(value)
+            super(StyleDirective, self.copied_self(instance)).__call__(value)
 
     def remove_properties(self, *properties):
         css = self.css

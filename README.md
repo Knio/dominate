@@ -748,6 +748,23 @@ with div('mx-3') as my_div:
     hx.vars = '...'
 ```
 
+### Bonus: Inline directives and the `C` helper
+
+All directives and their attributes / functions / modifiers can be used as inline parameters directly on the component function, using a two-dashed (`__`) separator. This way, you can set almost every property during the creation of the dom object, avoding complex code and `with` statements.
+
+```python
+from dominate.all import *
+
+button(
+    'Click me to create an alert',
+    x__on__click='alert("This is another way to create directives inline!");',
+    # Also more complicated, using the `C` helper class
+    # to pass any *args and/or **kwargs on functions
+    klass__add=C('text-center', 'text-danger'), # passed as *args
+    style__add=C(font_style='italic'), # passed as *kwargs
+)
+```
+
 Quick imports
 -------------
 

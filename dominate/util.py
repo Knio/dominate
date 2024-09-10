@@ -189,6 +189,13 @@ def raw(s):
   return text(s, escape=False)
 
 
+class C:
+  
+  def __init__(self, *args, **kwargs):
+    self.args = args
+    self.kwargs = kwargs
+
+
 this = get_current
 
 alpine = x = AlpineDominated()

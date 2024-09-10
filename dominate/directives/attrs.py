@@ -101,7 +101,7 @@ class StyleDirective(BaseDirective):
 
     def __set__(self, instance, value):
         if type(value) is dict:
-            self.__call__(**value)
+            self.copied_self(instance).__call__(**value)
         elif type(value) is cssutils.css.CSSStyleDeclaration:
             super().__call__(value.getCssText(' '))
         else:

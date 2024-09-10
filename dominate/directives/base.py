@@ -23,16 +23,24 @@ class DescriptorMixin:
 
         self.fixed_name = fixed_name
 
+    def copied_self(self, instance):
+        
+        try:
+            return instance.__dict__['__' + self.descriptor_name]
+        except KeyError:
+            copied_self = copy(self)
+            copied_self.instance = instance
+            instance.__dict__['__' + self.descriptor_name] = copied_self
+            return copied_self
+
     def __get__(self, instance, owner):
-        copied_self = copy(self)
-        copied_self.instance = instance
-        return instance.__dict__.setdefault(
-            '__' + self.descriptor_name,
-            copied_self,
-        )
+        if instance is None:
+            return self
+        else:
+            return self.copied_self(instance)
 
     def __set__(self, instance, value):
-        self.__call__(value)
+        self.copied_self(instance).__call__(value)
 
 
 class BaseDominated(DescriptorMixin):
@@ -79,13 +87,11 @@ class BaseDirective(DescriptorMixin):
         return (self.instance if isinstance(self.instance, dom_tag) else get_current()).attributes.get(self.full_directive(), None)
 
     def __call__(self, value):
-        from ..dom_tag import attr, dom_tag
+        from ..dom_tag import get_current
         attributes = self.make_attr(value)
-        if isinstance(self.instance, dom_tag):
-            for attribute, value in attributes.items():
-                self.instance.set_attribute(*dom_tag.clean_pair(attribute, value))
-        else:
-            attr(**attributes)
+        dom_tag_obj = (self.instance.instance if isinstance(self.instance, BaseDominated) else self.instance) or get_current()
+        for a, v in attributes.items():
+            dom_tag_obj.set_attribute(a, v, clean_pair=True)
         return self.instance
 
 

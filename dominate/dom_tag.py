@@ -27,6 +27,7 @@ from asyncio import get_event_loop
 from uuid import uuid4
 from contextvars import ContextVar
 
+from .directives.base import BaseDirective, BaseDominated, BaseModifierMixin
 from .directives.attrs import KlassDirective, StyleDirective
 from .directives.alpine import AlpineDominated
 from .directives.htmx import HtmxDominated
@@ -138,7 +139,7 @@ class dom_tag(object):
       self.add(*args)
 
     for attr, value in kwargs.items():
-      self.set_attribute(*type(self).clean_pair(attr, value))
+      self.set_attribute(attr, value, clean_pair=True, use_directives=True)
 
     self._ctx = None
     self._add_to_ctx()
@@ -192,14 +193,56 @@ class dom_tag(object):
     return f
 
 
-  def set_attribute(self, key, value):
+  def set_attribute(self, key, value, clean_pair=False, use_directives=False):
     '''
     Add or update the value of an attribute.
     '''
     if isinstance(key, int):
       self.children[key] = value
     elif isinstance(key, basestring):
-      self.attributes[key] = value
+
+      if use_directives:
+        splits = key.split('__')
+        if len(splits) >= 2 and splits[0]:
+
+          final_obj = self
+          for e, s in enumerate(splits, 1):
+            is_last = (e == len(splits))
+
+            if isinstance(final_obj, BaseModifierMixin) and not final_obj.modifier:
+              if not is_last:
+                final_obj = final_obj[s]
+              else:
+                final_obj[s] = value
+              continue
+            
+            elif not is_last:
+              final_obj = getattr(final_obj, s)
+
+            if is_last:
+              if type(value) is not util.C and hasattr(getattr(type(final_obj), s), '__set__'):
+                setattr(final_obj, s, value)
+
+              elif callable(c := getattr(final_obj, s)):
+
+                if type(value) is util.C:
+                  c(*value.args, **value.kwargs)
+                else:
+                  c(value)
+              
+              else:
+                raise TypeError(f'`{s}` is not a settable property or a callable object.')          
+          return
+
+        elif isinstance(getattr(type(self), key, None), (BaseDominated, BaseDirective)):
+          setattr(self, key, value)
+          return
+
+      if clean_pair:
+        clean_attribute, clean_value = type(self).clean_pair(key, value)
+        self.attributes[clean_attribute] = clean_value
+      else:
+        self.attributes[key] = value
     else:
       raise TypeError('Only integer and string types are valid for assigning '
           'child tags and attributes, respectively.')
@@ -214,11 +257,11 @@ class dom_tag(object):
   __delitem__ = delete_attribute
 
 
-  def add(self, *args):
+  def add(self, *children, **attributes):
     '''
-    Add new child tags.
+    Add new child tags or new attributes.
     '''
-    for obj in args:
+    for obj in children:
       if isinstance(obj, numbers.Number):
         # Convert to string so we fall into next if block
         obj = str(obj)
@@ -236,7 +279,7 @@ class dom_tag(object):
 
       elif isinstance(obj, dict):
         for attr, value in obj.items():
-          self.set_attribute(*dom_tag.clean_pair(attr, value))
+          self.set_attribute(attr, value, clean_pair=True, use_directives=True)
 
       elif hasattr(obj, '__iter__'):
         for subobj in obj:
@@ -245,10 +288,13 @@ class dom_tag(object):
       else:  # wtf is it?
         raise ValueError('%r not a tag or string.' % obj)
 
-    if len(args) == 1:
-      return args[0]
+    for attr, value in attributes.items():
+      self.set_attribute(attr, value, clean_pair=True, use_directives=True)
 
-    return args
+    if len(children) == 1:
+      return children[0]
+
+    return children
 
 
   def add_raw_string(self, s):
@@ -508,7 +554,7 @@ def attr(*args, **kwargs):
   dicts = args + (kwargs,)
   for d in dicts:
     for attr, value in d.items():
-      c.set_attribute(*dom_tag.clean_pair(attr, value))
+      c.set_attribute(attr, value, clean_pair=True, use_directives=True)
 
 
 from . import util

@@ -27,11 +27,23 @@ from .directives.htmx import HtmxDominated
 
 from .dom_tag import dom_tag, get_current
 
+from . import tags
+
 try:
   basestring = basestring
 except NameError:
   basestring = str
   unichr = chr
+
+
+def element(tag_name):
+  if tag_name in tags.underscored_classes:
+    tag_name = f'{tag_name}_'
+
+  try:
+    return getattr(tags, tag_name)
+  except AttributeError:
+    raise ValueError(f"Invalid tag name: `{tag_name}`. Must be a valid HTML tag.")
 
 
 def include(f):

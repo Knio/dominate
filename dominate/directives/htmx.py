@@ -1,4 +1,5 @@
 from .base import BaseDirective, BaseDominated, BaseModifierMixin
+from .mixins import CommaJoinerMixin, SpaceJoinerMixin
 
 
 class HtmxDirective(BaseDirective):
@@ -9,6 +10,14 @@ class HtmxModifier(BaseModifierMixin, HtmxDirective):
     pass
 
 
+class HtmxSpaceDirective(SpaceJoinerMixin, HtmxDirective):
+    pass
+
+
+class HtmxCommaDirective(CommaJoinerMixin, HtmxDirective):
+    pass
+
+
 class HtmxDominated(BaseDominated):
     default_directive = 'on'
 
@@ -16,35 +25,35 @@ class HtmxDominated(BaseDominated):
     post = HtmxDirective()
     on = HtmxModifier()
     push_url = HtmxDirective()
-    select = HtmxDirective()
-    select_oob = HtmxDirective()
-    swap = HtmxDirective()
+    select = HtmxCommaDirective()
+    select_oob = HtmxCommaDirective()
+    swap = HtmxSpaceDirective()
     swap_oob = HtmxDirective()
     target = HtmxDirective()
-    trigger = HtmxDirective()
+    trigger = HtmxCommaDirective()
     vals = HtmxDirective()
 
     boost = HtmxDirective()
     confirm = HtmxDirective()
     delete = HtmxDirective()
     disable = HtmxDirective()
-    disabled_elt = HtmxDirective()
-    disinherit = HtmxDirective()
+    disabled_elt = HtmxCommaDirective()
+    disinherit = HtmxSpaceDirective()
     encoding = HtmxDirective()
-    ext = HtmxDirective()
+    ext = HtmxCommaDirective()
     headers = HtmxDirective()
     history = HtmxDirective()
     history_elt = HtmxDirective()
-    include = HtmxDirective()
-    indicator = HtmxDirective()
-    inherit = HtmxDirective()
-    params = HtmxDirective()
+    include = HtmxCommaDirective()
+    indicator = HtmxCommaDirective()
+    inherit = HtmxSpaceDirective()
+    params = HtmxCommaDirective()
     patch = HtmxDirective()
     preserve = HtmxDirective()
     prompt = HtmxDirective()
     put = HtmxDirective()
     replace_url = HtmxDirective()
     request = HtmxDirective()
-    sync = HtmxDirective()
+    sync = HtmxCommaDirective()
     validate = HtmxDirective()
     vars = HtmxDirective()

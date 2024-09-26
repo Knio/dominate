@@ -1,10 +1,10 @@
 import cssutils
 
 from .base import BaseDirective
-from .mixins import SpaceJoinerMixin
+from .mixins.delemeted_string import SpaceDelemetedStringListMixin
 
 
-class KlassDirective(SpaceJoinerMixin, BaseDirective):
+class KlassDirective(SpaceDelemetedStringListMixin, BaseDirective):
     pass
 
 

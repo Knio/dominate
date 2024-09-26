@@ -27,7 +27,8 @@ from asyncio import get_event_loop
 from uuid import uuid4
 from contextvars import ContextVar
 
-from .directives.base import BaseDirective, BaseDominated, BaseModifierMixin
+from .directives.base import BaseDirective, BaseDominated
+from .directives.mixins.modifier import BaseModifierMixin
 from .directives.attrs import KlassDirective, StyleDirective
 from .directives.alpine import AlpineDominated
 from .directives.htmx import HtmxDominated

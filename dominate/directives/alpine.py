@@ -1,4 +1,5 @@
-from .base import BaseDirective, BaseDominated, BaseModifierMixin
+from .base import BaseDirective, BaseDominated
+from .mixins.modifier import BaseModifierMixin
 
 
 class AlpineDirective(BaseDirective):

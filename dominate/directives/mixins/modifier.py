@@ -14,13 +14,5 @@ class BaseModifierMixin:
         self.__call__(value)
         return self
 
-    def make_attr(self, value):
-        attr = super().make_attr(value)
-        
-        if self.modifier:
-            attr = {
-                f"{key}{self.separator}{self.modifier}": value
-                for key, value in attr.items()
-            }
-        
-        return attr
+    def full_directive(self):
+        return super().full_directive() + f"{self.separator}{self.modifier}"

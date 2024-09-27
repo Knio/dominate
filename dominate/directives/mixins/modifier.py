@@ -1,6 +1,6 @@
 
 
-class BaseModifierMixin:
+class BaseAttributeModifierMixin:
 
     separator = ":"
     modifier = None

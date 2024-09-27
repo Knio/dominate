@@ -28,7 +28,7 @@ from uuid import uuid4
 from contextvars import ContextVar
 
 from .directives.base import BaseDirective, BaseDominated
-from .directives.mixins.modifier import BaseModifierMixin
+from .directives.mixins.modifier import BaseAttributeModifierMixin
 from .directives.attrs import KlassDirective, StyleDirective
 from .directives.alpine import AlpineDominated
 from .directives.htmx import HtmxDominated
@@ -210,7 +210,7 @@ class dom_tag(object):
           for e, s in enumerate(splits, 1):
             is_last = (e == len(splits))
 
-            if isinstance(final_obj, BaseModifierMixin) and not final_obj.modifier:
+            if isinstance(final_obj, BaseAttributeModifierMixin) and not final_obj.modifier:
               if not is_last:
                 final_obj = final_obj[s]
               else:

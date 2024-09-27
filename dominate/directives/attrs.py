@@ -1,14 +1,14 @@
 import cssutils
 
-from .base import BaseDirective
+from .base import BaseAttributeDirective
 from .mixins.delemeted_string import SpaceDelemetedStringListMixin
 
 
-class KlassDirective(SpaceDelemetedStringListMixin, BaseDirective):
+class KlassDirective(SpaceDelemetedStringListMixin, BaseAttributeDirective):
     pass
 
 
-class StyleDirective(BaseDirective):
+class StyleDirective(BaseAttributeDirective):
 
     encoding='utf-8'
     normalize = True

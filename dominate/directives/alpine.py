@@ -1,12 +1,12 @@
-from .base import BaseDirective, BaseDominated
-from .mixins.modifier import BaseModifierMixin
+from .base import BaseAttributeDirective, BaseDominated
+from .mixins.modifier import BaseAttributeModifierMixin
 
 
-class AlpineDirective(BaseDirective):
+class AlpineDirective(BaseAttributeDirective):
     prefix = 'x-'
     
 
-class AlpineModifier(BaseModifierMixin, AlpineDirective):
+class AlpineModifier(BaseAttributeModifierMixin, AlpineDirective):
     pass
 
 

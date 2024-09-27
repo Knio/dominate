@@ -1,29 +1,29 @@
-from .base import BaseDirective, BaseDominated, DescriptorMixin
-from .mixins.delemeted_string import CommaDelemetedStringListMixin, DelemetedStringDirectiveMixin, DelemetedSubstringDescriptorMixin, SpaceDelemetedStringListMixin
-from .mixins.modifier import BaseModifierMixin
+from .base import BaseAttributeDirective, BaseDelemetedSubstringDirective, BaseDominated
+from .mixins.delemeted_string import CommaDelemetedStringListMixin, DelemetedStringDirectiveMixin, SpaceDelemetedStringListMixin
+from .mixins.modifier import BaseAttributeModifierMixin
 
 
-class HtmxDirective(BaseDirective):
+class HtmxAttributeDirective(BaseAttributeDirective):
     prefix = 'hx-'
     
 
-class HtmxModifier(BaseModifierMixin, HtmxDirective):
+class HtmxAttributeModifier(BaseAttributeModifierMixin, HtmxAttributeDirective):
     pass
 
 
-class HtmxSpaceListDirective(SpaceDelemetedStringListMixin, HtmxDirective):
+class HtmxSpaceListAttributeDirective(SpaceDelemetedStringListMixin, HtmxAttributeDirective):
     pass
 
 
-class HtmxCommaListDirective(CommaDelemetedStringListMixin, HtmxDirective):
+class HtmxCommaListAttributeDirective(CommaDelemetedStringListMixin, HtmxAttributeDirective):
     pass
 
 
-class HtmxColonDelemetedStringDirective(DelemetedStringDirectiveMixin, HtmxDirective):
+class HtmxColonAttributeDirective(DelemetedStringDirectiveMixin, HtmxAttributeDirective):
     JOIN_DELIMETER = SPLIT_DELIMETER = ':'
 
 
-class HtmxSubstring(DelemetedSubstringDescriptorMixin, DescriptorMixin):
+class HtmxSubstring(BaseDelemetedSubstringDirective):
     pass
 
 
@@ -31,7 +31,7 @@ class HtmxCommaListSubstring(CommaDelemetedStringListMixin, HtmxSubstring):
     pass
 
 
-class HtmxSyncDirective(HtmxColonDelemetedStringDirective):
+class HtmxSyncDirective(HtmxColonAttributeDirective):
     selectors = HtmxCommaListSubstring()
     strategy = HtmxSubstring()
 
@@ -39,39 +39,39 @@ class HtmxSyncDirective(HtmxColonDelemetedStringDirective):
 class HtmxDominated(BaseDominated):
     default_directive = 'on'
 
-    get = HtmxDirective()
-    post = HtmxDirective()
-    on = HtmxModifier()
-    push_url = HtmxDirective()
-    select = HtmxCommaListDirective()
-    select_oob = HtmxCommaListDirective()
-    swap = HtmxSpaceListDirective()
-    swap_oob = HtmxDirective()
-    target = HtmxDirective()
-    trigger = HtmxCommaListDirective()
-    vals = HtmxDirective()
+    get = HtmxAttributeDirective()
+    post = HtmxAttributeDirective()
+    on = HtmxAttributeModifier()
+    push_url = HtmxAttributeDirective()
+    select = HtmxCommaListAttributeDirective()
+    select_oob = HtmxCommaListAttributeDirective()
+    swap = HtmxSpaceListAttributeDirective()
+    swap_oob = HtmxAttributeDirective()
+    target = HtmxAttributeDirective()
+    trigger = HtmxCommaListAttributeDirective()
+    vals = HtmxAttributeDirective()
 
-    boost = HtmxDirective()
-    confirm = HtmxDirective()
-    delete = HtmxDirective()
-    disable = HtmxDirective()
-    disabled_elt = HtmxCommaListDirective()
-    disinherit = HtmxSpaceListDirective()
-    encoding = HtmxDirective()
-    ext = HtmxCommaListDirective()
-    headers = HtmxDirective()
-    history = HtmxDirective()
-    history_elt = HtmxDirective()
-    include = HtmxCommaListDirective()
-    indicator = HtmxCommaListDirective()
-    inherit = HtmxSpaceListDirective()
-    params = HtmxCommaListDirective()
-    patch = HtmxDirective()
-    preserve = HtmxDirective()
-    prompt = HtmxDirective()
-    put = HtmxDirective()
-    replace_url = HtmxDirective()
-    request = HtmxDirective()
+    boost = HtmxAttributeDirective()
+    confirm = HtmxAttributeDirective()
+    delete = HtmxAttributeDirective()
+    disable = HtmxAttributeDirective()
+    disabled_elt = HtmxCommaListAttributeDirective()
+    disinherit = HtmxSpaceListAttributeDirective()
+    encoding = HtmxAttributeDirective()
+    ext = HtmxCommaListAttributeDirective()
+    headers = HtmxAttributeDirective()
+    history = HtmxAttributeDirective()
+    history_elt = HtmxAttributeDirective()
+    include = HtmxCommaListAttributeDirective()
+    indicator = HtmxCommaListAttributeDirective()
+    inherit = HtmxSpaceListAttributeDirective()
+    params = HtmxCommaListAttributeDirective()
+    patch = HtmxAttributeDirective()
+    preserve = HtmxAttributeDirective()
+    prompt = HtmxAttributeDirective()
+    put = HtmxAttributeDirective()
+    replace_url = HtmxAttributeDirective()
+    request = HtmxAttributeDirective()
     sync = HtmxSyncDirective()
-    validate = HtmxDirective()
-    vars = HtmxDirective()
+    validate = HtmxAttributeDirective()
+    vars = HtmxAttributeDirective()

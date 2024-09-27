@@ -1,5 +1,4 @@
 import inspect
-from .descriptor import DescriptorMixin
 
 
 def strip(obj, characters):
@@ -96,7 +95,7 @@ class DelemetedStringDirectiveMixin(DelemetedStringMixin):
         return self
 
 
-class DelemetedSubstringDescriptorMixin(DescriptorMixin):
+class DelemetedSubstringMixin:
 
     def current_attr(self):
         return self.instance[self.directive_position()]
@@ -106,7 +105,7 @@ class DelemetedSubstringDescriptorMixin(DescriptorMixin):
             key
             for key, obj in inspect.getmembers(
                 type(self.instance),
-                lambda o: issubclass(type(o), DelemetedSubstringDescriptorMixin)
+                lambda o: issubclass(type(o), DelemetedSubstringMixin)
             )
         ].index(self.descriptor_name)
 

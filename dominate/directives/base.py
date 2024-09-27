@@ -1,4 +1,5 @@
 from .mixins.descriptor import DescriptorMixin
+from .mixins.delemeted_string import DelemetedSubstringMixin
 
 
 class BaseDominated(DescriptorMixin):
@@ -46,6 +47,8 @@ class BaseDirective(DescriptorMixin):
         return self.current_attr() or ''
 
 
+class BaseAttributeDirective(BaseDirective):
+
     prefix = ''
     
     @property
@@ -71,3 +74,7 @@ class BaseDirective(DescriptorMixin):
         for a, v in attributes.items():
             dom_tag_obj.set_attribute(a, v, clean_pair=True)
         return self.instance
+
+
+class BaseDelemetedSubstringDirective(DelemetedSubstringMixin, BaseDirective):
+    pass

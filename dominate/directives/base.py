@@ -26,6 +26,26 @@ class BaseDominated(DescriptorMixin):
 
 class BaseDirective(DescriptorMixin):
     
+    def prepend(self, string):
+        return self.__call__(
+            self.__radd__(string)
+        )
+
+    def append(self, string):
+        return self.__call__(
+            self.__add__(string)
+        )
+
+    def __add__(self, other):
+        return str(self) + other
+
+    def __radd__(self, other):
+        return other + str(self)
+
+    def __str__(self):
+        return self.current_attr() or ''
+
+
     prefix = ''
     
     @property

@@ -46,6 +46,9 @@ class BaseDirective(DescriptorMixin):
     def __str__(self):
         return self.current_attr() or ''
 
+    def __bool__(self):
+        return bool(str(self))
+
 
 class BaseAttributeDirective(BaseDirective):
 

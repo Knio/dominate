@@ -26,7 +26,7 @@ except NameError: # py3
   unicode = str
 
 class document(tags.html):
-  tagname = 'html'
+  _tagname = 'html'
   def __init__(self, title='Dominate', doctype='<!DOCTYPE html>', *a, **kw):
     '''
     Creates a new document instance. Accepts `title` and `doctype`

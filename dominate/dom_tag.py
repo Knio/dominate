@@ -98,6 +98,21 @@ class dom_tag(object):
   alpine = x = AlpineDominated()
   htmx = hx = HtmxDominated()
 
+  @property
+  def tagname(self):
+    name = getattr(self, '_tagname', type(self).__name__)
+
+    # Workaround for python keywords and standard classes/methods
+    # (del, object, input)
+    if name[-1] == '_':
+      name = name[:-1]
+    
+    return name
+
+  @tagname.setter
+  def tagname(self, value):
+    self._tagname = value
+
   def __new__(_cls, *args, **kwargs):
     '''
     Check if bare tag is being used a a decorator
@@ -414,12 +429,7 @@ class dom_tag(object):
   def _render(self, sb, indent_level, indent_str, pretty, xhtml):
     pretty = pretty and self.is_pretty
 
-    name = getattr(self, 'tagname', type(self).__name__)
-
-    # Workaround for python keywords and standard classes/methods
-    # (del, object, input)
-    if name[-1] == '_':
-      name = name[:-1]
+    name = self.tagname
 
     # open tag
     sb.append('<')

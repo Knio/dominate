@@ -194,6 +194,13 @@ class text(dom_tag):
     return sb
 
 
+class orphan(dom_tag):
+  
+  def __enter__(self):
+    self.orphan()
+    return super().__enter__()
+
+
 def raw(s):
   '''
   Inserts a raw string into the DOM. Unsafe. Alias for text(x, escape=False)

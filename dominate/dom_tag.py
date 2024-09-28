@@ -173,6 +173,12 @@ class dom_tag(object):
       stack[-1].items.append(self)
 
 
+  def orphan(self):
+    if self._ctx:
+      self._ctx.used.add(self)
+    return self
+
+
   def __enter__(self):
     stack = dom_tag._with_contexts[_get_thread_context()]
     stack.append(dom_tag.frame(self, [], set()))

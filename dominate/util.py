@@ -194,7 +194,7 @@ class text(dom_tag):
     return sb
 
 
-class orphan(dom_tag):
+class orphan(container):
   
   def __enter__(self):
     self.orphan()

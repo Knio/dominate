@@ -88,7 +88,7 @@ Developed By
 Git repository located at
 [github.com/Knio/dominate](//github.com/Knio/dominate)
 
-Current fork (with directives feature) located at
+Current fork (with directives feature and more) located at
 [github.com/nikalexis/dominate](//github.com/nikalexis/dominate)
 
 Examples
@@ -433,6 +433,61 @@ print(para)
 <p>Have a look at our <a href="/products">other products</a></p>
 ```
 
+When you don't want to auto-include a specific element you can use the `.orphan()` command on an element.
+
+```python
+from dominate.tags import p, span
+from dominate.util import text
+
+with p() as para:
+    text('This text will be included only.')
+    one_orphaned_span = span('This span will not be included in the parent paragraph.').orphan()
+    # you can use `one_orphaned_span` variable below but it will not be added in the dom
+    # except you decide to include it by using e.g. `any_elememt.add(one_orphaned_span)`
+
+print(para)
+```
+Paragraph contents:
+```html
+<p>This text will be included only.</p>
+```
+
+You can also use the `orphan` context manager. All tags inside that context will not be included anywhere in the dom tree.
+
+```python
+from dominate.tags import p, span
+from dominate.util import text, orphan
+
+with p()a para:
+    text('This text will be included only.')
+    with orphan() as my_orphans:
+        one_orphaned_span = span('This span will not be included in the parent paragraph.').orphan()
+        # you can use `one_orphaned_span` variable below but it will not be added in the dom
+        # except you decide to include it by using e.g. `any_elememt.add(one_orphaned_span)`
+        with span() as second_orphaned_span:
+            text('Neither this text will be included in the paragraph.')
+        # you can use `second_orphaned_span` variable below but it will not be added in the dom
+        # except you decide to include it by using e.g. `any_elememt.add(second_orphaned_span)`
+
+print('Paragraph contents:')
+print(para)
+print('My orphans:')
+print(my_orphans)
+
+# Orphans acts as `container`s, but they are not included anywhere
+# except you decide to include them by using e.g. `any_elememt.add(my_orphans)`
+
+```
+Paragraph contents:
+```html
+<p>This text will be included only.</p>
+```
+Orphans contents:
+```html
+<span>This span will not be included in the parent paragraph.</span>
+<span>Neither this text will be included in the paragraph.</span>
+```
+
 
 Decorators
 ----------
@@ -614,6 +669,8 @@ with div('mx-3') as my_div:
     my_div.klass('row') # reset
     this().klass = 'row' # reset
     this().klass.add('align-items-start') # add
+    this().klass.replace('align-items-start', 'align-items-end') # replace
+    this().klass.exists('align-items-end') # returns True
     this().klass += 'another-class' # add
     this().klass += ('one', 'two', 'three', 'four') # add
     this().klass -= 'another-class' # remove

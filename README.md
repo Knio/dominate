@@ -461,7 +461,7 @@ from dominate.util import text, orphan
 with p()a para:
     text('This text will be included only.')
     with orphan() as my_orphans:
-        one_orphaned_span = span('This span will not be included in the parent paragraph.').orphan()
+        one_orphaned_span = span('This span will not be included in the parent paragraph.')
         # you can use `one_orphaned_span` variable below but it will not be added in the dom
         # except you decide to include it by using e.g. `any_elememt.add(one_orphaned_span)`
         with span() as second_orphaned_span:

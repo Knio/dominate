@@ -458,7 +458,7 @@ You can also use the `orphan` context manager. All tags inside that context will
 from dominate.tags import p, span
 from dominate.util import text, orphan
 
-with p()a para:
+with p() as para:
     text('This text will be included only.')
     with orphan() as my_orphans:
         one_orphaned_span = span('This span will not be included in the parent paragraph.')

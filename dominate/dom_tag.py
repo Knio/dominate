@@ -174,6 +174,11 @@ class dom_tag(object):
 
 
   def orphan(self):
+    if self.parent:
+      if self in self.parent.children:
+        self.parent.children.remove(self)
+      self.parent = None
+
     if self._ctx:
       self._ctx.used.add(self)
     return self

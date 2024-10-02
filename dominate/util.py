@@ -148,6 +148,16 @@ class container(dom_tag):
     return sb
 
 
+class orphan(container):
+  '''
+  This special container will not belong to a parent by default (will be orphan).
+  You can .add(...) this container into another dom_tag element to auto-remove orphanship.
+  '''
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    self.orphan()
+
+
 class lazy(dom_tag):
   '''
   delays function execution until rendered
@@ -192,13 +202,6 @@ class text(dom_tag):
   def _render(self, sb, *a, **kw):
     sb.append(self.text)
     return sb
-
-
-class orphan(container):
-  
-  def __enter__(self):
-    self.orphan()
-    return super().__enter__()
 
 
 def raw(s):

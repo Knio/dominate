@@ -25,7 +25,7 @@ import re
 from .directives.alpine import AlpineDominated
 from .directives.htmx import HtmxDominated
 
-from .dom_tag import dom_tag, get_current
+from .dom_tag import dom_tag, get_current, _get_thread_context
 
 from . import tags
 
@@ -216,6 +216,63 @@ class C:
   def __init__(self, *args, **kwargs):
     self.args = args
     self.kwargs = kwargs
+
+
+class modifier:
+  '''
+  You can decorate any function of your code that applies changes on another dom object.
+  To apply the modifier you can use the `&` operator
+  or `.add()` it as an item or just calling the function withing a context manager.
+  '''
+  def __init__(self, func):
+    self.func = func
+    self.args = self.kwargs = None
+
+    self._ctx = None
+
+  def _add_to_ctx(self):
+    stack = dom_tag._with_contexts.get(_get_thread_context())
+    if stack:
+      self._ctx = stack[-1]
+      stack[-1].items.append(self)
+
+  def orphan(self):
+    if self._ctx:
+      self._ctx.used.add(self)
+    return self
+
+  def __rand__(self, element):
+    if not isinstance(element, dom_tag):
+      ValueError('Modifier can only be used in `dom_tag` instances.')
+
+    if self.args is None or self.kwargs is None:
+      ValueError('You need to call the modifier first.')
+
+    with element:
+      self.func(*self.args, **self.kwargs)
+
+    if self._ctx:
+      self._ctx.used.add(self)
+
+    return element
+  
+  def apply(self):
+    this() & self
+
+  def __call__(self, *args, **kwargs):
+    self._add_to_ctx()
+    self.args = args
+    self.kwargs = kwargs
+    return self
+
+
+def apply(*modifiers):
+  '''
+  Mass apply modifiers on an object.
+  Must be called inside a `with` statement (context manager).
+  '''
+  for m in modifiers:
+    this() & m
 
 
 this = get_current

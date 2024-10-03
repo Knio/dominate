@@ -198,10 +198,11 @@ class dom_tag(object):
   def __exit__(self, type, value, traceback):
     thread_id = _get_thread_context()
     stack = dom_tag._with_contexts[thread_id]
-    frame = stack.pop()
+    frame = stack[-1]
     for item in frame.items:
       if item in frame.used: continue
       self.add(item)
+    stack.pop()
     if not stack:
       del dom_tag._with_contexts[thread_id]
 
@@ -308,6 +309,9 @@ class dom_tag(object):
           s.used.add(obj)
         self.children.append(obj)
         obj.parent = self
+
+      elif isinstance(obj, util.modifier):
+        self & obj
 
       elif isinstance(obj, dict):
         for attr, value in obj.items():

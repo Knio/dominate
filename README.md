@@ -551,6 +551,106 @@ print(greeting('Bob'))
 </div>
 ```
 
+Modifiers
+---------
+
+Another useful utility is the `util.modifier` decorator object.
+You can decorate any function of your code that applies changes on another dom object.
+To apply the modifier you can use `&` operator or `.add()` it as an item or just calling the function withing a context manager.
+
+```python
+from dominate.util import modifier
+
+@modifier
+def add_ids_in_children(prefix):
+    for i, child in enumerate(this().children):
+        child['id'] = f'{prefix}-{i}'
+
+@div()
+def two_paragraphs():
+    p('First paragraph')
+    p('Second paragraph')
+
+# You can also chain operators, like `dom_object & modifier_one() & modifier_two()`
+two_paragraphs_with_ids = two_paragraphs() & add_ids_in_children(prefix='paragraph')
+print(two_paragraphs_with_ids)
+```
+```html
+<div>
+  <p id="paragraph-0">First paragraph</p>
+  <p id="paragraph-1">Second paragraph</p>
+</div>
+```
+
+They also work by adding them as items.
+
+```python
+# be careful about the order, modifier are applied in the order specified in the *args list.
+
+three_paragraphs = div(
+    p('First paragraph'),
+    p('Second paragraph'),
+    add_ids_in_children(prefix='paragraph-a'),
+    p('Third paragraph without id'),
+)
+
+four_paragraphs = div(
+    p('First paragraph'),
+    p('Second paragraph'),
+    p('Third paragraph'),
+)
+four_paragraphs.add(
+    add_ids_in_children(prefix='paragraph-b'), # adding ids on every child present
+    p('Forth paragraph without id'), # adding another child after the modifier
+) 
+
+print(three_paragraphs)
+print(four_paragraphs)
+```
+
+```html
+<div>
+  <p id="paragraph-a-0">First paragraph</p>
+  <p id="paragraph-a-1">Second paragraph</p>
+  <p>Third paragraph without id</p>
+</div>
+
+<div>
+  <p id="paragraph-b-0">First paragraph</p>
+  <p id="paragraph-b-1">Second paragraph</p>
+  <p id="paragraph-b-2">Third paragraph</p>
+  <p>Forth paragraph without id</p>
+</div>
+```
+
+They also work in context managers.
+
+```python
+with two_paragraphs() as tp:
+    # will apply when `with` __exit__
+    add_ids_in_children(prefix='paragraph')
+
+    # won't apply until explicitly call to_be_added.apply()
+    to_be_added = add_ids_in_children(prefix='paragraph').orphan()
+
+    # will apply immediately
+    add_ids_in_children(prefix='paragraph').apply()
+```
+
+There is also a function `util.apply` that can be useful inside context managers, to mass deploy modifiers (with immidiate apply).
+
+```python
+from dominate.util import apply
+
+with div():
+    apply(
+        modifier_one(),
+        modifier_two(),
+        modifier_three(),
+    )
+```
+
+
 Creating Documents
 ------------------
 

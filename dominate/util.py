@@ -259,11 +259,15 @@ class modifier:
   def apply(self):
     this() & self
 
+  def as_ready(self, *args, **kwargs):
+    m = modifier(self.func)
+    m.args = args
+    m.kwargs = kwargs
+    m._add_to_ctx()
+    return m
+
   def __call__(self, *args, **kwargs):
-    self._add_to_ctx()
-    self.args = args
-    self.kwargs = kwargs
-    return self
+    return self.as_ready(*args, **kwargs)
 
 
 def apply(*modifiers):

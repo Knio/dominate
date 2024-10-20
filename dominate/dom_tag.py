@@ -189,6 +189,13 @@ class dom_tag(object):
     return self.parent is None
   
 
+  def inner(self, orphan=True):
+    if orphan:
+      self.orphan()
+    
+    return util.container(*self.children)
+
+
   def __enter__(self):
     stack = dom_tag._with_contexts[_get_thread_context()]
     stack.append(dom_tag.frame(self, [], set()))

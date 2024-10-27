@@ -74,3 +74,6 @@ class document(tags.html):
 
   def __repr__(self):
     return '<dominate.document "%s">' % self.title
+
+  def __bool__(self):
+    return bool(self.doctype) or super().__bool__()

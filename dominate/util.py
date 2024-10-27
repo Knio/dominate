@@ -147,6 +147,9 @@ class container(dom_tag):
       sb.append(indent_str * (indent_level - 1))
     return sb
 
+  def __bool__(self):
+    return any(self.children)
+
 
 class orphan(container):
   '''
@@ -183,6 +186,9 @@ class lazy(dom_tag):
     r = self.func(*self.args, **self.kwargs)
     sb.append(str(r))
 
+  def __bool__(self):
+    return self.func.__bool__(self)
+
 
 class text(dom_tag):
   '''
@@ -202,6 +208,9 @@ class text(dom_tag):
   def _render(self, sb, *a, **kw):
     sb.append(self.text)
     return sb
+
+  def __bool__(self):
+    return bool(self.text)
 
 
 def raw(s):

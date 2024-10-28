@@ -24,6 +24,7 @@ import re
 
 from .directives.alpine import AlpineDominated
 from .directives.htmx import HtmxDominated
+from .directives.hyperscript import HyperscriptDominated
 
 from .dom_tag import dom_tag, get_current, _get_thread_context
 
@@ -293,3 +294,5 @@ this = get_current
 alpine = x = AlpineDominated()
 
 htmx = hx = HtmxDominated()
+
+hyperscript = hs = HyperscriptDominated()

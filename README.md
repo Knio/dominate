@@ -753,6 +753,7 @@ Currently the following directives are available:
 * Javascript magic libraries
   * [Alpine.js](https://alpinejs.dev/start-here)
   * [HTMX](https://htmx.org/docs/)
+  * [_Hyperscript](https://hyperscript.org/docs/)
 
 ### HTML `class` attribute examples
 
@@ -903,6 +904,38 @@ with div('mx-3') as my_div:
     hx.sync = '...'
     hx.validate = '...'
     hx.vars = '...'
+```
+
+### Javascript `_Hyperscript` library examples
+
+```python
+from dominate.all import *
+
+# Set a _Hyperscript script within a `with` statement
+with button():
+    this().hyperscript.script = 'on click toggle .red on me'
+    # hs directive is an alias to htmx
+    this().hs.script = 'on click toggle .red on me'
+    # using this(). is optional for hx / htmx directive
+    hs.script = 'on click toggle .red on me'
+
+# Set a _Hyperscript script as an element attribute
+button(
+    hyperscript='on click wait 3s then log "Clicked before 3 seconds!"'
+    # hs shortcut also works
+    hs='on click wait 3s then log "Clicked before 3 seconds!"'
+)
+
+# Please note: Under the surface, a script="..." html attribute will be set.
+# Of course, you can set it directly on the element, but you cannot have the
+# goodies provided by the directive usage, here is a direct example:
+
+button(
+    script='on click wait 3s then log "Clicked before 3 seconds!"'
+    # Also, data-script works in the same way
+    data_script='on click wait 3s then log "Clicked before 3 seconds!"'
+)
+
 ```
 
 ### Bonus: Inline directives and the `C` helper

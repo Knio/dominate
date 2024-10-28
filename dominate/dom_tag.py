@@ -32,6 +32,7 @@ from .directives.mixins.modifier import BaseAttributeModifierMixin
 from .directives.attrs import KlassDirective, StyleDirective
 from .directives.alpine import AlpineDominated
 from .directives.htmx import HtmxDominated
+from .directives.hyperscript import HyperscriptDominated
 
 try:
   # Python 3
@@ -97,6 +98,7 @@ class dom_tag(object):
 
   alpine = x = AlpineDominated()
   htmx = hx = HtmxDominated()
+  hyperscript = hs = HyperscriptDominated()
 
   @property
   def tagname(self):

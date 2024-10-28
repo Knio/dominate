@@ -37,6 +37,13 @@ class BaseDirective(DescriptorMixin):
             self.__add__(string)
         )
 
+    def delete(self, raise_if_not_found=False):
+        try:
+            del self.get_dom_tag().attributes[self.full_directive()]
+        except:
+            if raise_if_not_found:
+                raise
+
     def __add__(self, other):
         return str(self) + other
 

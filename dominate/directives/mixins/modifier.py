@@ -15,5 +15,8 @@ class BaseAttributeModifierMixin:
         self.__call__(value)
         return self
 
+    def __delitem__(self, key):
+        return self[key].delete()
+
     def full_directive(self):
         return super().full_directive() + f"{self.separator}{self.modifier}"

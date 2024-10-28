@@ -44,6 +44,9 @@ class DescriptorMixin:
     def __set__(self, instance, value):
         self.copied_self(instance).__call__(value)
 
+    def __delete__(self, instance):
+        self.copied_self(instance).delete()
+
     def get_dom_tag(self):
         from ...dom_tag import get_current, dom_tag
         

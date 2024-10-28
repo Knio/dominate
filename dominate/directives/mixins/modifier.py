@@ -6,11 +6,12 @@ class BaseAttributeModifierMixin:
     modifier = None
 
     def __getitem__(self, key):
+        self = self.copied_self(self.instance, f"{self.separator}{key}")
         self.modifier = key
         return self
 
     def __setitem__(self, key, value):
-        self.modifier = key
+        self = self[key]
         self.__call__(value)
         return self
 

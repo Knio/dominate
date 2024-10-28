@@ -23,14 +23,16 @@ class DescriptorMixin:
 
         self.fixed_name = fixed_name
 
-    def copied_self(self, instance):
-        
+    def descriptor_key(self):
+        return '__' + self.descriptor_name
+    
+    def copied_self(self, instance, append_key=''):
         try:
-            return instance.__dict__['__' + self.descriptor_name]
+            return instance.__dict__[self.descriptor_key() + append_key]
         except KeyError:
             copied_self = copy(self)
             copied_self.instance = instance
-            instance.__dict__['__' + self.descriptor_name] = copied_self
+            instance.__dict__[self.descriptor_key() + append_key] = copied_self
             return copied_self
 
     def __get__(self, instance, owner):

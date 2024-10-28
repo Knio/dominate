@@ -41,3 +41,13 @@ class DescriptorMixin:
 
     def __set__(self, instance, value):
         self.copied_self(instance).__call__(value)
+
+    def get_dom_tag(self):
+        from ...dom_tag import get_current, dom_tag
+        
+        if self.instance is None:
+            return get_current()
+        elif isinstance(self.instance, dom_tag):
+            return self.instance
+        else:
+            return self.instance.get_dom_tag()

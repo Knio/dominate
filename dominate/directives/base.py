@@ -67,15 +67,12 @@ class BaseAttributeDirective(BaseDirective):
         }
 
     def current_attr(self):
-        from ..dom_tag import get_current, dom_tag
-        return (self.instance if isinstance(self.instance, dom_tag) else get_current()).attributes.get(self.full_directive(), None)
+        return self.get_dom_tag().attributes.get(self.full_directive(), None)
 
     def __call__(self, value):
-        from ..dom_tag import get_current
         attributes = self.make_attr(value)
-        dom_tag_obj = (self.instance.instance if isinstance(self.instance, BaseDominated) else self.instance) or get_current()
         for a, v in attributes.items():
-            dom_tag_obj.set_attribute(a, v, clean_pair=True)
+            self.get_dom_tag().set_attribute(a, v, clean_pair=True)
         return self.instance
 
 

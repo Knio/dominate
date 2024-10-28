@@ -30,3 +30,8 @@ class BaseAttributeModifierMixin:
                 if k.startswith(prefix)
             ]
 
+    def __call__(self, value):
+        if self.modifier:
+            return super().__call__(value)
+        else:
+            raise AttributeError(f"Cannot call {self.__class__.__name__} without a modifier")

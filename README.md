@@ -750,6 +750,8 @@ Currently the following directives are available:
 * HTML tag attributes
   * `class`
   * `style`
+  * `data`
+  * `aria`
 * Javascript magic libraries
   * [Alpine.js](https://alpinejs.dev/start-here)
   * [HTMX](https://htmx.org/docs/)
@@ -809,6 +811,34 @@ with div('mx-3') as my_div:
     # you can do any kind of magic using this library and then set back the final css
     css.setProperty('font-style', 'italic', 'important')
     this().style.css = css
+```
+
+### HTML `data` and `aria` attribute examples
+
+```python
+from dominate.all import *
+
+with div('mx-3') as my_div:
+
+    # Set data attribute
+    this().data['key-with-hyphen'] = 'value' # sets data-key-with-hyphen="value"
+    # dataset is an alias of data
+    this().dataset['key-with-hyphen'] = 'value' # sets data-key-with-hyphen="value"
+    # Set aria attribute
+    this().aria['label'] = 'value' # sets aria-label="value"
+
+    # delete attributes
+    del this().data['key-with-hyphen'] # remove
+    del this().aria['label'] # remove
+
+    # prepend and append values
+    this().data['key'] = 'value' # sets data-key="value"
+    this().data['key'].prepend('prefix-') # updates to data-key="prefix-value"
+    this().data['key'].append('-suffix') # updates to data-key="prefix-value-suffix"
+    this().data['key'] += '-suffixmore' # updates to data-key="prefix-value-suffix-suffixmore"
+
+    # get all data keys declared
+    this().data.keys() # returns ['key']
 ```
 
 ### Javascript `Alpine.js` library examples

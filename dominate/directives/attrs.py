@@ -2,6 +2,7 @@ import cssutils
 
 from .base import BaseAttributeDirective
 from .mixins.delemeted_string import SpaceDelemetedStringListMixin
+from .mixins.modifier import BaseAttributeModifierMixin
 
 
 class KlassDirective(SpaceDelemetedStringListMixin, BaseAttributeDirective):
@@ -88,3 +89,13 @@ class StyleDirective(BaseAttributeDirective):
 
     def __call__(self, **properties):
         super().__call__(self.reset_style(**properties))
+
+
+class DataDirective(BaseAttributeModifierMixin, BaseAttributeDirective):
+
+    separator = "-"
+
+
+class AriaDirective(BaseAttributeModifierMixin, BaseAttributeDirective):
+
+    separator = "-"

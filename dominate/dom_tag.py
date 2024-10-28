@@ -29,7 +29,7 @@ from contextvars import ContextVar
 
 from .directives.base import BaseDirective, BaseDominated
 from .directives.mixins.modifier import BaseAttributeModifierMixin
-from .directives.attrs import KlassDirective, StyleDirective
+from .directives.attrs import KlassDirective, StyleDirective, DataDirective, AriaDirective
 from .directives.alpine import AlpineDominated
 from .directives.htmx import HtmxDominated
 from .directives.hyperscript import HyperscriptDominated
@@ -95,6 +95,8 @@ class dom_tag(object):
 
   klass = cls = class_ = KlassDirective()
   style = StyleDirective()
+  dataset = data = DataDirective()
+  aria = AriaDirective()
 
   alpine = x = AlpineDominated()
   htmx = hx = HtmxDominated()

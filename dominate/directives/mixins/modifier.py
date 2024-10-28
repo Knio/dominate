@@ -20,3 +20,13 @@ class BaseAttributeModifierMixin:
 
     def full_directive(self):
         return super().full_directive() + f"{self.separator}{self.modifier}"
+
+    def keys(self):
+        if self.modifier is None:
+            prefix = super().full_directive() + self.separator
+            return [
+                k[len(prefix):]
+                for k in self.get_dom_tag().attributes
+                if k.startswith(prefix)
+            ]
+

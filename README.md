@@ -83,10 +83,13 @@ Developed By
 * Tom Flanagan - <tom@zkpq.ca>
 * Jake Wharton - <jakewharton@gmail.com>
 * [Brad Janke](//github.com/bradj)
+* [Nikalexis Nikos](//github.com/nikalexis)
 
 Git repository located at
 [github.com/Knio/dominate](//github.com/Knio/dominate)
 
+Current fork (with directives feature and more) located at
+[github.com/nikalexis/dominate](//github.com/nikalexis/dominate)
 
 Examples
 ========
@@ -129,6 +132,7 @@ For attributes `class` and `for` which conflict with Python's [reserved keywords
 |cls | fr |
 |className|htmlFor|
 |class_name|html_for|
+|klass|phor|
 
 
 ```python
@@ -429,6 +433,61 @@ print(para)
 <p>Have a look at our <a href="/products">other products</a></p>
 ```
 
+When you don't want to auto-include a specific element you can use the `.orphan()` command on an element.
+
+```python
+from dominate.tags import p, span
+from dominate.util import text
+
+with p() as para:
+    text('This text will be included only.')
+    one_orphaned_span = span('This span will not be included in the parent paragraph.').orphan()
+    # you can use `one_orphaned_span` variable below but it will not be added in the dom
+    # except you decide to include it by using e.g. `any_elememt.add(one_orphaned_span)`
+
+print(para)
+```
+Paragraph contents:
+```html
+<p>This text will be included only.</p>
+```
+
+You can also use the `orphan` context manager. All tags inside that context will not be included anywhere in the dom tree.
+
+```python
+from dominate.tags import p, span
+from dominate.util import text, orphan
+
+with p() as para:
+    text('This text will be included only.')
+    with orphan() as my_orphans:
+        one_orphaned_span = span('This span will not be included in the parent paragraph.')
+        # you can use `one_orphaned_span` variable below but it will not be added in the dom
+        # except you decide to include it by using e.g. `any_elememt.add(one_orphaned_span)`
+        with span() as second_orphaned_span:
+            text('Neither this text will be included in the paragraph.')
+        # you can use `second_orphaned_span` variable below but it will not be added in the dom
+        # except you decide to include it by using e.g. `any_elememt.add(second_orphaned_span)`
+
+print('Paragraph contents:')
+print(para)
+print('My orphans:')
+print(my_orphans)
+
+# Orphans acts as `container`s, but they are not included anywhere
+# except you decide to include them by using e.g. `any_elememt.add(my_orphans)`
+
+```
+Paragraph contents:
+```html
+<p>This text will be included only.</p>
+```
+Orphans contents:
+```html
+<span>This span will not be included in the parent paragraph.</span>
+<span>Neither this text will be included in the paragraph.</span>
+```
+
 
 Decorators
 ----------
@@ -491,6 +550,106 @@ print(greeting('Bob'))
     <p>Hello Bob</p>
 </div>
 ```
+
+Modifiers
+---------
+
+Another useful utility is the `util.modifier` decorator object.
+You can decorate any function of your code that applies changes on another dom object.
+To apply the modifier you can use `&` operator or `.add()` it as an item or just calling the function withing a context manager.
+
+```python
+from dominate.util import modifier
+
+@modifier
+def add_ids_in_children(prefix):
+    for i, child in enumerate(this().children):
+        child['id'] = f'{prefix}-{i}'
+
+@div()
+def two_paragraphs():
+    p('First paragraph')
+    p('Second paragraph')
+
+# You can also chain operators, like `dom_object & modifier_one() & modifier_two()`
+two_paragraphs_with_ids = two_paragraphs() & add_ids_in_children(prefix='paragraph')
+print(two_paragraphs_with_ids)
+```
+```html
+<div>
+  <p id="paragraph-0">First paragraph</p>
+  <p id="paragraph-1">Second paragraph</p>
+</div>
+```
+
+They also work by adding them as items.
+
+```python
+# be careful about the order, modifier are applied in the order specified in the *args list.
+
+three_paragraphs = div(
+    p('First paragraph'),
+    p('Second paragraph'),
+    add_ids_in_children(prefix='paragraph-a'),
+    p('Third paragraph without id'),
+)
+
+four_paragraphs = div(
+    p('First paragraph'),
+    p('Second paragraph'),
+    p('Third paragraph'),
+)
+four_paragraphs.add(
+    add_ids_in_children(prefix='paragraph-b'), # adding ids on every child present
+    p('Forth paragraph without id'), # adding another child after the modifier
+) 
+
+print(three_paragraphs)
+print(four_paragraphs)
+```
+
+```html
+<div>
+  <p id="paragraph-a-0">First paragraph</p>
+  <p id="paragraph-a-1">Second paragraph</p>
+  <p>Third paragraph without id</p>
+</div>
+
+<div>
+  <p id="paragraph-b-0">First paragraph</p>
+  <p id="paragraph-b-1">Second paragraph</p>
+  <p id="paragraph-b-2">Third paragraph</p>
+  <p>Forth paragraph without id</p>
+</div>
+```
+
+They also work in context managers.
+
+```python
+with two_paragraphs() as tp:
+    # will apply when `with` __exit__
+    add_ids_in_children(prefix='paragraph')
+
+    # won't apply until explicitly call to_be_added.apply()
+    to_be_added = add_ids_in_children(prefix='paragraph').orphan()
+
+    # will apply immediately
+    add_ids_in_children(prefix='paragraph').apply()
+```
+
+There is also a function `util.apply` that can be useful inside context managers, to mass deploy modifiers (with immidiate apply).
+
+```python
+from dominate.util import apply
+
+with div():
+    apply(
+        modifier_one(),
+        modifier_two(),
+        modifier_three(),
+    )
+```
+
 
 Creating Documents
 ------------------
@@ -581,3 +740,256 @@ print(circle(stroke_width=5))
 <circle stroke-width="5"></circle>
 ```
 
+Using directives
+----------------
+
+Directives act as helpers to build a specific attribute of a DOM tag.
+
+Currently the following directives are available:
+
+* HTML tag attributes
+  * `class`
+  * `style`
+  * `data`
+  * `aria`
+* Javascript magic libraries
+  * [Alpine.js](https://alpinejs.dev/start-here)
+  * [HTMX](https://htmx.org/docs/)
+  * [_Hyperscript](https://hyperscript.org/docs/)
+
+### HTML `class` attribute examples
+
+```python
+from dominate.all import *
+
+with div('mx-3') as my_div:
+
+    # this() is a special function alias to get_current()
+    # returning always the object declared in the closest `with` clause above
+    
+    # Add / remove / reset class(es) attribute
+    my_div.klass += 'my-5' # add
+    my_div.klass('row') # reset
+    this().klass = 'row' # reset
+    this().klass.add('align-items-start') # add
+    this().klass.replace('align-items-start', 'align-items-end') # replace
+    this().klass.exists('align-items-end') # returns True
+    this().klass += 'another-class' # add
+    this().klass += ('one', 'two', 'three', 'four') # add
+    this().klass -= 'another-class' # remove
+    # you can use .class_
+    this().class_.remove('one', 'two') # remove
+    # you can use .cls
+    this().cls -= ('three', 'four') # remove
+```
+
+### HTML `style` attribute examples
+
+```python
+from dominate.all import *
+
+with div('mx-3') as my_div:
+
+    # Add / remove / replace / reset style(s) attribute
+    # all underscore (_) chars are converted to hyphen (-) chars ONLY when python dict keys are used
+    # e.g. below background_color will be converted to background-color
+    this().style.add(background_color='pink', font_style='italic') # add or replace existing
+    this().style.add(color='white') # add or replace existing
+    this().style.add_extra(color='black') # add
+    this().style['font-weight'] = ('bold', '!important') # add or replace existing
+    this().style += dict(font_weight='normal') # add or replace existing
+    this().style -= 'font-weight' # remove
+    this().style.reset(font_weight='normal') # reset
+    del this().style['font-weight'] # remove
+    this().style = dict(background_color='lime') # reset
+    # underscore will not be replaced to a hyphen when is passed as a string
+    this().style['font_weight'] = 'wrong_css_hyphen' # add or replace existing
+    this().style(**{'font_weight': 'normal'}) # add or replace existing
+
+    # css property is using the ccsutils library for advanced methods
+    css = this().style.css
+    # you can do any kind of magic using this library and then set back the final css
+    css.setProperty('font-style', 'italic', 'important')
+    this().style.css = css
+```
+
+### HTML `data` and `aria` attribute examples
+
+```python
+from dominate.all import *
+
+with div('mx-3') as my_div:
+
+    # Set data attribute
+    this().data['key-with-hyphen'] = 'value' # sets data-key-with-hyphen="value"
+    # dataset is an alias of data
+    this().dataset['key-with-hyphen'] = 'value' # sets data-key-with-hyphen="value"
+    # Set aria attribute
+    this().aria['label'] = 'value' # sets aria-label="value"
+
+    # delete attributes
+    del this().data['key-with-hyphen'] # remove
+    del this().aria['label'] # remove
+
+    # prepend and append values
+    this().data['key'] = 'value' # sets data-key="value"
+    this().data['key'].prepend('prefix-') # updates to data-key="prefix-value"
+    this().data['key'].append('-suffix') # updates to data-key="prefix-value-suffix"
+    this().data['key'] += '-suffixmore' # updates to data-key="prefix-value-suffix-suffixmore"
+
+    # get all data keys declared
+    this().data.keys() # returns ['key']
+```
+
+### Javascript `Alpine.js` library examples
+
+```python
+from dominate.all import *
+
+with div('mx-3') as my_div:
+
+    # Alpine.js directives
+    this().x.init = 'console.log("Testing alpine directive");'
+    # x directive is an alias to alpine
+    # you also use it as a callable
+    alpine.init('console.log("Testing alpine directive");')
+
+    with button('Click me to create an alert'):
+        # using this(). is optional for x / alpine directive
+        x.on['click'] = 'alert("Alert!");'
+        # x directive is an alias to alpine
+        alpine.on['click'] = 'alert("Alert!");'
+    
+    # all Alpine.js directives supported:
+    x.data = '...'
+    x.init = '...'
+    x.show = '...'
+    x.bind['...'] = '...'
+    x.on['...'] = '...'
+    x.text = '...'
+    x.html = '...'
+    x.model = '...'
+    x.modelable = '...'
+    x.for_ = '...'
+    x.transition = '...'
+    x.effect = '...'
+    x.ignore = '...'
+    x.ref = '...'
+    x.cloak = '...'
+    x.teleport = '...'
+    x.if_ = '...'
+    x.id = '...'
+```
+
+### Javascript `HTMX` library examples
+
+```python
+from dominate.all import *
+
+with div('mx-3') as my_div:
+
+    # HTMX directives
+    with button('Click me to replace a div using htmx'):
+        # set multiple htmx attributes together
+        this().hx.get('/replace_div/').trigger('click').target('closest .div').swap('innerHTML')
+        # hx directive is an alias to htmx
+        this().htmx.get('/replace_div_2/') # reset hx-get attribute
+        # using this(). is optional for hx / htmx directive
+        hx.swap = 'outerHTML' # reset swap
+
+    # all HTMX directives supported:
+    hx.get = '...'
+    hx.post = '...'
+    hx.on['...'] = '...'
+    hx.push_url = '...'
+    hx.select = '...'
+    hx.select_oob = '...'
+    hx.swap = '...'
+    hx.swap_oob = '...'
+    hx.target = '...'
+    hx.trigger = '...'
+    hx.vals = '...'
+
+    hx.boost = '...'
+    hx.confirm = '...'
+    hx.delete = '...'
+    hx.disable = '...'
+    hx.disabled_elt = '...'
+    hx.disinherit = '...'
+    hx.encoding = '...'
+    hx.ext = '...'
+    hx.headers = '...'
+    hx.history = '...'
+    hx.history_elt = '...'
+    hx.include = '...'
+    hx.indicator = '...'
+    hx.inherit = '...'
+    hx.params = '...'
+    hx.patch = '...'
+    hx.preserve = '...'
+    hx.prompt = '...'
+    hx.put = '...'
+    hx.replace_url = '...'
+    hx.request = '...'
+    hx.sync = '...'
+    hx.validate = '...'
+    hx.vars = '...'
+```
+
+### Javascript `_Hyperscript` library examples
+
+```python
+from dominate.all import *
+
+# Set a _Hyperscript script within a `with` statement
+with button():
+    this().hyperscript.script = 'on click toggle .red on me'
+    # hs directive is an alias to htmx
+    this().hs.script = 'on click toggle .red on me'
+    # using this(). is optional for hx / htmx directive
+    hs.script = 'on click toggle .red on me'
+
+# Set a _Hyperscript script as an element attribute
+button(
+    hyperscript='on click wait 3s then log "Clicked before 3 seconds!"'
+    # hs shortcut also works
+    hs='on click wait 3s then log "Clicked before 3 seconds!"'
+)
+
+# Please note: Under the surface, a script="..." html attribute will be set.
+# Of course, you can set it directly on the element, but you cannot have the
+# goodies provided by the directive usage, here is a direct example:
+
+button(
+    script='on click wait 3s then log "Clicked before 3 seconds!"'
+    # Also, data-script works in the same way
+    data_script='on click wait 3s then log "Clicked before 3 seconds!"'
+)
+
+```
+
+### Bonus: Inline directives and the `C` helper
+
+All directives and their attributes / functions / modifiers can be used as inline parameters directly on the component function, using a two-dashed (`__`) separator. This way, you can set almost every property during the creation of the dom object, avoding complex code and `with` statements.
+
+```python
+from dominate.all import *
+
+button(
+    'Click me to create an alert',
+    x__on__click='alert("This is another way to create directives inline!");',
+    # Also more complicated, using the `C` helper class
+    # to pass any *args and/or **kwargs on functions
+    klass__add=C('text-center', 'text-danger'), # passed as *args
+    style__add=C(font_style='italic'), # passed as *kwargs
+)
+```
+
+Quick imports
+-------------
+
+If you want an easy way to import all available tags, document and directives you can use the following:
+
+```python
+from dominate.all import *
+```

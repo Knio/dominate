@@ -1130,3 +1130,13 @@ class comment(html_tag):
     sb.append('>')
 
     return sb
+
+
+# Templating
+class template(html_tag):
+  '''
+  The template element serves as a mechanism for holding HTML fragments,
+  which can either be used later via JavaScript or generated immediately into shadow DOM.
+  The template element represents a browser-based template object in a html, that is not rendered.
+  '''
+  pass

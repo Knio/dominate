@@ -372,8 +372,11 @@ class dom_tag(object):
     for attribute, value in sorted(self.attributes.items()):
       if value in (False, None):
         continue
-      val = unicode(value) if isinstance(value, util.text) and not value.escape else util.escape(unicode(value), True)
-      sb.append(' %s="%s"' % (attribute, val))
+      elif isinstance(value, util.novalue):
+        sb.append(' %s' % (attribute, ))
+      else:
+        val = unicode(value) if isinstance(value, util.text) and not value.escape else util.escape(unicode(value), True)
+        sb.append(' %s="%s"' % (attribute, val))
 
     sb.append(' />' if self.is_single and xhtml else '>')
 
@@ -440,12 +443,17 @@ class dom_tag(object):
       'phor': 'for',
     }.get(attribute, attribute)
 
+    # A list of attribute prefixes which mean that underscores should be converted to dashes
+    # This allows attributes like data_username or hx_post become data-username and hx-post
+    # hx_ prefix is for HTMX and up_ prefix is for Unpoly
+    SPECIAL_PREFIX_LIST = ('data_', 'aria_', 'up_', 'hx_')
+
     # Workaround for Python's reserved words
     if attribute[0] == '_':
       attribute = attribute[1:]
 
     # Workaround for dash
-    special_prefix = any([attribute.startswith(x) for x in ('data_', 'aria_')])
+    special_prefix = any([attribute.startswith(x) for x in SPECIAL_PREFIX_LIST])
     if attribute in set(['http_equiv']) or special_prefix:
       attribute = attribute.replace('_', '-').lower()
 

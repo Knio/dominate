@@ -4,9 +4,13 @@ Dominate
 `Dominate` is a Python library for creating and manipulating HTML documents using an elegant DOM API.
 It allows you to write HTML pages in pure Python very concisely, which eliminates the need to learn another template language, and lets you take advantage of the more powerful features of Python.
 
-![Python version](https://img.shields.io/pypi/pyversions/dominate.svg?style=flat)
+
+[![PyPI version](https://img.shields.io/pypi/v/dominate.svg?style=flat)](https://pypi.org/project/dominate/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/dominate.svg?style=flat)](https://pypi.org/project/dominate/)
 [![Build status](https://github.com/Knio/dominate/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/Knio/dominate/actions/workflows/ci.yml?query=branch%3Amaster+)
 [![Coverage status](https://img.shields.io/coveralls/github/Knio/dominate/master.svg?style=flat)](https://coveralls.io/r/Knio/dominate?branch=master)
+[![Python version](https://img.shields.io/pypi/pyversions/dominate.svg?style=flat)](https://pypi.org/project/dominate/)
+
 
 Python:
 
@@ -72,15 +76,11 @@ The recommended way to install `dominate` is with
 
     pip install dominate
 
-[![PyPI version](https://img.shields.io/pypi/v/dominate.svg?style=flat)](https://pypi.org/project/dominate/)
-[![PyPI downloads](https://img.shields.io/pypi/dm/dominate.svg?style=flat)](https://pypi.org/project/dominate/)
-
-
 
 Developed By
 ------------
 
-* Tom Flanagan - <tom@zkpq.ca>
+* [Tom Flanagan](//github.com/Knio) - <tom@zkpq.ca>
 * Jake Wharton - <jakewharton@gmail.com>
 * [Brad Janke](//github.com/bradj)
 

@@ -1,6 +1,7 @@
 from dominate import document
 from dominate.tags import *
 
+
 def test_doc():
   d = document()
   assert d.render() == \

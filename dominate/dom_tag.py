@@ -441,7 +441,7 @@ class dom_tag(object):
     }.get(attribute, attribute)
 
     # Workaround for Python's reserved words
-    if attribute[0] == '_':
+    if attribute[0] == '_' and len(attribute) > 1:
       attribute = attribute[1:]
 
     # Workaround for dash

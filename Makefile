@@ -1,5 +1,7 @@
 test:
-	-python2 -m pytest .
+	python3 -m pytest . --ignore=tests/community
+
+test-community:
 	python3 -m pytest .
 
 publish_old: clean test

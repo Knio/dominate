@@ -1,4 +1,2 @@
-from ._version import __version__
-version = __version__
-
+from .version import __version__, version
 from .document import document

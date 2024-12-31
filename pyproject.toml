@@ -1,7 +1,3 @@
-[build-system]
-requires = ["setuptools>=62"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "dominate"
 description = "Dominate is a Python library for creating and manipulating HTML documents using an elegant DOM API."
@@ -10,7 +6,7 @@ authors = [
     {name = "Tom Flanagan", email = "tom@zkpq.ca"},
     {name = "Jake Wharton"},
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 keywords = ["framework", "templating", "template", "html", "xhtml", "python", "html5"]
 license = {text = "LGPL-3.0-or-newer"}
 classifiers = [
@@ -19,12 +15,11 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -36,8 +31,13 @@ dynamic = ["version"]
 Homepage = "https://github.com/Knio/dominate"
 Source = "https://github.com/Knio/dominate"
 
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
 [tool.setuptools]
 packages = ["dominate"]
 
 [tool.setuptools.dynamic]
-version = {attr = "dominate._version.__version__"}
+version = {attr = "dominate.version.version"}

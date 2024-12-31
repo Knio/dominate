@@ -1,8 +1,9 @@
 from asyncio import gather, run, Semaphore
-from dominate.dom_tag import async_context_id
 from textwrap import dedent
 
 from dominate import tags
+from dominate.dom_tag import async_context_id
+
 
 # To simulate sleep without making the tests take a hella long time to complete
 # lets use a pair of semaphores to explicitly control when our coroutines run.
@@ -28,7 +29,7 @@ def test_async_bleed():
         sem_1 = Semaphore(0)
         sem_2 = Semaphore(0)
         return await gather(
-            tag_routine_1(sem_1, sem_2), 
+            tag_routine_1(sem_1, sem_2),
             tag_routine_2(sem_1, sem_2)
         )
 
@@ -67,7 +68,7 @@ def test_async_bleed():
           <div id="2"></div>
         </div>
     """).strip()
-    
+
     assert tag_2 == dedent("""\
         <div id="3">
           <div id="4"></div>

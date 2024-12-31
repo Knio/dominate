@@ -1,12 +1,7 @@
-import dominate
-from dominate.tags import *
 import pytest
-from dominate.util import raw
 
-try:
-  xrange = xrange
-except NameError:
-  xrange = range
+from dominate.tags import *
+from dominate.util import raw
 
 
 def test_arguments():
@@ -43,7 +38,7 @@ def test_add():
   with pytest.raises(ValueError):
     d += None
   d += 1
-  d += xrange(2,3)
+  d += range(2,3)
   d += {'id': 'foo'}
   assert d.render() == '<div id="foo">12</div>'
   assert len(d) == 2
@@ -208,6 +203,9 @@ def test_attributes():
   with pytest.raises(AttributeError):
     x = d['id']
 
+  with div(_foo='a', _='b') as d:
+    assert d.attributes.keys() == {'foo', '_'}
+
   with div() as d:
     attr(data_test=False)
   assert d['data-test'] is False
@@ -329,7 +327,7 @@ def test_pretty():
 
   assert p('goodbye ', i('cruel'), ' world').render() == \
     '''<p>goodbye <i>cruel</i> world</p>'''
-  
+
   assert p('my 1', sup('st'), ' PR').render() == \
     '''<p>my 1<sup>st</sup> PR</p>'''
 

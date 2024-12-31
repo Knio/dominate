@@ -4,8 +4,6 @@ import dominate.svg
 from dominate.tags import *
 from dominate.svg import *
 
-import pytest
-
 
 def base():
   return svg(

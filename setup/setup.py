@@ -17,7 +17,7 @@ Public License along with dominate.  If not, see
 '''
 # pylint: disable=bad-whitespace
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 import imp
 _version = imp.load_source("dominate._version", "dominate/_version.py")
@@ -57,7 +57,9 @@ setup(
     'Topic :: Software Development :: Libraries :: Python Modules',
     'Topic :: Text Processing :: Markup :: HTML',
   ],
-
-  packages = ['dominate'],
+  install_requires=[
+    'cssutils >= 2.11.1',
+  ],
+  packages = find_packages(include=['dominate', 'dominate.*']),
   include_package_data = True,
 )

@@ -2,11 +2,7 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
 name: Dominate
-on:
-  push:
-    branches: ["master"]
-  pull_request:
-    branches: ["master"]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   test:
@@ -24,9 +20,9 @@ jobs:
           - {python: "3.13", os: "ubuntu-24.04"}
           - {python: "pypy3.10", os: "ubuntu-24.04"}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: "Set up Python ${{ matrix.python }}"
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python }}
     - name: "Install dependencies"

@@ -4,8 +4,6 @@ This module consists of classes specific to HTML5-SVG Elements. In general this 
 - Elements that are deprecated
 '''
 from dominate.tags import html_tag
-from dominate.dom_tag import dom_tag
-import numbers
 
 
 __license__ = '''

@@ -45,6 +45,18 @@ try:
 except ImportError:
   greenlet = None
 
+# These prefixes will be converted to dashed html attributes.
+DASHED_ATTRS = ['data_', 'aria_']
+_DASHED_ATTRS_ORIG = DASHED_ATTRS[:]
+
+def dashed_attrs_add(*args: tuple[str]):
+  DASHED_ATTRS.extend(args)
+
+
+def dashed_attrs_reset():
+  DASHED_ATTRS.clear()
+  DASHED_ATTRS.extend(_DASHED_ATTRS_ORIG)
+
 # We want dominate to work in async contexts - however, the problem is
 # when we bind a tag using "with", we set what is essentially a global variable.
 # If we are processing multiple documents at the same time, one context
@@ -445,7 +457,7 @@ class dom_tag(object):
       attribute = attribute[1:]
 
     # Workaround for dash
-    special_prefix = any([attribute.startswith(x) for x in ('data_', 'aria_')])
+    special_prefix = any([attribute.startswith(x) for x in DASHED_ATTRS])
     if attribute in set(['http_equiv']) or special_prefix:
       attribute = attribute.replace('_', '-').lower()
 

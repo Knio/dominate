@@ -30,6 +30,7 @@ class dom1core(object):
   http://www.w3.org/TR/1998/REC-DOM-Level-1-19981001/
   http://www.w3.org/TR/1998/REC-DOM-Level-1-19981001/level-one-core.html
   '''
+  __slots__ = ()
   @property
   def parentNode(self):
     '''

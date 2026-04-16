@@ -18,7 +18,7 @@ You should have received a copy of the GNU Lesser General
 Public License along with Dominate.  If not, see
 <http://www.gnu.org/licenses/>.
 '''
-from .dom_tag  import dom_tag, attr, get_current
+from .dom_tag  import dom_tag
 from .dom1core import dom1core
 
 try:
@@ -56,6 +56,7 @@ ERR_CONTENT = 'content'
 
 
 class html_tag(dom_tag, dom1core):
+  __slots__ = ()
   def __init__(self, *args, **kwargs):
     '''
     Creates a new html tag instance.
@@ -164,14 +165,14 @@ class base(html_tag):
   context for the purposes of following hyperlinks. The element does not
   represent any content beyond this information.
   '''
-  is_single = True
+  single = True
 
 
 class link(html_tag):
   '''
   The link element allows authors to link their document to other resources.
   '''
-  is_single = True
+  single = True
 
 
 class meta(html_tag):
@@ -179,7 +180,7 @@ class meta(html_tag):
   The meta element represents various kinds of metadata that cannot be
   expressed using the title, base, link, style, and script elements.
   '''
-  is_single = True
+  single = True
 
 
 class style(html_tag):
@@ -188,7 +189,7 @@ class style(html_tag):
   documents. The style element is one of several inputs to the styling
   processing model. The element does not represent content for the user.
   '''
-  is_pretty = False
+  pretty_default = False
 
 
 # Scripting
@@ -197,7 +198,7 @@ class script(html_tag):
   The script element allows authors to include dynamic script and data blocks
   in their documents. The element does not represent content for the user.
   '''
-  is_pretty = False
+  pretty_default = False
 
 
 class noscript(html_tag):
@@ -355,7 +356,7 @@ class hr(html_tag):
   change in a story, or a transition to another topic within a section of a
   reference book.
   '''
-  is_single = True
+  single = True
 
 
 class pre(html_tag):
@@ -363,7 +364,7 @@ class pre(html_tag):
   The pre element represents a block of preformatted text, in which structure
   is represented by typographic conventions rather than by elements.
   '''
-  is_pretty = False
+  pretty_default = False
 
 
 class blockquote(html_tag):
@@ -589,7 +590,7 @@ class sub(html_tag):
 
 
 class sup(html_tag):
-  is_inline = True
+  inline_default = True
   '''
   The sup element represents a superscript.
   '''
@@ -597,7 +598,7 @@ class sup(html_tag):
 
 
 class i(html_tag):
-  is_inline = True
+  inline_default = True
   '''
   The i element represents a span of text in an alternate voice or mood, or
   otherwise offset from the normal prose in a manner indicating a different
@@ -702,16 +703,16 @@ class br(html_tag):
   '''
   The br element represents a line break.
   '''
-  is_single = True
-  is_inline = True
+  single = True
+  inline_default = True
 
 
 class wbr(html_tag):
   '''
   The wbr element represents a line break opportunity.
   '''
-  is_single = True
-  is_inline = True
+  single = True
+  inline_default = True
 
 
 # Edits
@@ -734,7 +735,7 @@ class img(html_tag):
   '''
   An img element represents an image.
   '''
-  is_single = True
+  single = True
 
 
 class iframe(html_tag):
@@ -749,7 +750,7 @@ class embed(html_tag):
   The embed element represents an integration point for an external (typically
   non-HTML) application or interactive content.
   '''
-  is_single = True
+  single = True
 
 
 class object_(html_tag):
@@ -767,7 +768,7 @@ class param(html_tag):
   The param element defines parameters for plugins invoked by object elements.
   It does not represent anything on its own.
   '''
-  is_single = True
+  single = True
 
 
 class video(html_tag):
@@ -790,7 +791,7 @@ class source(html_tag):
   The source element allows authors to specify multiple alternative media
   resources for media elements. It does not represent anything on its own.
   '''
-  is_single = True
+  single = True
 
 
 class track(html_tag):
@@ -798,7 +799,7 @@ class track(html_tag):
   The track element allows authors to specify explicit external timed text
   tracks for media elements. It does not represent anything on its own.
   '''
-  is_single = True
+  single = True
 
 
 class canvas(html_tag):
@@ -823,7 +824,7 @@ class area(html_tag):
   The area element represents either a hyperlink with some text and a
   corresponding area on an image map, or a dead area on an image map.
   '''
-  is_single = True
+  single = True
 
 
 # Tabular data
@@ -857,7 +858,7 @@ class col(html_tag):
   a parent that is a table element, then the col element represents one or more
   columns in the column group represented by that colgroup.
   '''
-  is_single = True
+  single = True
 
 
 class tbody(html_tag):
@@ -949,7 +950,7 @@ class input_(html_tag):
   The input element represents a typed data field, usually with a form control
   to allow the user to edit the data.
   '''
-  is_single = True
+  single = True
 _input = input_
 
 
@@ -1011,7 +1012,7 @@ class keygen(html_tag):
   control's form is submitted, the private key is stored in the local keystore,
   and the public key is packaged and sent to the server.
   '''
-  is_single = True
+  single = True
 
 
 class output(html_tag):
@@ -1063,7 +1064,7 @@ class command(html_tag):
   '''
   The command element represents a command that the user can invoke.
   '''
-  is_single = True
+  single = True
 
 
 class menu(html_tag):

@@ -22,8 +22,8 @@ import copy
 import numbers
 from collections import defaultdict, namedtuple
 from functools import wraps
+import asyncio
 import threading
-from asyncio import get_running_loop
 from uuid import uuid4
 from contextvars import ContextVar
 
@@ -57,34 +57,53 @@ except ImportError:
 # The presense of this key ensures that each async context has its own stack and doesn't conflict.
 async_context_id = ContextVar('async_context_id', default = None)
 
+_asyncio_get_running_loop = getattr(asyncio, '_get_running_loop', None)
+if _asyncio_get_running_loop is None:
+  from asyncio import get_running_loop as _asyncio_get_running_loop
+  def _safe_running_loop():
+    try:
+      return _asyncio_get_running_loop()
+    except RuntimeError:
+      return None
+else:
+  def _safe_running_loop():
+    return _asyncio_get_running_loop()
+
 def _get_async_context_id():
   if async_context_id.get() is None:
     async_context_id.set(uuid4().hex)
   return async_context_id.get()
 
 def _get_thread_context():
-  context = [threading.current_thread()]
+  thread = threading.current_thread()
+  greenlet_id = None
+  async_id = None
   # Tag extra content information with a name to make sure
   # a greenlet.getcurrent() == 1 doesn't get confused with a
   # a _get_thread_context() == 1.
   if greenlet:
-    context.append(("greenlet", greenlet.getcurrent()))
+    greenlet_id = ("greenlet", greenlet.getcurrent())
 
-  try:
-    if get_running_loop().is_running():
-      # Only add this extra information if we are actually in a running event loop
-      context.append(("async", _get_async_context_id()))
-  # A runtime error is raised if there is no async loop...
-  except RuntimeError:
-    pass
-  return tuple(context)
+  loop = _safe_running_loop()
+  if loop is not None and loop.is_running():
+    # Only add this extra information if we are actually in a running event loop
+    async_id = ("async", _get_async_context_id())
+
+  if greenlet_id is None:
+    if async_id is None:
+      return (thread,)
+    return (thread, async_id)
+  if async_id is None:
+    return (thread, greenlet_id)
+  return (thread, greenlet_id, async_id)
 
 class dom_tag(object):
-  is_single = False  # Tag does not require matching end tag (ex. <hr/>)
-  is_pretty = True   # Text inside the tag should be left as-is (ex. <pre>)
-                     # otherwise, text will be escaped() and whitespace may be
-                     # modified
-  is_inline = False
+  __slots__ = ('attributes', 'children', 'parent', '_ctx', 'inline', 'pretty')
+  single = False  # Tag does not require matching end tag (ex. <hr/>)
+  pretty_default = True   # Text inside the tag should be left as-is (ex. <pre>)
+                          # otherwise, text will be escaped() and whitespace may be
+                          # modified
+  inline_default = False
 
 
   def __new__(_cls, *args, **kwargs):
@@ -121,8 +140,8 @@ class dom_tag(object):
     self.parent     = None
 
     # Does not insert newlines on all children if True (recursive attribute)
-    self.is_inline = kwargs.pop('__inline', self.is_inline)
-    self.is_pretty = kwargs.pop('__pretty', self.is_pretty)
+    self.inline = kwargs.pop('__inline', self.inline_default)
+    self.pretty = kwargs.pop('__pretty', self.pretty_default)
 
     #Add child elements
     if args:
@@ -141,6 +160,8 @@ class dom_tag(object):
   _with_contexts = defaultdict(list)
 
   def _add_to_ctx(self):
+    if not dom_tag._with_contexts:
+      return
     stack = dom_tag._with_contexts.get(_get_thread_context())
     if stack:
       self._ctx = stack[-1]
@@ -209,25 +230,38 @@ class dom_tag(object):
     '''
     Add new child tags.
     '''
+    children = self.children
+    append_child = children.append
+    stack = None
     for obj in args:
-      if isinstance(obj, numbers.Number):
-        # Convert to string so we fall into next if block
-        obj = str(obj)
-
-      if isinstance(obj, basestring):
-        obj = util.escape(obj)
-        self.children.append(obj)
-
-      elif isinstance(obj, dom_tag):
-        stack = dom_tag._with_contexts.get(_get_thread_context(), [])
+      if isinstance(obj, dom_tag):
+        if stack is None:
+          if dom_tag._with_contexts:
+            stack = dom_tag._with_contexts.get(_get_thread_context(), [])
+          else:
+            stack = ()
         for s in stack:
           s.used.add(obj)
-        self.children.append(obj)
+        append_child(obj)
         obj.parent = self
 
+      elif isinstance(obj, basestring):
+        append_child(util.escape(obj))
+
+      elif isinstance(obj, numbers.Number):
+        append_child(util.escape(str(obj)))
+
       elif isinstance(obj, dict):
+        attributes = self.attributes
         for attr, value in obj.items():
-          self.set_attribute(*dom_tag.clean_pair(attr, value))
+          if isinstance(attr, int):
+            children[attr] = value
+          elif isinstance(attr, basestring):
+            attr, value = dom_tag.clean_pair(attr, value)
+            attributes[attr] = value
+          else:
+            raise TypeError('Only integer and string types are valid for assigning '
+                'child tags and attributes, respectively.')
 
       elif hasattr(obj, '__iter__'):
         for subobj in obj:
@@ -356,7 +390,7 @@ class dom_tag(object):
 
 
   def _render(self, sb, indent_level, indent_str, pretty, xhtml):
-    pretty = pretty and self.is_pretty
+    pretty = pretty and self.pretty
 
     name = getattr(self, 'tagname', type(self).__name__)
 
@@ -375,9 +409,9 @@ class dom_tag(object):
       val = unicode(value) if isinstance(value, util.text) and not value.escape else util.escape(unicode(value), True)
       sb.append(' %s="%s"' % (attribute, val))
 
-    sb.append(' />' if self.is_single and xhtml else '>')
+    sb.append(' />' if self.single and xhtml else '>')
 
-    if self.is_single:
+    if self.single:
       return sb
 
     inline = self._render_children(sb, indent_level + 1, indent_str, pretty, xhtml)
@@ -396,7 +430,7 @@ class dom_tag(object):
     inline = True
     for child in self.children:
       if isinstance(child, dom_tag):
-        if pretty and not child.is_inline:
+        if pretty and not child.inline:
           inline = False
           sb.append('\n')
           sb.append(indent_str * indent_level)
@@ -445,8 +479,7 @@ class dom_tag(object):
       attribute = attribute[1:]
 
     # Workaround for dash
-    special_prefix = any([attribute.startswith(x) for x in ('data_', 'aria_')])
-    if attribute in set(['http_equiv']) or special_prefix:
+    if attribute == 'http_equiv' or attribute.startswith(('data_', 'aria_')):
       attribute = attribute.replace('_', '-').lower()
 
     # Workaround for colon

@@ -26,6 +26,8 @@ except NameError: # py3
   unicode = str
 
 class document(tags.html):
+  __slots__ = ('doctype', 'title_node', 'head', 'body', 'header',
+    'main', 'footer', '_entry')
   tagname = 'html'
   def __init__(self, title='Dominate', doctype='<!DOCTYPE html>', *a, **kw):
     '''

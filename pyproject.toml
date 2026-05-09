@@ -39,5 +39,8 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 packages = ["dominate"]
 
+[tool.setuptools.package-data]
+dominate = ["README.md"]
+
 [tool.setuptools.dynamic]
 version = {attr = "dominate.version.version"}

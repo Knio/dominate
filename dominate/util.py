@@ -184,3 +184,11 @@ def raw(s):
   Inserts a raw string into the DOM. Unsafe. Alias for text(x, escape=False)
   '''
   return text(s, escape=False)
+
+class novalue:
+  '''
+  A class to mark tag attributes as having no value.
+  important for libraries like Unpoly which require attribute values like
+  <a href="https://url.com" up-instant>Link</a>
+  '''
+  pass

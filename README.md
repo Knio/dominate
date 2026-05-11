@@ -149,6 +149,8 @@ print(test)
 <div data-employee="101011"></div>
 ```
 
+Similarly, use `aria_*` for [Aria](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA), `hx_*` for custom [HTMX](https://htmx.org/), and `up_*` for custom [Unpoly](https://unpoly.com/) attributes
+
 You can also modify the attributes of tags through a dictionary-like interface:
 
 ```python
@@ -158,6 +160,18 @@ print(header)
 ```
 ```html
 <div id="header"></div>
+```
+
+If attributes don't have values, you can explicitly mark them as having no value:
+
+```python
+from dominate.util import novalue
+
+link = a(href="https://url.com", up_instant=novalue(), "Click Here)
+print(link)
+```
+```html
+<a href="https://url.com" up-instant>Click Here</a>
 ```
 
 Complex Structures

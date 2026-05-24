@@ -24,7 +24,6 @@ def test_kwargs():
 
 
 def test_repr():
-  import re
   d = div()
   assert repr(d).startswith('<dominate.tags.div at ')
   assert repr(d).endswith(' 0 attributes, 0 children>')

@@ -129,6 +129,8 @@ class dom_tag(object):
       self.add(*args)
 
     for attr, value in kwargs.items():
+      if attr == 'tagname':
+        continue
       self.set_attribute(*type(self).clean_pair(attr, value))
 
     self._ctx = None

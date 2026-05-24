@@ -353,3 +353,16 @@ def test_verbatim_attributes():
       '''<div attr="{&lt;div&gt;&lt;/div&gt;}"></div>'''
   assert div(attr = raw('{<div></div>}')).render() == \
       '''<div attr="{<div></div>}"></div>'''
+
+
+def test_custom_tag():
+  class Card(div):
+    pass
+
+  assert Card().render() == '<Card></Card>'
+
+
+  Card.tagname = 'div'
+  assert Card().render() == '<div></div>'
+
+  assert Card(tagname='div').render() == '<div></div>'

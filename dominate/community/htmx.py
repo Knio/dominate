@@ -2,6 +2,7 @@
 from .. import tags
 
 class HtmxTag:
+  __slots__ = ()
   @classmethod
   def clean_attribute(cls, attribute):
     attribute = super().clean_attribute(attribute)

@@ -36,6 +36,26 @@ def test_unescape():
   assert util.unescape('&amp;&lt;&gt;&#32;') == '&<> '
 
 
+def test_unescape_edge_cases():
+  # Empty input
+  assert util.unescape('') == ''
+
+  # No entities
+  assert util.unescape('hello world') == 'hello world'
+
+  # Largest valid Unicode code point (U+10FFFF)
+  assert util.unescape('&#1114111;') == '\U0010ffff'
+
+  # Beyond valid Unicode range (U+110000) should not crash
+  assert util.unescape('&#1114112;') == '�'
+
+  # Unknown named entity replaced with question mark
+  assert util.unescape('&unknown;') == '?'
+
+  # Multiple entities in one string
+  assert util.unescape('&amp;&lt;&gt;') == '&<>'
+
+
 def test_url():
   assert util.url_escape('hi there?') == 'hi%20there%3F'
   assert util.url_unescape('hi%20there%3f') == 'hi there?'

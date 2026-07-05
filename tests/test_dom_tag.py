@@ -41,6 +41,15 @@ def test_set_attribute():
 
     assert container.children == ['bar']
 
+def test_delete_attribute_child_index():
+    container = div('foo', 'bar')
+
+    container.delete_attribute(-1)
+    assert container.children == ['foo']
+
+    with pytest.raises(IndexError):
+        container.delete_attribute(10)
+
 def test_set_attribute_error():
     container = div()
     with pytest.raises(TypeError, match=(

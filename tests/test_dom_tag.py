@@ -73,3 +73,12 @@ def test_nested_context():
     <div>C</div>
   </div>
 </div>'''
+
+
+def test_tagname_kwarg_sets_element_name_not_attribute():
+    from dominate.tags import div
+    d = div(tagname="span", id="x")
+    html = d.render()
+    assert html.startswith("<span")
+    assert "tagname=" not in html
+    assert 'id="x"' in html

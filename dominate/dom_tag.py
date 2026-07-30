@@ -128,6 +128,11 @@ class dom_tag(object):
     if args:
       self.add(*args)
 
+    # `tagname` sets the rendered element name; do not emit it as an attribute
+    # (see issue #215).
+    if 'tagname' in kwargs:
+      self.tagname = kwargs.pop('tagname')
+
     for attr, value in kwargs.items():
       self.set_attribute(*type(self).clean_pair(attr, value))
 

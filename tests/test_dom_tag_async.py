@@ -1,8 +1,29 @@
-from asyncio import gather, run, Semaphore
+from asyncio import create_task, gather, run, Semaphore
 from textwrap import dedent
 
 from dominate import tags
 from dominate.dom_tag import async_context_id
+
+
+def test_child_task_does_not_inherit_parent_dom_context():
+    async def build_child():
+        with tags.div(id='child') as child:
+            tags.span('child content')
+        return str(child)
+
+    async def build_parent():
+        with tags.div(id='parent') as parent:
+            child = await create_task(build_child())
+        return str(parent), child
+
+    token = async_context_id.set(None)
+    try:
+        parent, child = run(build_parent())
+    finally:
+        async_context_id.reset(token)
+
+    assert parent == '<div id="parent"></div>'
+    assert child == '<div id="child">\n  <span>child content</span>\n</div>'
 
 
 # To simulate sleep without making the tests take a hella long time to complete
@@ -33,20 +54,13 @@ def test_async_bleed():
             tag_routine_2(sem_1, sem_2)
         )
 
-    # Set this test up for failure - pre-set the context to a non-None value.
-    # As it is already set, _get_async_context_id will not set it to a new, unique value
-    # and thus we won't be able to differentiate between the two contexts. This essentially simulates
-    # the behavior before our async fix was implemented (the bleed):
+    # An ID initialized by a parent task is copied into each child's context.
+    # Task identity must still keep the two DOM contexts independent.
     async_context_id.set(0)
     tag_1, tag_2 = run(merge())
 
-    # This looks wrong - but its what we would expect if we don't
-    # properly handle async...
     assert tag_1 == dedent("""\
         <div id="1">
-          <div id="3">
-            <div id="4"></div>
-          </div>
           <div id="2"></div>
         </div>
     """).strip()
@@ -57,8 +71,7 @@ def test_async_bleed():
         </div>
     """).strip()
 
-    # Okay, now lets do it right - lets clear the context. Now when each async function
-    # calls _get_async_context_id, it will get a unique value and we can differentiate.
+    # Also verify tasks starting with an uninitialized context.
     async_context_id.set(None)
     tag_1, tag_2 = run(merge())
 

@@ -224,6 +224,14 @@ def test_attribute_none():
   assert d.render() == '<div foo="1"></div>'
 
 
+@pytest.mark.parametrize('value, expected', [
+  (0, '<input min="0" type="number" value="0">'),
+  (0.0, '<input min="0.0" type="number" value="0.0">'),
+])
+def test_numeric_zero_attributes(value, expected):
+  assert input_(type='number', min=value, value=value).render() == expected
+
+
 def test_attribute_dashes():
   # fix issue #118 (https://github.com/Knio/dominate/issues/118)
   expected = '<div aria-foo="bar" data-a-b-c="foo" data-page-size="123"></div>'

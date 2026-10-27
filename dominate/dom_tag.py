@@ -370,7 +370,7 @@ class dom_tag(object):
     sb.append(name)
 
     for attribute, value in sorted(self.attributes.items()):
-      if value in (False, None):
+      if value is False or value is None:
         continue
       val = unicode(value) if isinstance(value, util.text) and not value.escape else util.escape(unicode(value), True)
       sb.append(' %s="%s"' % (attribute, val))

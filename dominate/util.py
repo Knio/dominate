@@ -157,6 +157,7 @@ class lazy(dom_tag):
   def _render(self, sb, *a, **kw):
     r = self.func(*self.args, **self.kwargs)
     sb.append(str(r))
+    return sb
 
 
 class text(dom_tag):

@@ -249,7 +249,7 @@ print(header)
 <div id="header"></div>
 ```
 
-Or the children of a tag though an array-line interface:
+Or the children of a tag though an array-like interface:
 
 ```python
 header = div('Test')

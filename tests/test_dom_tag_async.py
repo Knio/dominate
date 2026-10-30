@@ -23,7 +23,7 @@ def test_child_task_does_not_inherit_parent_dom_context():
         async_context_id.reset(token)
 
     assert parent == '<div id="parent"></div>'
-    assert child == '<div id="child">\n  <span>child content</span>\n</div>'
+    assert child == '<div id="child"><span>child content</span></div>'
 
 
 # To simulate sleep without making the tests take a hella long time to complete

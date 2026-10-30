@@ -465,7 +465,7 @@ class a(html_tag):
   placeholder for where a link might otherwise have been placed, if it had been
   relevant.
   '''
-  pass
+  is_inline = True
 
 
 class em(html_tag):
@@ -695,7 +695,7 @@ class span(html_tag):
   used together with the global attributes, e.g. class, lang, or dir. It
   represents its children.
   '''
-  pass
+  is_inline = True
 
 
 class br(html_tag):

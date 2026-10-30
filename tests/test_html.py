@@ -353,3 +353,21 @@ def test_verbatim_attributes():
       '''<div attr="{&lt;div&gt;&lt;/div&gt;}"></div>'''
   assert div(attr = raw('{<div></div>}')).render() == \
       '''<div attr="{<div></div>}"></div>'''
+
+
+@pytest.mark.parametrize('tag, expected', [
+  (a, '<p>(<a>some</a>)</p>'),
+  (span, '<p>(<span>some</span>)</p>'),
+])
+def test_inline_text_semantics_preserve_adjacent_text(tag, expected):
+  assert p('(', tag('some'), ')').render() == expected
+
+
+def test_nested_inline_link_preserves_adjacent_text():
+  assert span('(', a('some', href='/'), ')').render() == \
+      '<span>(<a href="/">some</a>)</span>'
+
+
+def test_inline_text_semantics_allow_pretty_override():
+  assert p('(', a('some', href='/', __inline=False), ')').render() == \
+      '<p>(\n  <a href="/">some</a>)\n</p>'

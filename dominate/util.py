@@ -95,7 +95,10 @@ def unescape(data):
     d = m.group(1)
     if d:
       d = int(d)
-      result.append(unichr(d))
+      try:
+        result.append(unichr(d))
+      except ValueError:
+        result.append(unichr(0xFFFD))
     else:
       d = _unescape.get(m.group(2), ord('?'))
       result.append(unichr(d))

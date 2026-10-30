@@ -129,6 +129,7 @@ For attributes `class` and `for` which conflict with Python's [reserved keywords
 |cls | fr |
 |className|htmlFor|
 |class_name|html_for|
+|klass|phor|
 
 
 ```python
@@ -137,16 +138,6 @@ print(test)
 ```
 ```html
 <label class="classname anothername" for="someinput"></label>
-```
-
-Use `data_*` for [custom HTML5 data attributes](http://www.w3.org/html/wg/drafts/html/master/dom.html#embedding-custom-non-visible-data-with-the-data-*-attributes "HTML5 Data Attributes").
-
-```python
-test = div(data_employee='101011')
-print(test)
-```
-```html
-<div data-employee="101011"></div>
 ```
 
 You can also modify the attributes of tags through a dictionary-like interface:
@@ -159,6 +150,43 @@ print(header)
 ```html
 <div id="header"></div>
 ```
+
+### Dashed Attributes
+
+Dashed attributes for `data_` and `aria_` are supported by default:
+
+```python
+from dominate.tags import div
+
+print(
+    div(data_employee='101011'),
+    div(aria_role='button'),
+)
+```
+```html
+<div data-employee="101011"></div>
+<div aria-role="button"></div>
+```
+
+If you using a 3rd party library like HTMX, Unpoly, or AlpineJS that uses dashed attrs, you will
+need to configure dominate accordingly:
+
+```python
+import dominate
+from dominate.tags import div
+
+dominate.dashed_attrs_add('hx_', 'x_')
+print(
+    div(hx_target='/foo'),
+    div(x_show='open'),
+)
+```
+
+```html
+<div hx-target="/foo"></div>
+<div x-show="open"></div>
+```
+
 
 Complex Structures
 ------------------

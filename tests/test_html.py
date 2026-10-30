@@ -254,6 +254,27 @@ def test_lazy():
   assert executed[0] == True
 
 
+def test_lazy_render_directly():
+  from dominate import util
+  calls = []
+
+  def deferred(value, suffix):
+    calls.append(value)
+    return span(value + suffix)
+
+  node = util.lazy(deferred, 'Hi', suffix='!')
+  assert calls == []
+  assert node.render() == '<span>Hi!</span>'
+  assert calls == ['Hi']
+  assert str(node) == '<span>Hi!</span>'
+  assert calls == ['Hi', 'Hi']
+
+
+def test_lazy_render_empty_string():
+  from dominate import util
+  assert util.lazy(lambda: '').render() == ''
+
+
 def test_keyword_attributes():
   expected = '<div class="foo" for="bar"></div>'
   assert div(cls='foo', fr='bar').render() == expected

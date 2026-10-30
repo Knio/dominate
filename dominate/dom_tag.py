@@ -23,7 +23,7 @@ import numbers
 from collections import defaultdict, namedtuple
 from functools import wraps
 import threading
-from asyncio import get_running_loop
+from asyncio import current_task, get_running_loop
 from uuid import uuid4
 from contextvars import ContextVar
 
@@ -73,7 +73,8 @@ def _get_thread_context():
   try:
     if get_running_loop().is_running():
       # Only add this extra information if we are actually in a running event loop
-      context.append(("async", _get_async_context_id()))
+      # A child task inherits ContextVars, so its task identity must also differ.
+      context.append(("async", _get_async_context_id(), current_task()))
   # A runtime error is raised if there is no async loop...
   except RuntimeError:
     pass

@@ -52,9 +52,9 @@ except ImportError:
 # sort of bleed into one another...
 
 # The solution is to use a ContextVar - which provides async context local storage.
-# We use this to store a unique ID for each async context. We then use thie ID to
+# We use this to store a unique ID for each async context. We then use the ID to
 # form the key (in _get_thread_context) that is used to index the _with_context defaultdict.
-# The presense of this key ensures that each async context has its own stack and doesn't conflict.
+# The presence of this key ensures that each async context has its own stack and doesn't conflict.
 async_context_id = ContextVar('async_context_id', default = None)
 
 def _get_async_context_id():

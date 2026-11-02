@@ -272,3 +272,11 @@ def test_radial_gradient():
       stop(offset="10%", stop_color="gold")
       stop(offset="95%", stop_color="red")
   circle(cx=50, cy=5, r=50, fill="url(#myGradient)")
+
+
+def test_attr_and_dict_use_svg_attribute_names():
+  # attr() and dict attributes should clean names like keyword arguments do
+  with circle() as c:
+    attr(stroke_width=2)
+  assert c.render() == '<circle stroke-width="2"></circle>'
+  assert circle({'stroke_width': 2}).render() == '<circle stroke-width="2"></circle>'

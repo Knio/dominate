@@ -228,7 +228,7 @@ class dom_tag(object):
 
       elif isinstance(obj, dict):
         for attr, value in obj.items():
-          self.set_attribute(*dom_tag.clean_pair(attr, value))
+          self.set_attribute(*type(self).clean_pair(attr, value))
 
       elif hasattr(obj, '__iter__'):
         for subobj in obj:
@@ -500,7 +500,7 @@ def attr(*args, **kwargs):
   dicts = args + (kwargs,)
   for d in dicts:
     for attr, value in d.items():
-      c.set_attribute(*dom_tag.clean_pair(attr, value))
+      c.set_attribute(*type(c).clean_pair(attr, value))
 
 
 from . import util

@@ -190,6 +190,10 @@ class dom_tag(object):
     '''
     if isinstance(key, int):
       self.children[key] = value
+      if isinstance(value, dom_tag):
+        value.parent = self
+        for context in dom_tag._with_contexts.get(_get_thread_context(), []):
+          context.used.add(value)
     elif isinstance(key, basestring):
       self.attributes[key] = value
     else:

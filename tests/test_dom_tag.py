@@ -41,6 +41,20 @@ def test_set_attribute():
 
     assert container.children == ['bar']
 
+def test_replace_child_in_context():
+    container = div(p('old'))
+    with container:
+        child = span('new')
+        container[0] = child
+    assert container.render(pretty=False) == '<div><span>new</span></div>'
+    assert child.parentNode is container
+
+def test_replace_child_sets_parent():
+    container = div(p('old'))
+    child = span('new')
+    container[-1] = child
+    assert child.parentNode is container
+
 def test_delete_attribute_child_index():
     container = div('foo', 'bar')
 

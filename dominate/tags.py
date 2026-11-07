@@ -210,6 +210,23 @@ class noscript(html_tag):
   pass
 
 
+class template(html_tag):
+  '''
+  The template element is used to declare fragments of HTML that can be cloned
+  and inserted in the document by script.
+  '''
+  pass
+
+
+class slot(html_tag):
+  '''
+  The slot element defines a slot. It is typically used in a shadow tree. A
+  slot element represents its assigned nodes, if any, and its contents
+  otherwise.
+  '''
+  pass
+
+
 # Sections
 class body(html_tag):
   '''
@@ -225,6 +242,14 @@ class main(html_tag):
   search forms (unless the document or application's main function is that of a
   search form).
   '''
+
+class search(html_tag):
+  '''
+  The search element represents a part of a document or application that
+  contains a set of form controls or other content related to performing a
+  search or filtering operation.
+  '''
+  pass
 
 class section(html_tag):
   '''
@@ -536,6 +561,14 @@ class abbr(html_tag):
   pass
 
 
+class data(html_tag):
+  '''
+  The data element represents its contents, along with a machine-readable form
+  of those contents in the value attribute.
+  '''
+  pass
+
+
 class time_(html_tag):
   '''
   The time element represents either a time on a 24 hour clock, or a precise
@@ -730,6 +763,15 @@ class del_(html_tag):
 _del = del_
 
 # Embedded content
+class picture(html_tag):
+  '''
+  The picture element is a container which provides multiple sources to its
+  contained img element to allow authors to declaratively control or give hints
+  to the user agent about which image resource to use.
+  '''
+  pass
+
+
 class img(html_tag):
   '''
   An img element represents an image.
@@ -1055,6 +1097,15 @@ class summary(html_tag):
   '''
   The summary element represents a summary, caption, or legend for the rest of
   the contents of the summary element's parent details element, if any.
+  '''
+  pass
+
+
+class dialog(html_tag):
+  '''
+  The dialog element represents a transitory part of an application, in the
+  form of a small window ("dialog box"), which the user interacts with to
+  perform a task or gather information.
   '''
   pass
 

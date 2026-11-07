@@ -373,6 +373,10 @@ class dom_tag(object):
     for attribute, value in sorted(self.attributes.items()):
       if value is False or value is None:
         continue
+      if value is True:
+        # Boolean attributes: HTML allows the minimized form, XHTML needs a value
+        sb.append(' %s="%s"' % (attribute, attribute) if xhtml else ' %s' % attribute)
+        continue
       val = unicode(value) if isinstance(value, util.text) and not value.escape else util.escape(unicode(value), True)
       sb.append(' %s="%s"' % (attribute, val))
 
@@ -460,19 +464,14 @@ class dom_tag(object):
   @classmethod
   def clean_pair(cls, attribute, value):
     '''
-    This will call `clean_attribute` on the attribute and also allows for the
-    creation of boolean attributes.
+    This will call `clean_attribute` on the attribute.
 
-    Ex. input(selected=True) is equivalent to input(selected="selected")
+    Boolean attributes are kept as `True` and rendered in their minimized form,
+    ex. input(selected=True) renders as <input selected> (or as
+    <input selected="selected" /> with xhtml=True). `False` and `None` values
+    are filtered out in render().
     '''
     attribute = cls.clean_attribute(attribute)
-
-    # Check for boolean attributes
-    # (i.e. selected=True becomes selected="selected")
-    if value is True:
-      value = attribute
-
-    # Ignore `if value is False`: this is filtered out in render()
 
     return (attribute, value)
 

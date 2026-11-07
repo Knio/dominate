@@ -20,7 +20,7 @@ def test_kwargs():
     cls="mydiv",
     data_name='foo',
     onclick='alert(1);').render() == \
-  '''<div checked="checked" class="mydiv" data-name="foo" id="4" onclick="alert(1);"></div>'''
+  '''<div checked class="mydiv" data-name="foo" id="4" onclick="alert(1);"></div>'''
 
 
 def test_repr():
@@ -304,9 +304,28 @@ def test_comment():
 
 def test_boolean_attributes():
   assert input_(type="checkbox", checked=True).render() == \
-      '<input checked="checked" type="checkbox">'
+      '<input checked type="checkbox">'
   assert input_(type="checkbox", checked=False).render() == \
       '<input type="checkbox">'
+  assert video(controls=True, src='a.mp4').render() == \
+      '<video controls src="a.mp4"></video>'
+
+  # XHTML does not allow minimized attributes
+  assert input_(type="checkbox", checked=True).render(xhtml=True) == \
+      '<input checked="checked" type="checkbox" />'
+
+  # The attribute keeps its boolean value however it is set
+  i = input_(type="checkbox")
+  i['checked'] = True
+  assert i['checked'] is True
+  assert i.render() == '<input checked type="checkbox">'
+  with select() as s:
+    attr(multiple=True)
+  assert s.render() == '<select multiple></select>'
+
+  # A string value is still rendered as given
+  assert option(selected='selected').render() == \
+      '<option selected="selected"></option>'
 
 
 def test_nested_decorator_2():

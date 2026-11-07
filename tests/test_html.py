@@ -400,3 +400,32 @@ def test_nested_inline_link_preserves_adjacent_text():
 def test_inline_text_semantics_allow_pretty_override():
   assert p('(', a('some', href='/', __inline=False), ')').render() == \
       '<p>(\n  <a href="/">some</a>)\n</p>'
+
+
+def test_html5_elements():
+  assert search(form(input_(type='search', name='q'))).render() == '''<search>
+  <form>
+    <input name="q" type="search">
+  </form>
+</search>'''
+
+  assert p('Size: ', data('Mini', value='398')).render() == \
+      '<p>Size: \n  <data value="398">Mini</data>\n</p>'
+
+  assert picture(
+    source(srcset='photo.avif', type='image/avif'),
+    img(src='photo.jpg', alt='A photo'),
+  ).render() == '''<picture>
+  <source srcset="photo.avif" type="image/avif">
+  <img alt="A photo" src="photo.jpg">
+</picture>'''
+
+  assert dialog(p('Saved'), open=True).render() == '''<dialog open="open">
+  <p>Saved</p>
+</dialog>'''
+
+  assert template(li(slot(name='item')), id='row').render() == '''<template id="row">
+  <li>
+    <slot name="item"></slot>
+  </li>
+</template>'''

@@ -160,6 +160,18 @@ print(header)
 <div id="header"></div>
 ```
 
+[Boolean attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes) are set with `True` and rendered in their minimized form.
+`False` or `None` leaves the attribute out:
+
+```python
+print(input_(type='checkbox', checked=True, disabled=False))
+```
+```html
+<input checked type="checkbox">
+```
+
+XHTML requires a value, so with `render(xhtml=True)` the attribute name is repeated as its value, e.g. `<input checked="checked" type="checkbox" />`.
+
 Complex Structures
 ------------------
 

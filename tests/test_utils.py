@@ -56,6 +56,26 @@ def test_unescape_edge_cases():
   assert util.unescape('&amp;&lt;&gt;') == '&<>'
 
 
+def test_unescape_hexadecimal_character_references():
+  # https://github.com/Knio/dominate/issues/243
+  # Hexadecimal character references must decode like their decimal
+  # counterparts, not fall through to the named-entity lookup.
+  assert util.unescape('&#x41;') == 'A'
+  assert util.unescape('&#X41;') == 'A'
+  assert util.unescape('&#x263a;') == '☺'
+  assert util.unescape('a &#xe9; b') == 'a é b'
+
+  # Largest valid Unicode code point (U+10FFFF), hex form
+  assert util.unescape('&#x10ffff;') == '\U0010ffff'
+
+  # Beyond the valid Unicode range should not crash (matches the
+  # decimal behaviour)
+  assert util.unescape('&#x110000;') == '�'
+
+  # Mixed decimal, hex and named entities in one string
+  assert util.unescape('&#65;&#x42;&amp;') == 'AB&'
+
+
 def test_url():
   assert util.url_escape('hi there?') == 'hi%20there%3F'
   assert util.url_unescape('hi%20there%3f') == 'hi there?'

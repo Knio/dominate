@@ -86,22 +86,23 @@ def unescape(data):
   '''
   unescapes html entities. the opposite of escape.
   '''
-  cc = re.compile(r'&(?:(?:#(\d+))|([^;]+));')
+  cc = re.compile(r'&(?:#[xX]([0-9a-fA-F]+)|#(\d+)|([^;]+));')
 
   result = []
   m = cc.search(data)
   while m:
     result.append(data[0:m.start()])
-    d = m.group(1)
-    if d:
-      d = int(d)
-      try:
-        result.append(unichr(d))
-      except ValueError:
-        result.append(unichr(0xFFFD))
+    hex_digits, decimal, name = m.groups()
+    if hex_digits is not None:
+      d = int(hex_digits, 16)
+    elif decimal is not None:
+      d = int(decimal)
     else:
-      d = _unescape.get(m.group(2), ord('?'))
+      d = _unescape.get(name, ord('?'))
+    try:
       result.append(unichr(d))
+    except ValueError:
+      result.append(unichr(0xFFFD))
 
     data = data[m.end():]
     m = cc.search(data)

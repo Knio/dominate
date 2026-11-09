@@ -21,6 +21,20 @@ def test_add_raw_string():
     container.add_raw_string('foo')
     assert container.children == ['foo']
 
+def test_add_bytes_content():
+    # https://github.com/Knio/dominate/issues/242
+    # bytes content must be decoded as text, not iterated
+    # byte-by-byte as numbers.
+    assert str(p(b'abc')) == '<p>abc</p>'
+    assert str(p(bytearray(b'abc'))) == '<p>abc</p>'
+
+def test_add_bytes_content_multibyte_and_escape():
+    # https://github.com/Knio/dominate/issues/242
+    # UTF-8 multibyte content decodes to the right character and is
+    # escaped like any other text content.
+    assert str(p(b'\xe2\x9c\x93')) == '<p>\u2713</p>'
+    assert str(p(b'<b>')) == '<p>&lt;b&gt;</p>'
+
 def test_clear():
     container = div()
     child = div()

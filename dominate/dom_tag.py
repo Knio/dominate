@@ -215,6 +215,12 @@ class dom_tag(object):
         # Convert to string so we fall into next if block
         obj = str(obj)
 
+      if isinstance(obj, (bytes, bytearray)):
+        # Decode binary text content as UTF-8 (the default HTML
+        # encoding) so it is treated as text, not as an iterable of
+        # byte values.
+        obj = obj.decode('utf-8', 'replace')
+
       if isinstance(obj, basestring):
         obj = util.escape(obj)
         self.children.append(obj)

@@ -37,7 +37,7 @@ requires = ["setuptools>=75"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-packages = ["dominate"]
+packages = ["dominate", "dominate.community"]
 
 [tool.setuptools.package-data]
 dominate = ["README.md"]

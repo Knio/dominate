@@ -248,7 +248,10 @@ class dom_tag(object):
 
 
   def remove(self, obj):
-    self.children.remove(obj)
+    removed = self.children.pop(self.children.index(obj))
+    if (isinstance(removed, dom_tag) and removed.parent is self
+        and not any(child is removed for child in self.children)):
+      removed.parent = None
 
 
   def clear(self):

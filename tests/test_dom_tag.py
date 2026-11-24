@@ -34,6 +34,70 @@ def test_clear():
     assert container.children == []
     assert child.parent is None
 
+def test_remove_child_clears_parent():
+    child = span('content')
+    sibling = span('sibling')
+    container = div(child, sibling)
+
+    assert container.remove(child) is None
+    assert container.children == [sibling]
+    assert child.parent is None
+    assert child.parentNode is None
+    assert sibling.parentNode is container
+
+def test_remove_duplicate_child():
+    child = span()
+    container = div(child, child)
+
+    container.remove(child)
+    assert container.children == [child]
+    assert child.parentNode is container
+
+    container.remove(child)
+    assert container.children == []
+    assert child.parentNode is None
+
+def test_remove_child_with_another_parent():
+    child = span()
+    container = div(child)
+    other = div(child)
+
+    container.remove(child)
+    assert container.children == []
+    assert other.children == [child]
+    assert child.parentNode is other
+
+def test_remove_text():
+    container = div('text')
+    container.remove('text')
+    assert container.children == []
+
+def test_remove_missing_child():
+    child = span()
+    parent = div(child)
+    other = div()
+
+    with pytest.raises(ValueError):
+        other.remove(child)
+
+    assert parent.children == [child]
+    assert child.parentNode is parent
+    assert other.children == []
+
+def test_remove_equal_children_detaches_removed_instance():
+    class EqualTag(div):
+        def __eq__(self, other):
+            return isinstance(other, EqualTag)
+
+    first, second = EqualTag(), EqualTag()
+    container = div(first, second)
+
+    container.remove(second)
+    assert len(container.children) == 1
+    assert container.children[0] is second
+    assert first.parentNode is None
+    assert second.parentNode is container
+
 def test_set_attribute():
     container = div()
     container.add_raw_string('foo')

@@ -271,7 +271,8 @@ class dom_tag(object):
 
     results = []
     for child in self.children:
-      if (isinstance(tag, basestring) and type(child).__name__ == tag) or \
+      if (isinstance(tag, basestring) and (type(child).__name__ == tag or
+          isinstance(child, dom_tag) and child._get_tag_name() == tag)) or \
         (not isinstance(tag, basestring) and isinstance(child, tag)):
 
         if all(child.attributes.get(attribute) == value
@@ -356,15 +357,18 @@ class dom_tag(object):
     return u''.join(data)
 
 
-  def _render(self, sb, indent_level, indent_str, pretty, xhtml):
-    pretty = pretty and self.is_pretty
-
+  def _get_tag_name(self):
     name = getattr(self, 'tagname', type(self).__name__)
-
     # Workaround for python keywords and standard classes/methods
     # (del, object, input)
     if name[-1] == '_':
       name = name[:-1]
+    return name
+
+
+  def _render(self, sb, indent_level, indent_str, pretty, xhtml):
+    pretty = pretty and self.is_pretty
+    name = self._get_tag_name()
 
     # open tag
     sb.append('<')

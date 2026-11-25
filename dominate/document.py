@@ -35,6 +35,7 @@ class document(tags.html):
     self.doctype    = doctype
     self.head       = super(document, self).add(tags.head())
     self.body       = super(document, self).add(tags.body())
+    self.title_node = None
     if title is not None:
       self.title_node = self.head.add(tags.title(title))
     with self.body:
@@ -44,14 +45,19 @@ class document(tags.html):
     self._entry = self.main
 
   def get_title(self):
-    return self.title_node.text
+    return self.title_node.text if self.title_node is not None else None
 
   def set_title(self, title):
     if isinstance(title, basestring):
-      self.title_node.text = title
+      if self.title_node is None:
+        self.title_node = self.head.add(tags.title(title))
+      else:
+        self.title_node.text = title
     else:
-      self.head.remove(self.title_node)
-      self.head.add(title)
+      if self.title_node is not None:
+        self.head.remove(self.title_node)
+      if title is not None:
+        self.head.add(title)
       self.title_node = title
 
   title = property(get_title, set_title)
